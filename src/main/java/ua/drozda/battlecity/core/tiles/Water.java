@@ -1,7 +1,7 @@
 package ua.drozda.battlecity.core.tiles;
 
 import javafx.scene.image.Image;
-import ua.drozda.battlecity.core.Updatable;
+import ua.drozda.battlecity.core.interfaces.Updatable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,14 +16,25 @@ public class Water extends Tile implements Updatable {
     private long lastUpdate;
     private long curIndex;
 
-    public Water(Image curSprite) {
-        super(curSprite);
+    public Water(int tileState) {
+        super(tileState);
     }
+
 
     public void update(Long nanoSeconds) {
         if((nanoSeconds - lastUpdate)>=updateInterval){
             curSprite = spriteList.get((int)(++curIndex)%spriteList.size());
             lastUpdate=nanoSeconds;
         }
+    }
+
+    public void update(Object... args) {
+        if (args[0] instanceof Long){
+            update((Long)args[0]);
+        }
+    }
+
+    public static int getMaxState() {
+        return 2;
     }
 }

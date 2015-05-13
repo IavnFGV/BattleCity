@@ -1,12 +1,15 @@
 package ua.drozda.battlecity.core.tiles;
 
-import javafx.scene.image.Image;
 
 /**
  * Created by GFH on 12.05.2015.
  */
 public class Brick extends Tile {
-    public Brick(Image curSprite) {
-        super(curSprite);
+    public Brick(int tileState) {
+        super(tileState);
+    }
+
+    public static int getMaxState() {
+        return 16;
     }
 }
