@@ -1,40 +1,29 @@
 package ua.drozda.battlecity.core.tiles;
 
-import javafx.scene.image.Image;
 import ua.drozda.battlecity.core.interfaces.Updatable;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by GFH on 12.05.2015.
  */
-public class Water extends Tile implements Updatable {
+public class Water extends Tile implements Updatable<Tile> {
 
-    private List<Image> spriteList = new LinkedList<Image>();
-    private int updateInterval = 500 * 1000000; // half a second (500 000 000)
-    private long lastUpdate;
-    private long curIndex;
 
-    public Water(int tileState) {
+    public Water(Integer tileState) {
         super(tileState);
     }
 
 
-    public void update(Long nanoSeconds) {
-        if((nanoSeconds - lastUpdate)>=updateInterval){
-            curSprite = spriteList.get((int)(++curIndex)%spriteList.size());
-            lastUpdate=nanoSeconds;
-        }
-    }
-
-    public void update(Object... args) {
-        if (args[0] instanceof Long){
-            update((Long)args[0]);
-        }
+    public Tile update(Object... args) throws Exception {
+        return getTile(this.getClass(), (tileState + 1) % getMaxState());
     }
 
     public static int getMaxState() {
         return 2;
+    }
+
+    @Override
+    public String toString() {
+        return "Water{}+super = " +
+                super.toString();
     }
 }

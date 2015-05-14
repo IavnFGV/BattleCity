@@ -1,11 +1,9 @@
 package ua.drozda.battlecity.core.actors;
 
-import ua.drozda.battlecity.core.interfaces.Updatable;
-
 /**
  * Created by GFH on 12.05.2015.
  */
-public class ActorController implements Updatable {
+public class ActorController {
 
     private Integer velocity;
     private Integer acceleration;

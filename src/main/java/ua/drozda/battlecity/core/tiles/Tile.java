@@ -5,7 +5,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observer;
 
 /**
  * Created by GFH on 12.05.2015.
@@ -27,6 +26,13 @@ public class Tile {
         tileMap.put(Ice.class, null);
     }
 
+    @Override
+    public String toString() {
+        return "Tile{" +
+                "tileState=" + tileState +
+                '}';
+    }
+
     protected int tileState;
 
 
@@ -42,7 +48,7 @@ public class Tile {
         this.tileState = tileState;
     }
 
-    public static Tile getTile(Class<? extends Tile> aClassTile, int tileState, Observer observer) throws Exception {
+    public static Tile getTile(Class<? extends Tile> aClassTile, int tileState) throws Exception {
         try {
             if (!tileMap.containsKey(aClassTile)) {
                 throw new ClassNotFoundException("No such tile class in factory map. Check Tile.java");
@@ -57,11 +63,16 @@ public class Tile {
                 for (int i = 0; i < getMaxResult; i++) {
                     Array.set(tileMap.get(aClassTile), i, constructor.newInstance(i));
                 }
+                resultArray = tileMap.get(aClassTile);
             }
             Tile resultTile = resultArray[tileState];
             return resultTile;
         } catch (Exception e) {
             throw new Exception(e.getMessage(), e);
         }
+    }
+
+    public Tile terminal() throws Exception {
+        return getTile(Empty.class, 0);
     }
 }

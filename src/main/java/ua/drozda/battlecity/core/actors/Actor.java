@@ -89,9 +89,10 @@ public abstract class Actor implements Updatable {
         }
     }
 
-    public void update(Object... args) {
+    public Object update(Object... args) {
         if (args[0] instanceof Long) {
             update((Long) args[0]);
         }
+        return null;
     }
 }
