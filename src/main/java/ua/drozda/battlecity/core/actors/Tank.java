@@ -4,11 +4,15 @@ package ua.drozda.battlecity.core.actors;
  * Created by GFH on 14.05.2015.
  */
 public class Tank extends Actor {
-    public Tank(ActorController controller) {
-        super(controller);
+
+    @Override
+    public int getMaxToggle() {
+        return 2;
     }
 
-    public Tank(Direction direction, Integer velocity) {
-        super(direction, velocity);
+    @Override
+    public void nextToggle() {
+        heartState = (heartState + 1) % getMaxToggle();
     }
+
 }

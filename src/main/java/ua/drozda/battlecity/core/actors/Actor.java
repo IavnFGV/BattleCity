@@ -1,98 +1,138 @@
 package ua.drozda.battlecity.core.actors;
 
 import javafx.geometry.Point2D;
-import ua.drozda.battlecity.core.interfaces.Updatable;
+import ua.drozda.battlecity.core.interfaces.NonStatic;
+
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by GFH on 12.05.2015.
  */
-public abstract class Actor implements Updatable {
+public abstract class Actor implements NonStatic<Actor>, Observer {
 
-    private int updateInterval = 16666666; // 1/60 second (16666666,66666667)
+    private boolean pause;
+    private Integer velocity;
+    private Integer acceleration;
+    private Direction direction;
     private long lastUpdate;
     private Point2D position;
+    protected Integer heartState;
+    protected ActorState actorState;
+    protected Long remainTimeInState;
 
-    private ActorController controller;
+    public ActorState getActorState() {
+        return actorState;
+    }
 
-    private Direction direction;
+    public void setActorState(ActorState actorState) {
+        remainTimeInState = ActorState.getTimeInState(actorState);
+        this.actorState = actorState;
+    }
 
-    private Integer velocity;
+    public Long getRemainTimeInState() {
+        return remainTimeInState;
+    }
+
+    public void setRemainTimeInState(Long remainTimeInState) {
+        if (remainTimeInState <= 0) {
+            if (this.remainTimeInState != 0) {
+                actorState = ActorState.nextState(actorState);
+                this.remainTimeInState = remainTimeInState;
+            }
+        }
+    }
+
+    public abstract int getMaxToggle();
+
+    public abstract void nextToggle();
+
+    private ObservableProxy observableProxy = new ObservableProxy();
+    private volatile Boolean ready; /*  true after Observer.Update()
+                                        false after ObservableProxy.notifyObservers()*/
+
+    protected ActorState getIntialState() {
+        return ActorState.STATE_SPAWNING;
+    }
+
+    public Actor() {
+        super();
+        setActorState(getIntialState());
+    }
+
+    public Actor(Integer velocity) {
+        this();
+        this.velocity = velocity;
+    }
+
+    public synchronized void update(Observable o, Object arg) {
+        //1 - time nanoseconds
+        //2 - command (Direction)
+        //3 - velocity (Integer)
+        //4 - pause (Boolean)
+        if (arg instanceof ActorCommand) {
+            ActorCommand command = (ActorCommand) arg;
+            if (command.isPause()) {
+                pause = !pause;
+            }
+            if (!pause) {
+                setRemainTimeInState(getRemainTimeInState() + lastUpdate - command.getNanoseconds());
+                if (command.getDirection() == null) {
+                    velocity = 0;
+                } else {
+                    direction = command.getDirection();
+                }
+                if (actorState != ActorState.STATE_SPAWNING) {
+                    if (command.getVelocity() != null) {
+                        velocity = command.getVelocity();
+                    }
+                }
+                ready = true;
+            }
+            lastUpdate = command.getNanoseconds();
+        }
+    }
+
+    public void calc() {
+        if (!pause) {
+
+        }
+    }
+
+    public void calcPosition() {
+        if (velocity > 0) {
+
+        }
+    }
+
+    public void addObserver(Observer o) {
+        observableProxy.addObserver(o);
+    }
+
+    public void notifyObservers() {
+        if (ready) {
+            observableProxy.notifyObservers(this);
+            ready = false;
+        }
+    }
+
+    public class ObservableProxy extends Observable {
+        public ObservableProxy() {
+            super();
+        }
+    }
 
     public Point2D getPosition() {
         return position;
     }
 
-    public void setPosition(Point2D position) {
-        this.position = position;
-    }
-
-    public Actor(ActorController controller) {
-        super();
-        this.controller = controller;
-    }
-
-    public Integer getVelocity() {
-        if (controller == null) {
-            return velocity;
-        } else {
-            return controller.getVelocity();
+    public Actor heartBeat() throws Exception {
+        if (pause) {
+            return this;
         }
-    }
-
-    public void setVelocity(Integer velocity) {
-        this.velocity = velocity;
-    }
-
-    public Actor(Direction direction, Integer velocity) {
-        super();
-        this.direction = direction;
-        this.velocity = velocity;
-
-    }
-
-    public Direction getDirection() {
-        if (controller == null) {
-            return direction;
-        } else {
-            return controller.getDirection();
+        if (velocity != 0) {
+            nextToggle();
         }
-    }
-
-    public void update(Long nanoSeconds) {
-        if ((controller.getVelocity() > 0) && ((nanoSeconds - lastUpdate) >= updateInterval)) {
-            switch (getDirection()) {
-                case DOWN:
-                    position.add(0, -getVelocity() / updateInterval);
-                    if (position.getY() < 0) {
-                        position = new Point2D(position.getX(), 0);
-                    }
-                    break;
-                case LEFT:
-                    position.add(-getVelocity() / updateInterval, 0);
-                    if (position.getX() < 0) {
-                        position = new Point2D(0, position.getY());
-                    }
-                    break;
-                case RIGHT:
-                    position.add(getVelocity() / updateInterval, 0);
-                    if (position.getX() > 26) {
-                        position = new Point2D(26, position.getY());
-                    }
-                    break;
-                case UP:
-                    position.add(0, getVelocity() / updateInterval);
-                    if (position.getY() > 26) {
-                        position = new Point2D(position.getX(), 26);
-                    }
-                    break;
-            }
-        }
-    }
-
-    public Object update(Object... args) {
-        if (args[0] instanceof Long) {
-            update((Long) args[0]);
-        }
-        return null;
+        return this;
     }
 }

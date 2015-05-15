@@ -6,8 +6,17 @@ package ua.drozda.battlecity.core.actors;
 public class Bullet extends Actor {
     private int power = 1;
 
-    public Bullet(Direction direction, Integer velocity, int power) {
-        super(direction, velocity);
-        this.power = power;
+    @Override
+    protected ActorState getIntialState() {
+        return ActorState.STATE_ALIVE;
+    }
+
+    @Override
+    public int getMaxToggle() {
+        return 0;
+    }
+
+    @Override
+    public void nextToggle() {
     }
 }

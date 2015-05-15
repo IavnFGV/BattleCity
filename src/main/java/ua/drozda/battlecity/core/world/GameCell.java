@@ -1,7 +1,7 @@
 package ua.drozda.battlecity.core.world;
 
 import ua.drozda.battlecity.core.World;
-import ua.drozda.battlecity.core.interfaces.Updatable;
+import ua.drozda.battlecity.core.interfaces.NonStatic;
 import ua.drozda.battlecity.core.tiles.Tile;
 
 import java.util.Observable;
@@ -9,7 +9,7 @@ import java.util.Observable;
 /**
  * Created by GFH on 13.05.2015.
  */
-public class GameCell extends Observable implements Updatable<GameCell> {
+public class GameCell extends Observable implements NonStatic<GameCell> {
     private int x = 0;
     private int y = 0;
     private CollisionBounds collisionBounds;
@@ -73,11 +73,10 @@ public class GameCell extends Observable implements Updatable<GameCell> {
         collisionBounds = new CollisionBounds(x, y);
     }
 
-    public GameCell update(Object... args) throws Exception {
-        if (tile instanceof Updatable) {
+    public GameCell heartBeat() throws Exception {
+        if (tile instanceof NonStatic) {
             curFrame++;
-            lastUpdate = (Long) args[0];
-            tile = (Tile) ((Updatable) tile).update(args);
+            tile = (Tile) ((NonStatic) tile).heartBeat();
             this.setChanged();
             this.notifyObservers();
             this.clearChanged();

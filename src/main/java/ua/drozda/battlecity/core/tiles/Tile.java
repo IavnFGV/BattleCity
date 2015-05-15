@@ -56,7 +56,7 @@ public class Tile {
 
             Tile[] resultArray = tileMap.get(aClassTile);
             if (resultArray == null) {
-                Method getMax = aClassTile.getMethod("getMaxState");
+                Method getMax = aClassTile.getMethod("getMaxToggle");
                 int getMaxResult = (Integer) getMax.invoke(null);
                 tileMap.put(aClassTile, (Tile[]) Array.newInstance(aClassTile, getMaxResult));
                 Constructor constructor = aClassTile.getConstructor(new Class[]{Integer.class});
