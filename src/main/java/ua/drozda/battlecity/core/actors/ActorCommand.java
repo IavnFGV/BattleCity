@@ -6,15 +6,15 @@ package ua.drozda.battlecity.core.actors;
 public class ActorCommand {
     private Long nanoseconds;
     private Direction direction;
-    private Integer velocity;
+    private Double velocity;
     private Boolean pause;
     private Boolean fire;
 
-    public Integer getVelocity() {
+    public Double getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(Integer velocity) {
+    public void setVelocity(Double velocity) {
         this.velocity = velocity;
     }
 

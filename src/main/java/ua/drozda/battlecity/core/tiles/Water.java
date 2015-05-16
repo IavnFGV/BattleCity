@@ -12,7 +12,7 @@ public class Water extends Tile implements NonStatic<Tile> {
         super(tileState);
     }
 
-    public static int getMaxState() {
+    public static int getMaxToggle() {
         return 2;
     }
 
@@ -23,6 +23,6 @@ public class Water extends Tile implements NonStatic<Tile> {
     }
 
     public Tile heartBeat() throws Exception {
-        return getTile(this.getClass(), (tileState + 1) % getMaxState());
+        return getTile(this.getClass(), (tileState + 1) % getMaxToggle());
     }
 }

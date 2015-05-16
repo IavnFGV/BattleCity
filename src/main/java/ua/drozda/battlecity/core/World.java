@@ -1,7 +1,5 @@
 package ua.drozda.battlecity.core;
 
-import ua.drozda.battlecity.core.tiles.Tile;
-import ua.drozda.battlecity.core.tiles.Water;
 import ua.drozda.battlecity.core.world.GameCell;
 
 import java.util.ArrayList;
@@ -26,15 +24,5 @@ public class World {
 
     }
 
-    public void test() throws Exception {
-        Tile testTile = Tile.getTile(Water.class, 0);
-
-        GameCell gameCell = new GameCell(0, 0, testTile);
-
-        while (true) {
-            Thread.sleep(100);
-            gameCell.update(System.nanoTime());
-        }
-    }
 
 }

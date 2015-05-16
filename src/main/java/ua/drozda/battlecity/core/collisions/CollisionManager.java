@@ -14,7 +14,7 @@ public class CollisionManager {
 //
 //        }
 //    }
-    public static Boolean canMove(Actor actor, Point2D newPosition) {
+    public Boolean canMove(Actor actor, Point2D newPosition) {
         return true;//TODO Check for collision in new position
     }
 }

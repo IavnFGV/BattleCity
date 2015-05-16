@@ -26,19 +26,12 @@ public class Tile {
         tileMap.put(Ice.class, null);
     }
 
-    @Override
-    public String toString() {
-        return "Tile{" +
-                "tileState=" + tileState +
-                '}';
-    }
-
     protected int tileState;
 
-
-    public static int getMaxState() {
+    public static int getMaxToggle() {
         return 1;
     }
+
 
     public int getTileState() {
         return tileState;
@@ -74,5 +67,12 @@ public class Tile {
 
     public Tile terminal() throws Exception {
         return getTile(Empty.class, 0);
+    }
+
+    @Override
+    public String toString() {
+        return "Tile{" +
+                "tileState=" + tileState +
+                '}';
     }
 }

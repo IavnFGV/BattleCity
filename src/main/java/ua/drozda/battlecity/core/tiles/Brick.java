@@ -9,7 +9,7 @@ public class Brick extends Tile {
         super(tileState);
     }
 
-    public static int getMaxState() {
+    public static int getMaxToggle() {
         return 16;
     }
 }

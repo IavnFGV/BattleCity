@@ -1,6 +1,7 @@
 package ua.drozda.battlecity.core.actors;
 
 import javafx.geometry.Point2D;
+import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.NonStatic;
 
 import java.util.Observable;
@@ -11,15 +12,70 @@ import java.util.Observer;
  */
 public abstract class Actor implements NonStatic<Actor>, Observer {
 
+    private CollisionManager collisionManager;
+    private MoveStrategy<? extends Actor> moveStrategy;
     private boolean pause;
-    private Integer velocity;
+    private Double velocity;
     private Integer acceleration;
     private Direction direction;
     private long lastUpdate;
-    private Point2D position;
+    private long deltaTime;
+    private Point2D position = Point2D.ZERO;
     protected Integer heartState;
     protected ActorState actorState;
     protected Long remainTimeInState;
+
+    public MoveStrategy<? extends Actor> getMoveStrategy() {
+        return moveStrategy;
+    }
+
+    public void setMoveStrategy(MoveStrategy<? extends Actor> moveStrategy) {
+        this.moveStrategy = moveStrategy;
+    }
+
+    public long getDeltaTime() {
+        return deltaTime;
+    }
+
+    public void setDeltaTime(long deltaTime) {
+        this.deltaTime = deltaTime;
+    }
+
+    public void setPosition(Point2D position) {
+        this.position = position;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public Double getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(Double velocity) {
+        this.velocity = velocity;
+    }
+
+    public CollisionManager getCollisionManager() {
+        return collisionManager;
+    }
+
+    public void setCollisionManager(CollisionManager collisionManager) {
+        this.collisionManager = collisionManager;
+    }
+
+    public boolean isPause() {
+        return pause;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
 
     public ActorState getActorState() {
         return actorState;
@@ -38,12 +94,12 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
         if (remainTimeInState <= 0) {
             if (this.remainTimeInState != 0) {
                 actorState = ActorState.nextState(actorState);
-                this.remainTimeInState = remainTimeInState;
+                this.remainTimeInState = (remainTimeInState <= 0) ? (0) : remainTimeInState;
             }
         }
     }
 
-    public abstract int getMaxToggle();
+    public abstract Integer getMaxToggle();
 
     public abstract void nextToggle();
 
@@ -55,13 +111,14 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
         return ActorState.STATE_SPAWNING;
     }
 
-    public Actor() {
+    public Actor(CollisionManager collisionManager) {
         super();
+        setCollisionManager(collisionManager);
         setActorState(getIntialState());
     }
 
-    public Actor(Integer velocity) {
-        this();
+    public Actor(Double velocity, CollisionManager collisionManager) {
+        this(collisionManager);
         this.velocity = velocity;
     }
 
@@ -70,15 +127,20 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
         //2 - command (Direction)
         //3 - velocity (Integer)
         //4 - pause (Boolean)
-        if (arg instanceof ActorCommand) {
+        performUpdate(arg);
+    }
+
+    protected void performUpdate(Object arg) {
+        if ((arg instanceof ActorCommand)) {
             ActorCommand command = (ActorCommand) arg;
-            if (command.isPause()) {
+            if ((command.isPause() != null) && (command.isPause())) {
                 pause = !pause;
             }
             if (!pause) {
-                setRemainTimeInState(getRemainTimeInState() + lastUpdate - command.getNanoseconds());
+                deltaTime = command.getNanoseconds() - lastUpdate;
+                setRemainTimeInState(getRemainTimeInState() - deltaTime);
                 if (command.getDirection() == null) {
-                    velocity = 0;
+                    velocity = 0.;
                 } else {
                     direction = command.getDirection();
                 }
@@ -88,22 +150,18 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
                     }
                 }
                 ready = true;
+                this.calc();
+                setChanged();
+                this.notifyObservers();
             }
             lastUpdate = command.getNanoseconds();
         }
     }
 
     public void calc() {
-        if (!pause) {
-
-        }
+        getMoveStrategy().performMove();
     }
 
-    public void calcPosition() {
-        if (velocity > 0) {
-
-        }
-    }
 
     public void addObserver(Observer o) {
         observableProxy.addObserver(o);
@@ -116,9 +174,24 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
         }
     }
 
+    public void setChanged() {
+        observableProxy.setChanged();
+    }
+
     public class ObservableProxy extends Observable {
+
         public ObservableProxy() {
             super();
+
+        }
+
+        @Override
+        public synchronized void setChanged() {
+            super.setChanged();
+        }
+
+        public Actor getActor() {
+            return Actor.this;
         }
     }
 
