@@ -46,22 +46,19 @@ public class MoveStrategy<T extends Actor> {
             //so we cant call every loop - actor will froze in one point!!!!!!
             switch (actor.getDirection()) {
                 case UP:
-                    newPosition = actor.getPosition().add(0, deltaPosition);
+                    newPosition = actor.getPosition().add(0, -deltaPosition);
                     break;
                 case RIGHT:
                     newPosition = actor.getPosition().add(deltaPosition, 0);
                     break;
                 case DOWN:
-                    newPosition = actor.getPosition().add(0, -deltaPosition);
+                    newPosition = actor.getPosition().add(0, deltaPosition);
                     break;
                 case LEFT:
                     newPosition = actor.getPosition().add(-deltaPosition, 0);
                     break;
             }
-
-            if (actor.getCollisionManager().canMove(actor, newPosition)) {
-                actor.setPosition(newPosition);
-            }
+            actor.setPosition(actor.getCollisionManager().newPosition(actor, newPosition));
         }
     }
 }

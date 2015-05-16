@@ -18,8 +18,7 @@ public class Water extends Tile implements NonStatic<Tile> {
 
     @Override
     public String toString() {
-        return "Water{}+super = " +
-                super.toString();
+        return "Water{} " + super.toString();
     }
 
     public Tile heartBeat() throws Exception {

@@ -1,6 +1,6 @@
 package ua.drozda.battlecity.core.world;
 
-import ua.drozda.battlecity.core.World;
+import ua.drozda.battlecity.core.collisions.CollisionBounds;
 import ua.drozda.battlecity.core.interfaces.NonStatic;
 import ua.drozda.battlecity.core.tiles.Tile;
 
@@ -10,8 +10,8 @@ import java.util.Observable;
  * Created by GFH on 13.05.2015.
  */
 public class GameCell extends Observable implements NonStatic<GameCell> {
-    private int x = 0;
-    private int y = 0;
+    private Integer x = 0;
+    private Integer y = 0;
     private CollisionBounds collisionBounds;
 
     public CollisionBounds getCollisionBounds() {
@@ -84,61 +84,6 @@ public class GameCell extends Observable implements NonStatic<GameCell> {
         return this;
     }
 
-    public static class CollisionBounds {
-        private int xF;//Floor
-        private int yF;
-        private int xU;//Up
-        private int yU;
-
-        public CollisionBounds(int x, int y) {
-            this.xF = x * World.CELL_WIDTH;
-            this.yF = yF * World.CELL_HEIGH;
-            this.xU = xF + World.CELL_WIDTH;
-            this.yU = yF + World.CELL_HEIGH;
-        }
-
-        public int getxF() {
-            return xF;
-        }
-
-        public void setxF(int xF) {
-            this.xF = xF;
-        }
-
-        public int getyF() {
-            return yF;
-        }
-
-        public void setyF(int yF) {
-            this.yF = yF;
-        }
-
-        public int getxU() {
-            return xU;
-        }
-
-        public void setxU(int xU) {
-            this.xU = xU;
-        }
-
-        public int getyU() {
-            return yU;
-        }
-
-        public void setyU(int yU) {
-            this.yU = yU;
-        }
-
-        @Override
-        public String toString() {
-            return "CollisionBounds{" +
-                    "xF=" + xF +
-                    ", yF=" + yF +
-                    ", xU=" + xU +
-                    ", yU=" + yU +
-                    '}';
-        }
-    }
 
     @Override
     public String toString() {

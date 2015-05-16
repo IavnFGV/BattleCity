@@ -13,7 +13,7 @@ public class Tile {
 
     private static Map<Class<? extends Tile>, Tile[]> tileMap = new HashMap<Class<? extends Tile>, Tile[]>(6);
 
-    public Tile(int tileState) {
+    public Tile(Integer tileState) {
         this.tileState = tileState;
     }
 

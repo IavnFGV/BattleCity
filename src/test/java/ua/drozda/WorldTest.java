@@ -1,6 +1,7 @@
 package ua.drozda;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.core.actors.*;
@@ -8,7 +9,10 @@ import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.tiles.Tile;
 import ua.drozda.battlecity.core.tiles.Water;
 import ua.drozda.battlecity.core.world.GameCell;
+import ua.drozda.battlecity.io.LevelLoader;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -101,6 +105,7 @@ public class WorldTest {
     }
 
 
+    @Ignore // correct mistake))
     @Test
     public void testActorMoving() {
         testMethodStarted("testActorMoving");
@@ -137,8 +142,23 @@ public class WorldTest {
         testWorld.testObserver(command);
         assertNotNull("actorObserver.actor MUST be setted(not equalnull)", actorObserver.actor);
         System.out.println("actorObserver.actor = " + actorObserver.actor);
-
+        testComplete();
     }
 
+    @Test
+    public void levelLoaderTest() throws Exception {
+        testMethodStarted("levelLoaderTest");
+        LevelLoader.loadlevel("5", world);
+        System.out.println("world" + world);
+        testComplete();
+    }
 
+    @Test
+    public void test() {
+        List<Object> objects = new LinkedList<Object>();
+        objects.add(0, null);
+        objects.add(1, null);
+
+        System.out.println(objects);
+    }
 }

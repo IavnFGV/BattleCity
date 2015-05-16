@@ -1,6 +1,7 @@
 package ua.drozda.battlecity.core.actors;
 
 import javafx.geometry.Point2D;
+import ua.drozda.battlecity.core.collisions.CollisionBounds;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.NonStatic;
 
@@ -21,9 +22,18 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
     private long lastUpdate;
     private long deltaTime;
     private Point2D position = Point2D.ZERO;
+    private CollisionBounds collisionBounds;
     protected Integer heartState;
     protected ActorState actorState;
     protected Long remainTimeInState;
+
+    public CollisionBounds getCollisionBounds() {
+        return collisionBounds;
+    }
+
+    public void setCollisionBounds(CollisionBounds collisionBounds) {
+        this.collisionBounds = collisionBounds;
+    }
 
     public MoveStrategy<? extends Actor> getMoveStrategy() {
         return moveStrategy;
@@ -92,11 +102,11 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
 
     public void setRemainTimeInState(Long remainTimeInState) {
         if (remainTimeInState <= 0) {
-            if (this.remainTimeInState != 0) {
-                actorState = ActorState.nextState(actorState);
-                this.remainTimeInState = (remainTimeInState <= 0) ? (0) : remainTimeInState;
-            }
+            actorState = ActorState.nextState(actorState);
+        } else {
+            this.remainTimeInState = remainTimeInState;
         }
+
     }
 
     public abstract Integer getMaxToggle();
@@ -151,7 +161,6 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
                 }
                 ready = true;
                 this.calc();
-                setChanged();
                 this.notifyObservers();
             }
             lastUpdate = command.getNanoseconds();
@@ -169,14 +178,12 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
 
     public void notifyObservers() {
         if (ready) {
+            observableProxy.setChanged();
             observableProxy.notifyObservers(this);
             ready = false;
         }
     }
 
-    public void setChanged() {
-        observableProxy.setChanged();
-    }
 
     public class ObservableProxy extends Observable {
 
