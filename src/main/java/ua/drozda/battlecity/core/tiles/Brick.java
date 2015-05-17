@@ -5,13 +5,6 @@ package ua.drozda.battlecity.core.tiles;
  * Created by GFH on 12.05.2015.
  */
 public class Brick extends Tile {
-    public Brick(Integer tileState) {
-        super(tileState);
-    }
-
-    public static int getMaxToggle() {
-        return 16;
-    }
 
     @Override
     public String toString() {

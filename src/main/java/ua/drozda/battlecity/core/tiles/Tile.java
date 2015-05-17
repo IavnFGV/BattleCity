@@ -1,8 +1,5 @@
 package ua.drozda.battlecity.core.tiles;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,13 +8,10 @@ import java.util.Map;
  */
 public class Tile {
 
-    private static Map<Class<? extends Tile>, Tile[]> tileMap = new HashMap<Class<? extends Tile>, Tile[]>(6);
-
-    public Tile(Integer tileState) {
-        this.tileState = tileState;
-    }
+    private static Map<Class<? extends Tile>, Tile> tileMap = new HashMap<Class<? extends Tile>, Tile>(6);
 
     static {
+        //todo make adding interactive? load class files during work
         tileMap.put(Empty.class, null);
         tileMap.put(Brick.class, null);
         tileMap.put(Steel.class, null);
@@ -26,53 +20,24 @@ public class Tile {
         tileMap.put(Ice.class, null);
     }
 
-    protected int tileState;
-
-    public static int getMaxToggle() {
-        return 1;
-    }
-
-
-    public int getTileState() {
-        return tileState;
-    }
-
-    public void setTileState(int tileState) {
-        this.tileState = tileState;
-    }
-
-    public static Tile getTile(Class<? extends Tile> aClassTile, int tileState) throws Exception {
+    public static Tile getTile(Class<? extends Tile> aClassTile) throws Exception {
         try {
             if (!tileMap.containsKey(aClassTile)) {
                 throw new ClassNotFoundException("No such tile class in factory map. Check Tile.java");
             }
-
-            Tile[] resultArray = tileMap.get(aClassTile);
-            if (resultArray == null) {
-                Method getMax = aClassTile.getMethod("getMaxToggle");
-                int getMaxResult = (Integer) getMax.invoke(null);
-                tileMap.put(aClassTile, (Tile[]) Array.newInstance(aClassTile, getMaxResult));
-                Constructor constructor = aClassTile.getConstructor(new Class[]{Integer.class});
-                for (int i = 0; i < getMaxResult; i++) {
-                    Array.set(tileMap.get(aClassTile), i, constructor.newInstance(i));
-                }
-                resultArray = tileMap.get(aClassTile);
+            Tile resultTile = tileMap.get(aClassTile);
+            if (resultTile == null) {
+                resultTile = aClassTile.newInstance();
+                tileMap.put(aClassTile, resultTile);
             }
-            Tile resultTile = resultArray[tileState];
             return resultTile;
         } catch (Exception e) {
             throw new Exception(e.getMessage(), e);
         }
     }
 
-    public Tile terminal() throws Exception {
-        return getTile(Empty.class, 0);
-    }
-
     @Override
     public String toString() {
-        return "Tile{" +
-                "tileState=" + tileState +
-                '}';
+        return "Tile{}";
     }
 }

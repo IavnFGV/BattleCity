@@ -1,7 +1,7 @@
-package ua.drozda.battlecity.core.world;
+package ua.drozda.battlecity.core.world.cells;
 
 import ua.drozda.battlecity.core.collisions.CollisionBounds;
-import ua.drozda.battlecity.core.interfaces.NonStatic;
+import ua.drozda.battlecity.core.interfaces.Togglable;
 import ua.drozda.battlecity.core.tiles.Tile;
 
 import java.util.Observable;
@@ -9,9 +9,14 @@ import java.util.Observable;
 /**
  * Created by GFH on 13.05.2015.
  */
-public class GameCell extends Observable implements NonStatic<GameCell> {
+public class GameCell extends Observable implements Togglable<GameCell> {
     private Integer x = 0;
     private Integer y = 0;
+    private Long toggleTick = 0l;
+    private Long lastUpdate = 0l;
+    private CellState state;
+    private Tile tile;
+
     private CollisionBounds collisionBounds;
 
     public CollisionBounds getCollisionBounds() {
@@ -30,20 +35,13 @@ public class GameCell extends Observable implements NonStatic<GameCell> {
         this.tile = tile;
     }
 
-    public long getLastUpdate() {
+    public Long getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(long lastUpdate) {
+
+    public void setLastUpdate(Long lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    public long getCurFrame() {
-        return curFrame;
-    }
-
-    public void setCurFrame(long curFrame) {
-        this.curFrame = curFrame;
     }
 
     public int getX() {
@@ -62,42 +60,27 @@ public class GameCell extends Observable implements NonStatic<GameCell> {
         this.y = y;
     }
 
-    private Tile tile;
-    private long lastUpdate;
-    private long curFrame;
-
     public GameCell(int x, int y, Tile tile) {
         this.x = x;
         this.y = y;
         this.tile = tile;
         collisionBounds = new CollisionBounds(x, y);
+        state = CellState.getCellState(tile.getClass());// todo shit
     }
 
-    public GameCell heartBeat(Object o) throws Exception {
+    public GameCell toggle(Object o) throws Exception {
         Object parameter = null;
         if (o != null) {
             parameter = o;
         }
-        if (tile instanceof NonStatic) {
-            curFrame++;
-            tile = (Tile) ((NonStatic) tile).heartBeat(parameter);
+        if (state instanceof Togglable) {
+            toggleTick++;
+            tile = (Tile) ((Togglable) state).toggle(parameter); // todo maybe check changed of State??
             this.setChanged();
             this.notifyObservers();
-            this.clearChanged();
         }
         return this;
     }
 
 
-    @Override
-    public String toString() {
-        return "GameCell{" +
-                "x=" + x +
-                ", y=" + y +
-                ", collisionBounds=" + collisionBounds +
-                ", tile=" + tile +
-                ", lastUpdate=" + lastUpdate +
-                ", curFrame=" + curFrame +
-                '}';
-    }
 }

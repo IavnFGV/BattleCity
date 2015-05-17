@@ -34,7 +34,7 @@ public class LevelLoader {
                 char[] chars = sCurrentLine.toCharArray();
                 Integer x = Integer.valueOf(0);
                 for (char c : chars) {
-                    world.addCell(x, y, Tile.getTile(map.get(c), 0));
+                    world.addCell(x, y, Tile.getTile(map.get(c)));
                     System.out.print(c);
                     x++;
                 }

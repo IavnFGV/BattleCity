@@ -3,7 +3,7 @@ package ua.drozda.battlecity.core.actors;
 import javafx.geometry.Point2D;
 import ua.drozda.battlecity.core.collisions.CollisionBounds;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
-import ua.drozda.battlecity.core.interfaces.NonStatic;
+import ua.drozda.battlecity.core.interfaces.Togglable;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -11,7 +11,8 @@ import java.util.Observer;
 /**
  * Created by GFH on 12.05.2015.
  */
-public abstract class Actor implements NonStatic<Actor>, Observer {
+public abstract class Actor implements Togglable<Actor>, Observer { // observable too through    private ObservableProxy observableProxy = new ObservableProxy();
+
 
     private CollisionManager collisionManager;
     private MoveStrategy<? extends Actor> moveStrategy;
@@ -24,8 +25,11 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
     private Point2D position = Point2D.ZERO;
     private CollisionBounds collisionBounds;
     protected Integer heartState;
-    protected ActorState actorState;
     protected Long remainTimeInState;
+    protected ActorState actorState;
+    private ObservableProxy observableProxy = new ObservableProxy();
+    private volatile Boolean ready; /*  true after Observer.Update()
+                                        false after ObservableProxy.notifyObservers()*/
 
     public CollisionBounds getCollisionBounds() {
         return collisionBounds;
@@ -112,10 +116,6 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
     public abstract Integer getMaxToggle();
 
     public abstract void nextToggle();
-
-    private ObservableProxy observableProxy = new ObservableProxy();
-    private volatile Boolean ready; /*  true after Observer.Update()
-                                        false after ObservableProxy.notifyObservers()*/
 
     protected ActorState getIntialState() {
         return ActorState.STATE_SPAWNING;
@@ -206,7 +206,7 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
         return position;
     }
 
-    public Actor heartBeat(Object o) throws Exception {
+    public Actor toggle(Object o) throws Exception {
         if (pause) {
             return this;
         }

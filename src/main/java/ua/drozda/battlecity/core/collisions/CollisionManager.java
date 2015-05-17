@@ -8,7 +8,7 @@ import ua.drozda.battlecity.core.tiles.Empty;
 import ua.drozda.battlecity.core.tiles.Forest;
 import ua.drozda.battlecity.core.tiles.Ice;
 import ua.drozda.battlecity.core.tiles.Tile;
-import ua.drozda.battlecity.core.world.GameCell;
+import ua.drozda.battlecity.core.world.cells.GameCell;
 
 import java.util.HashSet;
 import java.util.List;
