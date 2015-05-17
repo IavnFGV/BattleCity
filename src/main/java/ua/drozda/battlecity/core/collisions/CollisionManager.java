@@ -31,9 +31,10 @@ public class CollisionManager {
         rideTiles.add(Empty.class);
     }
 
-    private List<List<GameCell>> gameCellList;
 
-    public CollisionManager(List<Actor> actorList, List<List<GameCell>> gameCellList) {
+    private GameCell[][] gameCellList;
+
+    public CollisionManager(List<Actor> actorList, GameCell[][] gameCellList) {
         this.actorList = actorList;
         this.gameCellList = gameCellList;
     }
@@ -49,11 +50,11 @@ public class CollisionManager {
         this.actorList = actorList;
     }
 
-    public List<List<GameCell>> getGameCellList() {
+    public GameCell[][] getGameCellList() {
         return gameCellList;
     }
 
-    public void setGameCellList(List<List<GameCell>> gameCellList) {
+    public void setGameCellList(GameCell[][] gameCellList) {
         this.gameCellList = gameCellList;
     }
 
@@ -93,12 +94,12 @@ public class CollisionManager {
         switch (actor.getDirection()) {
             case UP: {
                 for (int i = y; i >= yn; i--) {
-                    if (!rideTiles.contains(gameCellList.get(i).get(x).getClass())) {
+                    if (!rideTiles.contains(gameCellList[i][x].getClass())) {
                         stopy = i;
                         stopx = x;
                         break;
                     }
-                    if (!rideTiles.contains(gameCellList.get(i).get(x + 1).getClass())) {
+                    if (!rideTiles.contains(gameCellList[i][x + 1].getClass())) {
                         stopy = i;
                         stopx = x + 1;
                         break;
@@ -111,12 +112,12 @@ public class CollisionManager {
             }
             case RIGHT: {
                 for (int i = x + 1; i <= xn + 1; i++) {
-                    if (!rideTiles.contains(gameCellList.get(y).get(i).getClass())) {
+                    if (!rideTiles.contains(gameCellList[y][i].getClass())) {
                         stopy = y;
                         stopx = i;
                         break;
                     }
-                    if (!rideTiles.contains(gameCellList.get(y + 1).get(i).getClass())) {
+                    if (!rideTiles.contains(gameCellList[y + 1][i].getClass())) {
                         stopy = y + 1;
                         stopx = i;
                         break;
@@ -129,12 +130,12 @@ public class CollisionManager {
             }
             case DOWN: {
                 for (int i = y + 1; i <= yn + 1; i++) {
-                    if (!rideTiles.contains(gameCellList.get(i).get(x).getClass())) {
+                    if (!rideTiles.contains(gameCellList[i][x].getClass())) {
                         stopy = i;
                         stopx = x;
                         break;
                     }
-                    if (!rideTiles.contains(gameCellList.get(i).get(x + 1).getClass())) {
+                    if (!rideTiles.contains(gameCellList[i][x + 1].getClass())) {
                         stopy = i;
                         stopx = x + 1;
                         break;
@@ -147,12 +148,12 @@ public class CollisionManager {
             }
             case LEFT: {
                 for (int i = x; i >= xn; i--) {
-                    if (!rideTiles.contains(gameCellList.get(y).get(i).getClass())) {
+                    if (!rideTiles.contains(gameCellList[y][i].getClass())) {
                         stopy = y;
                         stopx = i;
                         break;
                     }
-                    if (!rideTiles.contains(gameCellList.get(y + 1).get(i).getClass())) {
+                    if (!rideTiles.contains(gameCellList[y + 1][i].getClass())) {
                         stopy = y + 1;
                         stopx = i;
                         break;

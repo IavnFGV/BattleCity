@@ -30,10 +30,9 @@ public class LevelLoader {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
             String sCurrentLine;
             Integer y = Integer.valueOf(0);
-            Integer x = Integer.valueOf(0);
             while ((sCurrentLine = bufferedReader.readLine()) != null) {
                 char[] chars = sCurrentLine.toCharArray();
-                x = Integer.valueOf(0);
+                Integer x = Integer.valueOf(0);
                 for (char c : chars) {
                     world.addCell(x, y, Tile.getTile(map.get(c), 0));
                     System.out.print(c);

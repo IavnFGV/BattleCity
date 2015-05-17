@@ -7,6 +7,7 @@ import ua.drozda.battlecity.core.tiles.Tile;
 import ua.drozda.battlecity.core.world.GameCell;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,17 +25,8 @@ public class World implements LoadableCells {
     public static final Integer WORLD_WIDTH_PIXEL = WORLD_WIDTH_CELL * CELL_WIDTH * GAME_PIXEL;
 
     private List<Actor> actorList = new ArrayList<Actor>();
-    private List<List<GameCell>> gameCellList = new ArrayList<List<GameCell>>(WORLD_HEIGHT_CELL);
+    private GameCell[][] gameCellList = new GameCell[WORLD_HEIGHT_CELL][WORLD_WIDTH_CELL];
 
-    {
-        for (int i = 0; i < WORLD_HEIGHT_CELL; i++) {
-            gameCellList.add(new ArrayList<GameCell>(WORLD_WIDTH_CELL));
-            for (int j = 0; j < WORLD_WIDTH_CELL; j++) {
-                gameCellList.get(i).add(null);
-            }
-        }
-        System.out.println("initializationblock");
-    }
 
     private CollisionManager collisionManager;
 
@@ -50,7 +42,7 @@ public class World implements LoadableCells {
 
 
     public Boolean addCell(Integer x, Integer y, Tile tile) {
-        gameCellList.get(y).add(x, new GameCell(x, y, tile));
+        gameCellList[y][x] = new GameCell(x, y, tile);
         return true;
     }
 
@@ -58,7 +50,7 @@ public class World implements LoadableCells {
     public String toString() {
         return "World{" +
                 "actorList=" + actorList +
-                ", gameCellList=" + gameCellList +
+                ", gameCellList=" + Arrays.deepToString(gameCellList) +
                 ", collisionManager=" + collisionManager +
                 '}';
     }

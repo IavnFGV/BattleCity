@@ -56,11 +56,11 @@ public class WorldTest {
         assertNotNull(gameCell);
         System.out.println("gameCell = " + gameCell);
         System.out.println("Making heartBeat");
-        gameCell.heartBeat();
+        gameCell.heartBeat(null);
         System.out.println("gameCell = " + gameCell);
         assertTrue("Now waterState MUST be 1", gameCell.getTile().getTileState() == 1);
         System.out.println("Making heartBeat");
-        gameCell.heartBeat();
+        gameCell.heartBeat(null);
         System.out.println("gameCell = " + gameCell);
         assertTrue("Now waterState MUST be 0", gameCell.getTile().getTileState() == 0);
         testComplete();
@@ -98,7 +98,7 @@ public class WorldTest {
         System.out.println("tileObserver = " + tileObserver);
         gameCell.addObserver(tileObserver);
         System.out.println("Making heartBeat");
-        gameCell.heartBeat();
+        gameCell.heartBeat(null);
         assertTrue("tileObserver.curTile.getTileState MUST be 1", tileObserver.curTile.getTileState() == 1);
         System.out.println("tileObserver = " + tileObserver);
 
@@ -161,4 +161,5 @@ public class WorldTest {
 
         System.out.println(objects);
     }
+
 }

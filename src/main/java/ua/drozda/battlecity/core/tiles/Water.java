@@ -21,7 +21,7 @@ public class Water extends Tile implements NonStatic<Tile> {
         return "Water{} " + super.toString();
     }
 
-    public Tile heartBeat() throws Exception {
+    public Tile heartBeat(Object o) throws Exception {
         return getTile(this.getClass(), (tileState + 1) % getMaxToggle());
     }
 }

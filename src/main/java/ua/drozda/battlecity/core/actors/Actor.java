@@ -206,7 +206,7 @@ public abstract class Actor implements NonStatic<Actor>, Observer {
         return position;
     }
 
-    public Actor heartBeat() throws Exception {
+    public Actor heartBeat(Object o) throws Exception {
         if (pause) {
             return this;
         }

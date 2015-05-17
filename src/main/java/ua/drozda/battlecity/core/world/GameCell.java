@@ -73,10 +73,14 @@ public class GameCell extends Observable implements NonStatic<GameCell> {
         collisionBounds = new CollisionBounds(x, y);
     }
 
-    public GameCell heartBeat() throws Exception {
+    public GameCell heartBeat(Object o) throws Exception {
+        Object parameter = null;
+        if (o != null) {
+            parameter = o;
+        }
         if (tile instanceof NonStatic) {
             curFrame++;
-            tile = (Tile) ((NonStatic) tile).heartBeat();
+            tile = (Tile) ((NonStatic) tile).heartBeat(parameter);
             this.setChanged();
             this.notifyObservers();
             this.clearChanged();
