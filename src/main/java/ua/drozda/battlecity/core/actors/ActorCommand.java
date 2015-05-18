@@ -10,6 +10,14 @@ public class ActorCommand {
     private Boolean pause;
     private Boolean fire;
 
+    public ActorCommand() {
+        super();
+    }
+
+    public Boolean isFire() {
+        return fire;
+    }
+
     public Double getVelocity() {
         return velocity;
     }
@@ -18,16 +26,8 @@ public class ActorCommand {
         this.velocity = velocity;
     }
 
-    public Boolean isFire() {
-        return fire;
-    }
-
     public void setFire(Boolean fire) {
         this.fire = fire;
-    }
-
-    public ActorCommand() {
-        super();
     }
 
     public Long getNanoseconds() {

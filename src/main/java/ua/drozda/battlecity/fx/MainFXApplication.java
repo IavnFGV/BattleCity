@@ -4,10 +4,8 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import ua.drozda.battlecity.core.World;
 
@@ -28,7 +26,7 @@ public class MainFXApplication extends Application {
 
 
         Group root = new Group();
-        Scene scene = new Scene(root, World.WORLD_WIDTH_PIXEL, World.WORLD_HEIGHT_PIXEL, Color.BLACK);
+        //     Scene scene = new Scene(root, World.WORLD_WIDTH_PIXEL, World.WORLD_HEIGHT_PIXEL, Color.BLACK);
 
 
         InputStream inputStreamSprites = MainFXApplication.class.getResourceAsStream("/ua/drozda/battlecity/images/sprites.png");
@@ -62,7 +60,7 @@ public class MainFXApplication extends Application {
         };
         animationTimer.start();
         primaryStage.setTitle("JavaFX Scene Graph Demo");
-        primaryStage.setScene(scene);
+        //      primaryStage.setScene(scene);
         primaryStage.show();
     }
 }

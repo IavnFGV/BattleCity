@@ -9,7 +9,7 @@ import java.util.EnumSet;
  */
 public class MoveStrategy<T extends Actor> {
 
-    private static EnumSet<ActorState> movingStates = EnumSet.of(ActorState.STATE_ALIVE);
+    protected static EnumSet<ActorState> movingStates = EnumSet.of(ActorState.STATE_ALIVE);
     private T actor;
 
     public MoveStrategy(T actor) {
@@ -25,22 +25,16 @@ public class MoveStrategy<T extends Actor> {
     }
 
     public void performMove() {
-        if (actor.isPause()) {
+        if (actor.isPause()) { // todo is it necessary
             return;
         }
-        if (canMove()) {
-            moveActor();
-        }
+        Point2D newPosition = calcNewPosition();
+        applyNewPosition(newPosition);
     }
 
-    protected boolean canMove() { // this method can be override in children
-        return movingStates.contains(actor.getActorState());
-    }
-
-    protected void moveActor() { // this method can be override in children
+    protected Point2D calcNewPosition() { // this method can be override in children
 
         if (actor.getVelocity() > 0) {
-
             Point2D newPosition = Point2D.ZERO;
             Double deltaPosition = Double.valueOf((actor.getDeltaTime() * actor.getVelocity()));
             //so we cant call every loop - actor will froze in one point!!!!!!
@@ -58,7 +52,12 @@ public class MoveStrategy<T extends Actor> {
                     newPosition = actor.getPosition().add(-deltaPosition, 0);
                     break;
             }
-            actor.setPosition(actor.getCollisionManager().newPosition(actor, newPosition));
+            return actor.getCollisionManager().newPosition(actor, newPosition);
         }
+        return actor.getPosition();
+    }
+
+    protected void applyNewPosition(Point2D newPosition) {// this method can be override in children
+        actor.setPosition(newPosition);
     }
 }
