@@ -21,9 +21,10 @@ import static java.lang.Math.round;
  */
 public class CollisionManager {
 
+    private World world;
     private List<Actor> actorList;
-
     private Set<Class<? extends Tile>> rideTiles = new HashSet<Class<? extends Tile>>();
+    private GameCell[][] gameCellList;
 
     {
         rideTiles.add(Ice.class);
@@ -31,15 +32,24 @@ public class CollisionManager {
         rideTiles.add(Empty.class);
     }
 
-
-    private GameCell[][] gameCellList;
-
     public CollisionManager(List<Actor> actorList, GameCell[][] gameCellList) {
         this.actorList = actorList;
         this.gameCellList = gameCellList;
     }
 
     public CollisionManager() {
+    }
+
+    private static boolean intersect(CollisionBounds a, CollisionBounds b) {
+        return (a.getyU() < b.getyF() || a.getyF() > b.getyU() || a.getxF() < b.getxU() || a.getxU() > b.getxF());
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
     }
 
     public List<Actor> getActorList() {
@@ -58,14 +68,9 @@ public class CollisionManager {
         this.gameCellList = gameCellList;
     }
 
-    private static boolean intersect(CollisionBounds a, CollisionBounds b) {
-        return (a.getyU() < b.getyF() || a.getyF() > b.getyU() || a.getxF() < b.getxU() || a.getxU() > b.getxF());
-    }
-
 //    var intersects = function ( a, b ) {
 //        return ( a.y < b.y1 || a.y1 > b.y || a.x1 < b.x || a.x > b.x1 );
 //    }
-
 
     //    public static Tile handleCollision(Tile curTile,Bullet bullet){
 //        if(curTile instanceof Brick){
@@ -76,16 +81,16 @@ public class CollisionManager {
 
         // find all cells between cur position and new position
 
-        Integer x = Integer.valueOf((int) round(actor.getPosition().getX()) / World.CELL_WIDTH);
-        Integer y = Integer.valueOf((int) round(actor.getPosition().getY()) / World.CELL_HEIGH);
-        Integer xn = Integer.valueOf((int) round(newPosition.getX()) / World.CELL_WIDTH);
-        Integer yn = Integer.valueOf((int) round(newPosition.getY()) / World.CELL_HEIGH);
+        Integer x = Integer.valueOf((int) round(actor.getPosition().getX()) / world.getCellWidth());
+        Integer y = Integer.valueOf((int) round(actor.getPosition().getY()) / world.getCellHeight());
+        Integer xn = Integer.valueOf((int) round(newPosition.getX()) / world.getCellWidth());
+        Integer yn = Integer.valueOf((int) round(newPosition.getY()) / world.getCellHeight());
 
 
-        x = Integer.valueOf((int) round(actor.getPosition().getX()) % World.CELL_WIDTH) == 0 ? x + 1 : x;
-        y = Integer.valueOf((int) round(actor.getPosition().getY()) % World.CELL_HEIGH) == 0 ? y - 1 : y;
-        xn = Integer.valueOf((int) round(newPosition.getX()) % World.CELL_WIDTH) == 0 ? xn + 1 : xn;
-        yn = Integer.valueOf((int) round(newPosition.getY()) % World.CELL_HEIGH) == 0 ? yn - 1 : yn;
+        x = Integer.valueOf((int) round(actor.getPosition().getX()) % world.getCellWidth()) == 0 ? x + 1 : x;
+        y = Integer.valueOf((int) round(actor.getPosition().getY()) % world.getCellHeight()) == 0 ? y - 1 : y;
+        xn = Integer.valueOf((int) round(newPosition.getX()) % world.getCellWidth()) == 0 ? xn + 1 : xn;
+        yn = Integer.valueOf((int) round(newPosition.getY()) % world.getCellHeight()) == 0 ? yn - 1 : yn;
 
         Integer stopx = null;
         Integer stopy = null;
@@ -166,7 +171,7 @@ public class CollisionManager {
             }
         }
         if (stopx != null) {
-            return new Point2D(stopx * World.CELL_WIDTH, stopy * World.CELL_HEIGH);
+            return new Point2D(stopx * world.getCellWidth(), stopy * world.getCellHeight());
         } else {
             return newPosition;
         }

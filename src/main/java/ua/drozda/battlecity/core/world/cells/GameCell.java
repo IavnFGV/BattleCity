@@ -1,5 +1,6 @@
 package ua.drozda.battlecity.core.world.cells;
 
+import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.core.collisions.CollisionBounds;
 import ua.drozda.battlecity.core.interfaces.Togglable;
 import ua.drozda.battlecity.core.tiles.Tile;
@@ -16,8 +17,25 @@ public class GameCell extends Observable implements Togglable<GameCell> {
     private Long lastUpdate = 0l;
     private CellState state;
     private Tile tile;
-
+    private World world;
     private CollisionBounds collisionBounds;
+
+    public GameCell(World world, int x, int y, Tile tile) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.tile = tile;
+        collisionBounds = new CollisionBounds(world, x, y);
+        state = CellState.getCellState(tile.getClass());// todo shit
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
 
     public CollisionBounds getCollisionBounds() {
         return collisionBounds;
@@ -39,7 +57,6 @@ public class GameCell extends Observable implements Togglable<GameCell> {
         return lastUpdate;
     }
 
-
     public void setLastUpdate(Long lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
@@ -58,14 +75,6 @@ public class GameCell extends Observable implements Togglable<GameCell> {
 
     public void setY(int y) {
         this.y = y;
-    }
-
-    public GameCell(int x, int y, Tile tile) {
-        this.x = x;
-        this.y = y;
-        this.tile = tile;
-        collisionBounds = new CollisionBounds(x, y);
-        state = CellState.getCellState(tile.getClass());// todo shit
     }
 
     public GameCell toggle(Object o) throws Exception {

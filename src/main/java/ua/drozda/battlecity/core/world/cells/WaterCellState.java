@@ -12,7 +12,7 @@ public class WaterCellState extends CellState implements Togglable<Tile> {
 
     @Override
     public Tile toggle(Object o) throws Exception {
-        state = (state == 0) ? 1 : 0;
+        state = state % 3;
         return Tile.getTile(Water.class);
     }
 }

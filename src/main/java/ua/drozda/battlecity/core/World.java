@@ -42,7 +42,7 @@ public class World implements LoadableCells {
         cellHeight = 8 * gamePixel;
         cellWidth = 8 * gamePixel;
         worldWiddthPixel = worldWiddthCells * cellWidth;
-        worldHeightPixel = worldHeightPixel * cellHeight;
+        worldHeightPixel = worldHeightCells * cellHeight;
         actorHeightCells = 2;
         actorWidthCells = 2;
         actorHeightPixel = actorHeightCells * cellHeight;
@@ -182,7 +182,7 @@ public class World implements LoadableCells {
 
 
     public Boolean addCell(Integer x, Integer y, Tile tile) {
-        gameCells[y][x] = new GameCell(x, y, tile);
+        gameCells[y][x] = new GameCell(this, x, y, tile);
         return true;
     }
 

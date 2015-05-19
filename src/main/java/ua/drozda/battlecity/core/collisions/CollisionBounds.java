@@ -13,19 +13,22 @@ public class CollisionBounds {
     private int yF;
     private int xU;//Up
     private int yU;
+    private World world;
 
-    public CollisionBounds(int x, int y) {
-        this.xU = x * World.CELL_WIDTH;
-        this.xF = xU + World.CELL_WIDTH;
-        this.yU = y * World.CELL_HEIGH;
-        this.yF = yU + World.CELL_HEIGH;
+    public CollisionBounds(World world, int x, int y) {
+        this.world = world;
+        this.xU = x * world.getCellWidth();
+        this.xF = xU + world.getCellWidth();
+        this.yU = y * world.getCellHeight();
+        this.yF = yU + world.getCellHeight();
     }
 
-    public CollisionBounds(Actor actor) { //TODO WRONG
+    public CollisionBounds(World world, Actor actor) { //TODO WRONG
+        this.world = world;
         this.xU = (int) round(actor.getPosition().getX());
-        this.xF = xU + 2 * World.CELL_WIDTH;
+        this.xF = xU + 2 * world.getCellWidth();
         this.yU = (int) round(actor.getPosition().getY());
-        this.yF = yU - 2 * World.CELL_HEIGH;
+        this.yF = yU - 2 * world.getCellHeight();
 
     }
 

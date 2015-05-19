@@ -20,6 +20,13 @@ public class FxCell implements Observer {
         for (int i = 0; i < 5; i++) {
             rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX, FxWorld.brickZoneY + FxWorld.tileSize * i, 8, 8);
         }
+
+        spritesMap.put(Brick.class, rectangle2Ds);
+
+        rectangle2Ds = new Rectangle2D[3];
+        for (int i = 0; i < 3; i++) {
+            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX, FxWorld.waterZoneY + FxWorld.tileSize * i, 8, 8);
+        }
         spritesMap.put(Brick.class, rectangle2Ds);
     }
 

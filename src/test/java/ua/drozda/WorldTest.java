@@ -41,7 +41,7 @@ public class WorldTest {
         Tile testTile = Tile.getTile(Water.class);
         assertNotNull(testTile);
         System.out.println("testTile = " + testTile);
-        GameCell gameCell = new GameCell(0, 0, testTile);
+        GameCell gameCell = new GameCell(world, 0, 0, testTile);
         assertNotNull(gameCell);
         System.out.println("gameCell = " + gameCell);
         testComplete();
@@ -54,7 +54,7 @@ public class WorldTest {
         Tile testTile = Tile.getTile(Water.class);
         assertNotNull(testTile);
         System.out.println("testTile = " + testTile);
-        GameCell gameCell = new GameCell(0, 0, testTile);
+        GameCell gameCell = new GameCell(world, 0, 0, testTile);
         assertNotNull(gameCell);
         System.out.println("gameCell = " + gameCell);
         System.out.println("Making toggle");
@@ -93,7 +93,7 @@ public class WorldTest {
         Tile testTile = Tile.getTile(Water.class);
         assertNotNull(testTile);
         System.out.println("testTile = " + testTile);
-        GameCell gameCell = new GameCell(0, 0, testTile);
+        GameCell gameCell = new GameCell(world, 0, 0, testTile);
         assertNotNull(gameCell);
         System.out.println("gameCell = " + gameCell);
         TileObserver tileObserver = new TileObserver();

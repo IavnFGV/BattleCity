@@ -9,10 +9,15 @@ import java.io.InputStream;
  * Created by GFH on 18.05.2015.
  */
 public class FxWorld {
-    static Integer tileZoneX = 16 * 16;
-    static Integer brickZoneY = 8 * 8;
-    static Integer tileSize = 8;
-    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("fx/images/sprites.bmp");
+    static final Integer tileZoneX = 16 * 16;
+    static final Integer steelZoneY = 4 * 8;
+    static final Integer forestZoneY = 5 * 8;
+    static final Integer iceZoneY = 6 * 8;
+    static final Integer waterZoneY = 7 * 8;
+    static final Integer brickZoneY = 8 * 8;
+
+    static final Integer tileSize = 8;
+    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/sprites.png");
     static Image sprites = new Image(spritesStream);
     private World world;
 
