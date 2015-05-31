@@ -1,7 +1,7 @@
 package ua.drozda.battlecity.io;
 
+import ua.drozda.battlecity.core.TileType;
 import ua.drozda.battlecity.core.interfaces.LoadableCells;
-import ua.drozda.battlecity.core.tiles.*;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -13,15 +13,15 @@ import java.util.Map;
  * Created by GFH on 16.05.2015.
  */
 public class LevelLoader {
-    private static Map<Character, Class<? extends Tile>> map = new HashMap<Character, Class<? extends Tile>>();
+    private static Map<Character, TileType> map = new HashMap<Character, TileType>();
 
     static {
-        map.put('#', Brick.class);
-        map.put('@', Steel.class);
-        map.put('~', Water.class);
-        map.put('%', Forest.class);
-        map.put('-', Ice.class);
-        map.put('.', Empty.class);
+        map.put('#', TileType.BRICK);
+        map.put('@', TileType.STEEL);
+        map.put('~', TileType.WATER);
+        map.put('%', TileType.FOREST);
+        map.put('-', TileType.ICE);
+        map.put('.', TileType.EMPTY);
     }
 
     public static Boolean loadlevel(String level, LoadableCells world) throws Exception {
@@ -34,7 +34,7 @@ public class LevelLoader {
                 char[] chars = sCurrentLine.toCharArray();
                 Integer x = Integer.valueOf(0);
                 for (char c : chars) {
-                    world.addCell(x, y, Tile.getTile(map.get(c)));
+                    world.addCell(x, y, map.get(c));
                     System.out.print(c);
                     x++;
                 }

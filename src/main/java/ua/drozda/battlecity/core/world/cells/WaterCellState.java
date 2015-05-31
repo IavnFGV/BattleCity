@@ -1,18 +1,16 @@
 package ua.drozda.battlecity.core.world.cells;
 
+import ua.drozda.battlecity.core.TileType;
 import ua.drozda.battlecity.core.interfaces.Togglable;
-import ua.drozda.battlecity.core.tiles.Tile;
-import ua.drozda.battlecity.core.tiles.Water;
 
 /**
  * Created by GFH on 17.05.2015.
  */
-public class WaterCellState extends CellState implements Togglable<Tile> {
-
+public class WaterCellState extends CellState implements Togglable<TileType> {
 
     @Override
-    public Tile toggle(Object o) throws Exception {
-        state = state % 3;
-        return Tile.getTile(Water.class);
+    public TileType toggle(Object o) throws Exception {
+        state = ++state % 3;
+        return TileType.WATER;
     }
 }

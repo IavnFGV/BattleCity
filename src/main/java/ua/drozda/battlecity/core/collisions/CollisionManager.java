@@ -2,12 +2,9 @@ package ua.drozda.battlecity.core.collisions;
 
 
 import javafx.geometry.Point2D;
+import ua.drozda.battlecity.core.TileType;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.core.actors.Actor;
-import ua.drozda.battlecity.core.tiles.Empty;
-import ua.drozda.battlecity.core.tiles.Forest;
-import ua.drozda.battlecity.core.tiles.Ice;
-import ua.drozda.battlecity.core.tiles.Tile;
 import ua.drozda.battlecity.core.world.cells.GameCell;
 
 import java.util.HashSet;
@@ -23,13 +20,13 @@ public class CollisionManager {
 
     private World world;
     private List<Actor> actorList;
-    private Set<Class<? extends Tile>> rideTiles = new HashSet<Class<? extends Tile>>();
+    private Set<TileType> rideTiles = new HashSet<TileType>();
     private GameCell[][] gameCellList;
 
     {
-        rideTiles.add(Ice.class);
-        rideTiles.add(Forest.class);
-        rideTiles.add(Empty.class);
+        rideTiles.add(TileType.ICE);
+        rideTiles.add(TileType.FOREST);
+        rideTiles.add(TileType.EMPTY);
     }
 
     public CollisionManager(List<Actor> actorList, GameCell[][] gameCellList) {

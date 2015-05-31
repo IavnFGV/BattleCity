@@ -1,9 +1,10 @@
 package ua.drozda.battlecity.core;
 
 import ua.drozda.battlecity.core.actors.Actor;
+import ua.drozda.battlecity.core.collisions.CollisionBounds;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.LoadableCells;
-import ua.drozda.battlecity.core.tiles.Tile;
+import ua.drozda.battlecity.core.interfaces.Togglable;
 import ua.drozda.battlecity.core.world.cells.GameCell;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Created by GFH on 11.05.2015.
  */
-public class World implements LoadableCells {
+public class World implements LoadableCells, Togglable<Object> {
     private Integer gamePixel;
     private Integer worldWiddthCells;
     private Integer worldHeightCells;
@@ -47,23 +48,23 @@ public class World implements LoadableCells {
         actorWidthCells = 2;
         actorHeightPixel = actorHeightCells * cellHeight;
         actorWidthPixel = actorWidthCells * cellWidth;
-        gameCells = new GameCell[getWorldHeightCells()][getWorldWiddthCells()];
-    }
-
-    public Integer getWorldHeightCells() {
-        return worldHeightCells;
+        gameCells = new GameCell[getWorldWiddthCells()][getWorldHeightCells()];
     }
 
     public Integer getWorldWiddthCells() {
         return worldWiddthCells;
     }
 
-    public void setWorldWiddthCells(Integer worldWiddthCells) {
-        this.worldWiddthCells = worldWiddthCells;
+    public Integer getWorldHeightCells() {
+        return worldHeightCells;
     }
 
     public void setWorldHeightCells(Integer worldHeightCells) {
         this.worldHeightCells = worldHeightCells;
+    }
+
+    public void setWorldWiddthCells(Integer worldWiddthCells) {
+        this.worldWiddthCells = worldWiddthCells;
     }
 
     public Integer getWorldWiddthPixel() {
@@ -181,8 +182,9 @@ public class World implements LoadableCells {
     }
 
 
-    public Boolean addCell(Integer x, Integer y, Tile tile) {
-        gameCells[y][x] = new GameCell(this, x, y, tile);
+    public Boolean addCell(Integer x, Integer y, TileType tileType) {
+        gameCells[x][y] = new GameCell(x, y, tileType);
+        gameCells[x][y].setCollisionBounds(new CollisionBounds(this, x, y));
         return true;
     }
 
@@ -193,5 +195,15 @@ public class World implements LoadableCells {
                 ", gameCells=" + Arrays.deepToString(gameCells) +
                 ", collisionManager=" + collisionManager +
                 '}';
+    }
+
+    @Override
+    public Object toggle(Object o) throws Exception {
+        for (GameCell[] cells : gameCells) {
+            for (GameCell cell : cells) {
+                cell.toggle(null);
+            }
+        }
+        return o;
     }
 }

@@ -1,9 +1,8 @@
 package ua.drozda.battlecity.core.world.cells;
 
-import ua.drozda.battlecity.core.World;
+import ua.drozda.battlecity.core.TileType;
 import ua.drozda.battlecity.core.collisions.CollisionBounds;
 import ua.drozda.battlecity.core.interfaces.Togglable;
-import ua.drozda.battlecity.core.tiles.Tile;
 
 import java.util.Observable;
 
@@ -16,26 +15,32 @@ public class GameCell extends Observable implements Togglable<GameCell> {
     private Long toggleTick = 0l;
     private Long lastUpdate = 0l;
     private CellState state;
-    private Tile tile;
-    private World world;
+    private TileType tile;
+    //  private World world;
     private CollisionBounds collisionBounds;
 
-    public GameCell(World world, int x, int y, Tile tile) {
-        this.world = world;
+    public GameCell(int x, int y, TileType tile) {
         this.x = x;
         this.y = y;
         this.tile = tile;
-        collisionBounds = new CollisionBounds(world, x, y);
-        state = CellState.getCellState(tile.getClass());// todo shit
+        state = CellState.getCellState(tile);
     }
 
-    public World getWorld() {
-        return world;
+    public CellState getState() {
+        return state;
     }
 
-    public void setWorld(World world) {
-        this.world = world;
+    public void setState(CellState state) {
+        this.state = state;
     }
+
+//    public World getWorld() {
+//        return world;
+//    }
+//
+//    public void setWorld(World world) {
+//        this.world = world;
+//    }
 
     public CollisionBounds getCollisionBounds() {
         return collisionBounds;
@@ -45,11 +50,11 @@ public class GameCell extends Observable implements Togglable<GameCell> {
         this.collisionBounds = collisionBounds;
     }
 
-    public Tile getTile() {
+    public TileType getTile() {
         return tile;
     }
 
-    public void setTile(Tile tile) {
+    public void setTile(TileType tile) {
         this.tile = tile;
     }
 
@@ -84,7 +89,7 @@ public class GameCell extends Observable implements Togglable<GameCell> {
         }
         if (state instanceof Togglable) {
             toggleTick++;
-            tile = (Tile) ((Togglable) state).toggle(parameter); // todo maybe check changed of State??
+            tile = (TileType) ((Togglable) state).toggle(parameter); // todo maybe check changed of State??
             this.setChanged();
             this.notifyObservers();
         }
