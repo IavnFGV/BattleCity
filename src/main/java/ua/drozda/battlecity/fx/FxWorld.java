@@ -13,19 +13,26 @@ import java.util.List;
  * Created by GFH on 18.05.2015.
  */
 public class FxWorld implements LoadableCells {
-    static final Integer tileZoneX = 16 * 16;
-    static final Integer steelZoneY = 4 * 8;
-    static final Integer forestZoneY = 5 * 8;
-    static final Integer iceZoneY = 6 * 8;
-    static final Integer waterZoneY = 7 * 8;
-    static final Integer brickZoneY = 8 * 8;
-    static final Integer emptyZoneY = 11 * 8;
-
 
     static final Integer tileSize = 8;
+    static final Integer tankSize = 16;
+
+    static final Integer tileZoneX = 16 * 16;
+    static final Integer firstPlayerZoneX = 0 * tankSize;
+    static final Integer firstPlayerZoneY = 0 * tankSize;
+
+    static final Integer steelZoneY = 4 * tileSize;
+    static final Integer forestZoneY = 5 * tileSize;
+    static final Integer iceZoneY = 6 * tileSize;
+    static final Integer waterZoneY = 7 * tileSize;
+    static final Integer brickZoneY = 8 * tileSize;
+    static final Integer emptyZoneY = 11 * tileSize;
+
+
     private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/sprites.png");
     static Image sprites = new Image(spritesStream);
     List<FxCell> cellList = new ArrayList<>();
+    private FxTank firstPlayerTank;
     private World world;
 
     public FxWorld() {
@@ -35,6 +42,15 @@ public class FxWorld implements LoadableCells {
     public FxWorld(Integer ratio) {
         world = new World(ratio);
         world.initializeWorld();
+        firstPlayerTank = new FxTank(world.getPlayerTanks().get(0));
+    }
+
+    public FxTank getFirstPlayerTank() {
+        return firstPlayerTank;
+    }
+
+    public void setFirstPlayerTank(FxTank firstPlayerTank) {
+        this.firstPlayerTank = firstPlayerTank;
     }
 
     public World getWorld() {
@@ -49,7 +65,7 @@ public class FxWorld implements LoadableCells {
     public Boolean addCell(Integer x, Integer y, TileType tileType) {
         Boolean result = false;
         if (world.addCell(x, y, tileType)) {
-            FxCell fxCell = new FxCell(x, y, world, world.getGameCells()[x][y]);
+            FxCell fxCell = new FxCell(x, y, world.getGameCells()[x][y]);
             cellList.add(fxCell);
             result = true;
         }

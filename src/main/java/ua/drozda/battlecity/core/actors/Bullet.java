@@ -32,7 +32,7 @@ public class Bullet extends Actor {
 
     @Override
     protected ActorState getIntialState() {
-        return ActorState.STATE_ALIVE;
+        return ActorState.STATE_ALIVE_0;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ua.drozda.battlecity.core.actors;
 
+import ua.drozda.battlecity.core.TankType;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 
 /**
@@ -9,6 +10,15 @@ public class PlayerTank extends Tank {
 
     public PlayerTank(CollisionManager collisionManager) {
         super(collisionManager);
+
+    }
+
+    public PlayerTank(CollisionManager collisionManager, TankType tankType) {
+        super(collisionManager, tankType);
+    }
+
+    public PlayerTank(Double velocity, CollisionManager collisionManager, TankType tankType) {
+        super(velocity, collisionManager, tankType);
     }
 
     public PlayerTank(Double velocity, CollisionManager collisionManager) {

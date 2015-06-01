@@ -31,6 +31,7 @@ public class MainFXApplication extends Application {
         for (FxCell fxCell : fxWorld.cellList) {
             root.getChildren().add(fxCell.getImageView());
         }
+        root.getChildren().add(fxWorld.getFirstPlayerTank().getImageView());
         //  root.getChildren().add(fxWorld.cellList.get(54).getImageView());
 
 //        InputStream inputStreamSprites = MainFXApplication.class.getResourceAsStream
@@ -62,6 +63,7 @@ public class MainFXApplication extends Application {
                 try {
                     if (now - toggleCount >= 500000000l) {
                         fxWorld.getWorld().toggle(null);
+                        fxWorld.getFirstPlayerTank().getTank().toggle(null);
                         toggleCount = now;
                     }
                 } catch (Exception e) {

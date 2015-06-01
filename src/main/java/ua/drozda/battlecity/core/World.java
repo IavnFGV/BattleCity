@@ -1,6 +1,7 @@
 package ua.drozda.battlecity.core;
 
 import ua.drozda.battlecity.core.actors.Actor;
+import ua.drozda.battlecity.core.actors.PlayerTank;
 import ua.drozda.battlecity.core.collisions.CollisionBounds;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.LoadableCells;
@@ -15,6 +16,8 @@ import java.util.List;
  * Created by GFH on 11.05.2015.
  */
 public class World implements LoadableCells, Togglable<Object> {
+    public static final Long TIME_IN_SPAWNING = 500000000L;
+    public static final Long TIME_IN_FRIENDLY_FIRE = 3000000000L;
     private Integer gamePixel;
     private Integer worldWiddthCells;
     private Integer worldHeightCells;
@@ -23,13 +26,14 @@ public class World implements LoadableCells, Togglable<Object> {
     private Integer cellWidth;
     private Integer worldHeightPixel;
     private Integer worldWiddthPixel;
-    private Integer actorWidthPixel;
-    private Integer actorWidthCells;
-    private Integer actorHeightPixel;
-    private Integer actorHeightCells;
+    private Integer tankWidthPixel;
+    private Integer tankWidthCells;
+    private Integer tankHeightPixel;
+    private Integer tankHeightCells;
     private List<Actor> actorList = new ArrayList<Actor>();
     private GameCell[][] gameCells;
     private CollisionManager collisionManager;
+    private List<PlayerTank> playerTanks = new ArrayList<PlayerTank>();
 
     public World() {
         this(1);
@@ -44,10 +48,10 @@ public class World implements LoadableCells, Togglable<Object> {
         cellWidth = 8 * gamePixel;
         worldWiddthPixel = worldWiddthCells * cellWidth;
         worldHeightPixel = worldHeightCells * cellHeight;
-        actorHeightCells = 2;
-        actorWidthCells = 2;
-        actorHeightPixel = actorHeightCells * cellHeight;
-        actorWidthPixel = actorWidthCells * cellWidth;
+        tankHeightCells = 2;
+        tankWidthCells = 2;
+        tankHeightPixel = tankHeightCells * cellHeight;
+        tankWidthPixel = tankWidthCells * cellWidth;
         gameCells = new GameCell[getWorldWiddthCells()][getWorldHeightCells()];
     }
 
@@ -67,6 +71,14 @@ public class World implements LoadableCells, Togglable<Object> {
         this.worldWiddthCells = worldWiddthCells;
     }
 
+    public List<PlayerTank> getPlayerTanks() {
+        return playerTanks;
+    }
+
+    public void setPlayerTanks(List<PlayerTank> playerTanks) {
+        this.playerTanks = playerTanks;
+    }
+
     public Integer getWorldWiddthPixel() {
         return worldWiddthPixel;
     }
@@ -75,36 +87,36 @@ public class World implements LoadableCells, Togglable<Object> {
         this.worldWiddthPixel = worldWiddthPixel;
     }
 
-    public Integer getActorWidthPixel() {
-        return actorWidthPixel;
+    public Integer getTankWidthPixel() {
+        return tankWidthPixel;
     }
 
-    public void setActorWidthPixel(Integer actorWidthPixel) {
-        this.actorWidthPixel = actorWidthPixel;
+    public void setTankWidthPixel(Integer tankWidthPixel) {
+        this.tankWidthPixel = tankWidthPixel;
     }
 
-    public Integer getActorWidthCells() {
-        return actorWidthCells;
+    public Integer getTankWidthCells() {
+        return tankWidthCells;
     }
 
-    public void setActorWidthCells(Integer actorWidthCells) {
-        this.actorWidthCells = actorWidthCells;
+    public void setTankWidthCells(Integer tankWidthCells) {
+        this.tankWidthCells = tankWidthCells;
     }
 
-    public Integer getActorHeightPixel() {
-        return actorHeightPixel;
+    public Integer getTankHeightPixel() {
+        return tankHeightPixel;
     }
 
-    public void setActorHeightPixel(Integer actorHeightPixel) {
-        this.actorHeightPixel = actorHeightPixel;
+    public void setTankHeightPixel(Integer tankHeightPixel) {
+        this.tankHeightPixel = tankHeightPixel;
     }
 
-    public Integer getActorHeightCells() {
-        return actorHeightCells;
+    public Integer getTankHeightCells() {
+        return tankHeightCells;
     }
 
-    public void setActorHeightCells(Integer actorHeightCells) {
-        this.actorHeightCells = actorHeightCells;
+    public void setTankHeightCells(Integer tankHeightCells) {
+        this.tankHeightCells = tankHeightCells;
     }
 
     public List<Actor> getActorList() {
@@ -174,7 +186,7 @@ public class World implements LoadableCells, Togglable<Object> {
     public void initializeWorld() {
         World world = new World();
         collisionManager = new CollisionManager(world.actorList, world.gameCells);
-
+        playerTanks.add(new PlayerTank(collisionManager, TankType.FirstPlayer));
     }
 
     public void loadLevel() {

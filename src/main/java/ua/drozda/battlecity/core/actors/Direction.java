@@ -5,7 +5,7 @@ package ua.drozda.battlecity.core.actors;
  */
 public enum Direction {
     UP,
-    RIGHT,
+    LEFT,
     DOWN,
-    LEFT
+    RIGHT;
 }

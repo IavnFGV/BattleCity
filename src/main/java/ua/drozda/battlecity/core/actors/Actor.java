@@ -11,31 +11,27 @@ import java.util.Observer;
 /**
  * Created by GFH on 12.05.2015.
  */
-public abstract class Actor implements Togglable<Actor>, Observer { // observable too through    private ObservableProxy observableProxy = new ObservableProxy();
+public abstract class Actor extends Observable implements Togglable<Actor>, Observer { // observable too through    private
+// ObservableProxy observableProxy = new ObservableProxy();
 
 
-    protected Integer heartState;
-    protected Long remainTimeInState;
+    protected Integer heartState = 0;
+    protected Long changeStateTime;
     protected ActorState actorState;
     private CollisionManager collisionManager;
     private MoveStrategy<? extends Actor> moveStrategy;
     private boolean pause;
     private Double velocity;
     private Integer acceleration;
-    private Direction direction;
+    private Direction direction = Direction.UP;
     private long lastUpdate;
     private long deltaTime;
     private Point2D position = Point2D.ZERO;
     private CollisionBounds collisionBounds;
-    private ObservableProxy observableProxy = new ObservableProxy();
-    private volatile Boolean ready; /*  true after Observer.Update()
-                                        false after ObservableProxy.notifyObservers()*/
-
     public Actor(Double velocity, CollisionManager collisionManager) {
         this(collisionManager);
         this.velocity = velocity;
     }
-
     public Actor(CollisionManager collisionManager) {
         super();
         setCollisionManager(collisionManager);
@@ -44,6 +40,14 @@ public abstract class Actor implements Togglable<Actor>, Observer { // observabl
 
     protected ActorState getIntialState() {
         return ActorState.STATE_SPAWNING;
+    }
+
+    public Integer getHeartState() {
+        return heartState;
+    }
+
+    public void setHeartState(Integer heartState) {
+        this.heartState = heartState;
     }
 
     public CollisionBounds getCollisionBounds() {
@@ -99,7 +103,6 @@ public abstract class Actor implements Togglable<Actor>, Observer { // observabl
     }
 
     public void setActorState(ActorState actorState) {
-        remainTimeInState = ActorState.getTimeInState(actorState);
         this.actorState = actorState;
     }
 
@@ -121,7 +124,17 @@ public abstract class Actor implements Togglable<Actor>, Observer { // observabl
             }
             if (!pause) {
                 deltaTime = command.getNanoseconds() - lastUpdate;
-                setRemainTimeInState(getRemainTimeInState() - deltaTime);
+                ActorState.ActorStateHelper helper = new ActorState.ActorStateHelper();
+                helper.setRemainTime(this.changeStateTime);
+                helper.setNextState(actorState);
+                helper.setFriendBullet(command.isFriendBullet());
+                helper.setBullet(command.isBullet());
+                actorState.nextState(helper);
+                if (!actorState.equals(helper.getNextState())) {
+                    actorState = helper.getNextState();
+                    changeStateTime = command.getNanoseconds();
+                }
+
                 if (command.getDirection() == null) {
                     velocity = 0.;
                 } else {
@@ -132,7 +145,7 @@ public abstract class Actor implements Togglable<Actor>, Observer { // observabl
                         velocity = command.getVelocity();
                     }
                 }
-                ready = true;
+                setChanged();
                 this.calc();
                 this.notifyObservers();
             }
@@ -140,29 +153,8 @@ public abstract class Actor implements Togglable<Actor>, Observer { // observabl
         }
     }
 
-    public Long getRemainTimeInState() {
-        return remainTimeInState;
-    }
-
-    public void setRemainTimeInState(Long remainTimeInState) {
-        if (remainTimeInState <= 0) {
-            actorState = ActorState.nextState(actorState);
-        } else {
-            this.remainTimeInState = remainTimeInState;
-        }
-
-    }
-
     protected void calc() {
         getMoveStrategy().performMove();
-    }
-
-    public void notifyObservers() {
-        if (ready) {
-            observableProxy.setChanged();
-            observableProxy.notifyObservers(this);
-            ready = false;
-        }
     }
 
     public MoveStrategy<? extends Actor> getMoveStrategy() {
@@ -171,10 +163,6 @@ public abstract class Actor implements Togglable<Actor>, Observer { // observabl
 
     public void setMoveStrategy(MoveStrategy<? extends Actor> moveStrategy) {
         this.moveStrategy = moveStrategy;
-    }
-
-    public void addObserver(Observer o) {
-        observableProxy.addObserver(o);
     }
 
     public Point2D getPosition() {
@@ -189,28 +177,15 @@ public abstract class Actor implements Togglable<Actor>, Observer { // observabl
         if (pause) {
             return this;
         }
-        if (velocity != 0) {
+        //      if (velocity != 0) {
             nextToggle();
-        }
+        //      }
+        this.setChanged();
+        this.notifyObservers();
         return this;
     }
 
     public abstract void nextToggle();
 
-    public class ObservableProxy extends Observable {
 
-        public ObservableProxy() {
-            super();
-
-        }
-
-        @Override
-        public synchronized void setChanged() {
-            super.setChanged();
-        }
-
-        public Actor getActor() {
-            return Actor.this;
-        }
-    }
 }

@@ -9,12 +9,13 @@ import java.util.EnumSet;
  */
 public class MoveStrategy<T extends Actor> {
 
-    protected static EnumSet<ActorState> movingStates = EnumSet.of(ActorState.STATE_ALIVE);
+    protected static EnumSet<ActorState> movingStates = EnumSet.of(ActorState.STATE_ALIVE_0); //todo more states
     private T actor;
 
     public MoveStrategy(T actor) {
         this.actor = actor;
     }
+
 
     public T getActor() {
         return actor;
