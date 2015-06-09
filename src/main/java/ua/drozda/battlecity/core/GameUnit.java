@@ -15,6 +15,7 @@ import java.util.Observable;
  * it has Bounds (in classical game pixels)
  */
 public abstract class GameUnit extends Observable {
+    private static Boolean pause = false;
     private static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
 
     static {
@@ -30,17 +31,20 @@ public abstract class GameUnit extends Observable {
     protected Boolean blockCurrentState = false;
     protected Long lastHeartBeat;
     protected Long lives = 0L;
-
+    protected BasicHeartBeatStrategy heartBeatStrategy;
     public GameUnit(double x, double y, double width, double height, Long lives, Long currentTime) {
         this(x, y, width, height, lives, currentTime, BasicState.CREATING);
     }
-
     public GameUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState currentBasicState) {
         this.bounds = new BoundingBox(x, y, width, height);
         this.lives = lives;
         this.timeChangeBasicState = currentTime;
         this.lastHeartBeat = currentTime;
         this.currentBasicState = currentBasicState;
+    }
+
+    public static void setPause(Boolean pause) {
+        GameUnit.pause = pause;
     }
 
     public void decLives(Long lives) {
@@ -51,18 +55,17 @@ public abstract class GameUnit extends Observable {
     }
 
     public void heartBeat(Long now) {
-        if (!blockCurrentState && getTimeInState(currentBasicState) > 0) { // so we can tick time
-            if ((now - timeChangeBasicState) > getTimeInState(currentBasicState)) {
-                timeChangeBasicState = now;
-                if (currentBasicState == BasicState.CREATING) {
-                    currentBasicState = BasicState.ACTIVE;
-                } else {
-                    currentBasicState = BasicState.DEAD;
-                }
-                setChanged();
-                notifyObservers();
-            }
+        if (this.heartBeatStrategy == null) {
+            this.heartBeatStrategy = this.new BasicHeartBeatStrategy();
         }
+        if (!isPause()) {
+            heartBeatStrategy.perform(now);
+        }
+        notifyObservers();
+    }
+
+    public static Boolean isPause() {
+        return pause;
     }
 
     protected Long getTimeInState(BasicState state) {
@@ -114,5 +117,26 @@ public abstract class GameUnit extends Observable {
         ACTIVE,
         EXPLODING,
         DEAD;
+    }
+
+    protected class BasicHeartBeatStrategy {
+
+        public void perform(Long now) {
+            changeBasicState(now);
+        }
+
+        public void changeBasicState(Long now) {
+            if (!blockCurrentState && getTimeInState(currentBasicState) > 0) { // so we can tick time
+                if ((now - timeChangeBasicState) > getTimeInState(currentBasicState)) {//TODO correct time count
+                    timeChangeBasicState = now;
+                    if (currentBasicState == BasicState.CREATING) {
+                        currentBasicState = BasicState.ACTIVE;
+                    } else {
+                        currentBasicState = BasicState.DEAD;
+                    }
+                    setChanged();
+                }
+            }
+        }
     }
 }
