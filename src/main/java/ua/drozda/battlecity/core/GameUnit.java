@@ -6,6 +6,7 @@ import javafx.geometry.Bounds;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Observable;
+import java.util.function.Function;
 
 /**
  * Created by GFH on 08.06.2015.
@@ -18,6 +19,7 @@ public abstract class GameUnit extends Observable {
     private static Boolean pause = false;
     private static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
 
+
     static {
         timeInState.put(BasicState.CREATING, 500000000L);
         timeInState.put(BasicState.ACTIVE, 0L);
@@ -26,50 +28,54 @@ public abstract class GameUnit extends Observable {
     }
 
     protected Bounds bounds;
-    protected Long timeChangeBasicState = 0L;//
+    protected Long leftTimeInBasicState = 0L;//
     protected BasicState currentBasicState;
     protected Boolean blockCurrentState = false;
     protected Long lastHeartBeat;
-    protected Long lives = 0L;
+    protected Long lifes = 0L;
     protected BasicHeartBeatStrategy heartBeatStrategy;
-    public GameUnit(double x, double y, double width, double height, Long lives, Long currentTime) {
-        this(x, y, width, height, lives, currentTime, BasicState.CREATING);
+    protected Function<GameUnit, Boolean> registrateAction;
+    protected Function<GameUnit, Boolean> unRegistrateAction;
+
+    public GameUnit(double x, double y, double width, double height, Long lifes, Long currentTime, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
+        this(x, y, width, height, lifes, currentTime, BasicState.CREATING, registerAction, unRegisterAction);
     }
-    public GameUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState currentBasicState) {
-        this.bounds = new BoundingBox(x, y, width, height);
-        this.lives = lives;
-        this.timeChangeBasicState = currentTime;
-        this.lastHeartBeat = currentTime;
-        this.currentBasicState = currentBasicState;
+
+    public GameUnit(double x, double y, double width, double height, Long lifes, Long currentTime, BasicState
+            currentBasicState, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
+        this.setBounds(new BoundingBox(x, y, width, height));
+        this.setLifes(lifes);
+        this.setLastHeartBeat(currentTime);
+        this.setCurrentBasicState(currentBasicState);
+        this.setRegistrateAction(registerAction);
+        this.setUnRegistrateAction(unRegisterAction);
+        registrateAction.apply(this);
+        //   unitList.add(this);
     }
 
     public static void setPause(Boolean pause) {
-        GameUnit.pause = pause;
+        GameUnit.setPause(pause);
     }
 
-    public void decLives(Long lives) {
-        this.lives -= lives;
-        if (this.lives <= 0) {
-            setCurrentBasicState(BasicState.EXPLODING);
-        }
+    public Function<GameUnit, Boolean> getRegistrateAction() {
+        return registrateAction;
     }
 
-    public void heartBeat(Long now) {
-        if (this.heartBeatStrategy == null) {
-            this.heartBeatStrategy = this.new BasicHeartBeatStrategy();
-        }
-        if (!isPause()) {
-            heartBeatStrategy.perform(now);
-        }
-        notifyObservers();
+    public void setRegistrateAction(Function<GameUnit, Boolean> registrateAction) {
+        this.registrateAction = registrateAction;
     }
 
-    public static Boolean isPause() {
-        return pause;
+    public Function<GameUnit, Boolean> getUnRegistrateAction() {
+        return unRegistrateAction;
     }
 
-    protected Long getTimeInState(BasicState state) {
-        return timeInState.get(state);
+    public void setUnRegistrateAction(Function<GameUnit, Boolean> unRegistrateAction) {
+        this.unRegistrateAction = unRegistrateAction;
+    }
+
+    public void scale(Integer x, Integer y) {
+        setBounds(new BoundingBox(getBounds().getMinX() * x, getBounds().getMinY() * y,
+                getBounds().getWidth() * x, getBounds().getHeight() * y));
     }
 
     public Bounds getBounds() {
@@ -80,28 +86,47 @@ public abstract class GameUnit extends Observable {
         this.bounds = bounds;
     }
 
-    public Long getTimeChangeBasicState() {
-        return timeChangeBasicState;
+    public void decLifes(Long lifes) {
+        Long newLifes = this.getLifes() - lifes;
+        this.setLifes(newLifes);
     }
 
-    public void setTimeChangeBasicState(Long timeChangeBasicState) {
-        this.timeChangeBasicState = timeChangeBasicState;
+    public Long getLifes() {
+        return lifes;
     }
 
-    public BasicState getCurrentBasicState() {
-        return currentBasicState;
+    public void setLifes(Long lifes) {
+        this.lifes = lifes;
+        if (this.lifes <= 0) {
+            setCurrentBasicState(BasicState.EXPLODING);
+        }
     }
 
-    public void setCurrentBasicState(BasicState currentBasicState) {
-        this.currentBasicState = currentBasicState;
+    protected Long getTimeInState(BasicState state) {
+        return timeInState.get(state);
     }
 
-    public Boolean isBlockCurrentState() {
-        return blockCurrentState;
+    public void heartBeat(Long now) {
+        if (!isPause()) {
+            getHeartBeatStrategy().perform(now - getLastHeartBeat());
+        }
+        setLastHeartBeat(now);
+        notifyObservers();
     }
 
-    public void setBlockCurrentState(Boolean blockCurrentState) {
-        this.blockCurrentState = blockCurrentState;
+    public static Boolean isPause() {
+        return pause;
+    }
+
+    public BasicHeartBeatStrategy getHeartBeatStrategy() {
+        if (this.heartBeatStrategy == null) {
+            this.setHeartBeatStrategy(this.new BasicHeartBeatStrategy());
+        }
+        return heartBeatStrategy;
+    }
+
+    public void setHeartBeatStrategy(BasicHeartBeatStrategy heartBeatStrategy) {
+        this.heartBeatStrategy = heartBeatStrategy;
     }
 
     public Long getLastHeartBeat() {
@@ -110,6 +135,35 @@ public abstract class GameUnit extends Observable {
 
     public void setLastHeartBeat(Long lastHeartBeat) {
         this.lastHeartBeat = lastHeartBeat;
+    }
+
+    public Long getLeftTimeInBasicState() {
+        return leftTimeInBasicState;
+    }
+
+    public void setLeftTimeInBasicState(Long leftTimeInBasicState) {
+        this.leftTimeInBasicState = leftTimeInBasicState;
+    }
+
+    public BasicState getCurrentBasicState() {
+        return currentBasicState;
+    }
+
+    public void setCurrentBasicState(BasicState currentBasicState) {
+        this.currentBasicState = currentBasicState;
+        this.setLeftTimeInBasicState(getTimeInState(currentBasicState));
+        if (currentBasicState == BasicState.DEAD) {
+            unRegistrateAction.apply(this);
+            //      GameUnit.unitList.remove(this);
+        }
+    }
+
+    public Boolean isBlockCurrentState() {
+        return blockCurrentState;
+    }
+
+    public void setBlockCurrentState(Boolean blockCurrentState) {
+        this.blockCurrentState = blockCurrentState;
     }
 
     public enum BasicState {
@@ -121,18 +175,18 @@ public abstract class GameUnit extends Observable {
 
     protected class BasicHeartBeatStrategy {
 
-        public void perform(Long now) {
-            changeBasicState(now);
+        public void perform(Long deltaTime) {
+            changeBasicState(deltaTime);
         }
 
-        public void changeBasicState(Long now) {
-            if (!blockCurrentState && getTimeInState(currentBasicState) > 0) { // so we can tick time
-                if ((now - timeChangeBasicState) > getTimeInState(currentBasicState)) {//TODO correct time count
-                    timeChangeBasicState = now;
-                    if (currentBasicState == BasicState.CREATING) {
-                        currentBasicState = BasicState.ACTIVE;
+        public void changeBasicState(Long deltaTime) {
+            if (!isBlockCurrentState() && getTimeInState(currentBasicState) > 0) { // so we can tick time
+                setLeftTimeInBasicState(getLeftTimeInBasicState() - deltaTime);
+                if ((getLeftTimeInBasicState()) <= 0) {
+                    if (getCurrentBasicState() == BasicState.CREATING) {
+                        setCurrentBasicState(BasicState.ACTIVE);
                     } else {
-                        currentBasicState = BasicState.DEAD;
+                        setCurrentBasicState(BasicState.DEAD);
                     }
                     setChanged();
                 }

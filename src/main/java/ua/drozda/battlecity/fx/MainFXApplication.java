@@ -6,32 +6,48 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.io.LevelLoader;
 
 /**
  * Created by GFH on 17.05.2015.
  */
 public class MainFXApplication extends Application {
+
+    World world = new World();
     FxWorld fxWorld = new FxWorld();
+
     Long toggleCount = 0l;
+
     public static void main(String[] args) throws Exception {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // world;
-
+        LevelLoader.loadlevel("20", world);
+        fxWorld.setWorld(world);
         Group root = new Group();
         Scene scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel(), fxWorld.getWorld().getWorldHeightPixel(), Color
                 .BLACK);
-
-
-        LevelLoader.loadlevel("20", fxWorld);
-        for (FxCell fxCell : fxWorld.cellList) {
-            root.getChildren().add(fxCell.getImageView());
+        for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
+            root.getChildren().add(fxGameUnit.getImageView());
         }
-        root.getChildren().add(fxWorld.getFirstPlayerTank().getImageView());
+        AnimationTimer toggleAnimationTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                try {
+                    if (now - toggleCount >= 500000000l) {
+                        fxWorld.toggle(null);
+                        toggleCount = now;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        //root.getChildren().add(fxWorld.getFirstPlayerTank().getImageView());
         //  root.getChildren().add(fxWorld.cellList.get(54).getImageView());
 
 //        InputStream inputStreamSprites = MainFXApplication.class.getResourceAsStream
@@ -57,18 +73,18 @@ public class MainFXApplication extends Application {
         //   iv1.setSmooth(false);
         //   iv1.setCache(true);
         //    final Integer tick = 0;
-        AnimationTimer animationTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                try {
-                    if (now - toggleCount >= 500000000l) {
-                        fxWorld.getWorld().toggle(null);
-                        fxWorld.getFirstPlayerTank().getTank().toggle(null);
-                        toggleCount = now;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//        AnimationTimer animationTimer = new AnimationTimer() {
+//            @Override
+//            public void handle(long now) {
+//                try {
+//                    if (now - toggleCount >= 500000000l) {
+//                        fxWorld.getWorld().toggle(null);
+//                        fxWorld.getFirstPlayerTank().getTank().toggle(null);
+//                        toggleCount = now;
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
 //                if ((now % 1000000000) != 0) {
 //                    if (iv1.getViewport() == viewportRect1) {
 //                        iv1.setViewport(viewportRect2);
@@ -76,16 +92,17 @@ public class MainFXApplication extends Application {
 //                    } else {
 //                        iv1.setViewport(viewportRect1);
 //                        //        iv1.setTranslateX(0);
-            }
+        //   }
 //                }
-            //        }
-        };
+        //        }
+        //    };
         //     iv1.setViewport(viewportRect2);
         //     iv2.setViewport(viewportRect1);
-        animationTimer.start();
-        fxWorld.getWorld().toggle(null);
-        fxWorld.getWorld().toggle(null);
-        fxWorld.getWorld().toggle(null);
+        //    animationTimer.start();
+        //     fxWorld.getWorld().toggle(null);
+        //     fxWorld.getWorld().toggle(null);
+        //     fxWorld.getWorld().toggle(null);
+        toggleAnimationTimer.start();
         primaryStage.setTitle("JavaFX Scene Graph Demo");
         primaryStage.setScene(scene);
         primaryStage.show();

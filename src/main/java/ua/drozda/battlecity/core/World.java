@@ -1,23 +1,15 @@
 package ua.drozda.battlecity.core;
 
-import ua.drozda.battlecity.core.actors.Actor;
-import ua.drozda.battlecity.core.actors.PlayerTank;
-import ua.drozda.battlecity.core.collisions.CollisionBounds;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.LoadableCells;
-import ua.drozda.battlecity.core.interfaces.Togglable;
-import ua.drozda.battlecity.core.world.cells.GameCell;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by GFH on 11.05.2015.
  */
-public class World implements LoadableCells, Togglable<Object> {
-    public static final Long TIME_IN_SPAWNING = 500000000L;
-    public static final Long TIME_IN_FRIENDLY_FIRE = 3000000000L;
+public class World implements LoadableCells {
     private Integer gamePixel;
     private Integer worldWiddthCells;
     private Integer worldHeightCells;
@@ -30,10 +22,9 @@ public class World implements LoadableCells, Togglable<Object> {
     private Integer tankWidthCells;
     private Integer tankHeightPixel;
     private Integer tankHeightCells;
-    private List<Actor> actorList = new ArrayList<Actor>();
-    private GameCell[][] gameCells;
     private CollisionManager collisionManager;
-    private List<PlayerTank> playerTanks = new ArrayList<PlayerTank>();
+
+    private List<GameUnit> unitList = new ArrayList<>(); // all units will be here
 
     public World() {
         this(1);
@@ -52,11 +43,46 @@ public class World implements LoadableCells, Togglable<Object> {
         tankWidthCells = 2;
         tankHeightPixel = tankHeightCells * cellHeight;
         tankWidthPixel = tankWidthCells * cellWidth;
-        gameCells = new GameCell[getWorldWiddthCells()][getWorldHeightCells()];
+    }
+
+    public List<GameUnit> getUnitList() {
+        return unitList;
+    }
+
+    public void setUnitList(List<GameUnit> unitList) {
+        this.unitList = unitList;
+    }
+
+    public Boolean registrateUnit(GameUnit gameUnit) {
+        if (unitList.contains(gameUnit)) {
+            return false;
+        } else {
+            unitList.add(gameUnit);
+            return true;
+        }
+    }
+
+    public Boolean unRegistrateUnit(GameUnit gameUnit) {
+        if (unitList.contains(gameUnit)) {
+            unitList.remove(gameUnit);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void scale(Integer x, Integer y) {
+        for (GameUnit gu : unitList) {
+            gu.scale(x, y);
+        }
     }
 
     public Integer getWorldWiddthCells() {
         return worldWiddthCells;
+    }
+
+    public void setWorldWiddthCells(Integer worldWiddthCells) {
+        this.worldWiddthCells = worldWiddthCells;
     }
 
     public Integer getWorldHeightCells() {
@@ -65,18 +91,6 @@ public class World implements LoadableCells, Togglable<Object> {
 
     public void setWorldHeightCells(Integer worldHeightCells) {
         this.worldHeightCells = worldHeightCells;
-    }
-
-    public void setWorldWiddthCells(Integer worldWiddthCells) {
-        this.worldWiddthCells = worldWiddthCells;
-    }
-
-    public List<PlayerTank> getPlayerTanks() {
-        return playerTanks;
-    }
-
-    public void setPlayerTanks(List<PlayerTank> playerTanks) {
-        this.playerTanks = playerTanks;
     }
 
     public Integer getWorldWiddthPixel() {
@@ -117,22 +131,6 @@ public class World implements LoadableCells, Togglable<Object> {
 
     public void setTankHeightCells(Integer tankHeightCells) {
         this.tankHeightCells = tankHeightCells;
-    }
-
-    public List<Actor> getActorList() {
-        return actorList;
-    }
-
-    public void setActorList(List<Actor> actorList) {
-        this.actorList = actorList;
-    }
-
-    public GameCell[][] getGameCells() {
-        return gameCells;
-    }
-
-    public void setGameCells(GameCell[][] gameCells) {
-        this.gameCells = gameCells;
     }
 
     public CollisionManager getCollisionManager() {
@@ -185,37 +183,19 @@ public class World implements LoadableCells, Togglable<Object> {
 
     public void initializeWorld() {
         World world = new World();
-        collisionManager = new CollisionManager(world.actorList, world.gameCells);
-        playerTanks.add(new PlayerTank(collisionManager, TankType.FirstPlayer));
     }
 
     public void loadLevel() {
         //LevelLoader levelLoader = new LevelLoader(String level);
     }
 
-
-    public Boolean addCell(Integer x, Integer y, TileType tileType) {
-        gameCells[x][y] = new GameCell(x, y, tileType);
-        gameCells[x][y].setCollisionBounds(new CollisionBounds(this, x, y));
+    public Boolean addCell(Integer x, Integer y, TileUnit.TileType tileType) {
+        new TileUnit(x * cellWidth, y * cellHeight, cellWidth, cellHeight, 1l, 0l,
+                tileType, this::registrateUnit, this::unRegistrateUnit);
+        // gameCells[x][y] = new GameCell(x, y, tileType);
+        //  gameCells[x][y].setCollisionBounds(new CollisionBounds(this, x, y));
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "World{" +
-                "actorList=" + actorList +
-                ", gameCells=" + Arrays.deepToString(gameCells) +
-                ", collisionManager=" + collisionManager +
-                '}';
-    }
 
-    @Override
-    public Object toggle(Object o) throws Exception {
-        for (GameCell[] cells : gameCells) {
-            for (GameCell cell : cells) {
-                cell.toggle(null);
-            }
-        }
-        return o;
-    }
 }
