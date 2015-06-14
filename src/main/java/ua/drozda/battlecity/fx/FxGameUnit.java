@@ -2,63 +2,42 @@ package ua.drozda.battlecity.fx;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.ImageView;
-import ua.drozda.battlecity.core.BulletUnit;
 import ua.drozda.battlecity.core.GameUnit;
-import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.TileUnit;
 import ua.drozda.battlecity.core.interfaces.Togglable;
 
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
 /**
  * Created by GFH on 14.06.2015.
  */
-public class FxGameUnit implements Observer, Togglable {
-//    public static FxGameUnit createFxGameUnit(GameUnit gameUnit) {
-//
-//    }
-
-    protected static HashMap<TileUnit.TileType, Integer> toggleTileCountMap = new HashMap();
-    //protected static HashMap<TankUnit.TankType, Integer> toggleTankCountMap = new HashMap();
-
-    static {
-        toggleTileCountMap.put(TileUnit.TileType.BRICK, 1);
-        toggleTileCountMap.put(TileUnit.TileType.WATER, 3);
-        toggleTileCountMap.put(TileUnit.TileType.EMPTY, 1);
-        toggleTileCountMap.put(TileUnit.TileType.FOREST, 1);
-        toggleTileCountMap.put(TileUnit.TileType.ICE, 1);
-        toggleTileCountMap.put(TileUnit.TileType.STEEL, 1);
-
-        //toggleTankCountMap.
-    }
-
+public abstract class FxGameUnit implements Observer, Togglable {
     protected GameUnit gameUnit;
     protected Integer maxToggle;
     protected Integer curToggle = 0;
     private ImageView imageView = new ImageView(FxWorld.sprites);
     private Rectangle2D curSprite;
-
     public FxGameUnit(GameUnit gameUnit) {
         this.gameUnit = gameUnit;
-        if (gameUnit instanceof TileUnit) {
-            maxToggle = toggleTileCountMap.get(((TileUnit) gameUnit).getTileType());
-        }
-        if (gameUnit instanceof TankUnit) {
-            maxToggle = 2;
-        }
-        if (gameUnit instanceof BulletUnit) {
-            maxToggle = 1;
-        }
+//        if (gameUnit instanceof TileUnit) {
+//
+//        }
+//        if (gameUnit instanceof TankUnit) {
+//            maxToggle = 2;
+//        }
+//        if (gameUnit instanceof BulletUnit) {
+//            maxToggle = 1;
+//        }
         gameUnit.addObserver(this);
-        updateSprite();
+//        updateSprite();
     }
 
-    protected void updateSprite() {
-        setCurSprite(FxSpriteManager.getNextSprite(this));
-        imageView.setX(gameUnit.getBounds().getMinX());
-        imageView.setY(gameUnit.getBounds().getMinY());
+    public static FxGameUnit createFxGameUnit(GameUnit gameUnit) {
+        if (gameUnit instanceof TileUnit) {
+            return new FxTileUnit((TileUnit) gameUnit);
+        }
+        return null;
     }
 
     public ImageView getImageView() {
@@ -73,6 +52,15 @@ public class FxGameUnit implements Observer, Togglable {
     public void update(Observable o, Object arg) {
         updateSprite();
     }
+
+    protected void updateSprite() {
+        nextSprite();
+        //   setCurSprite(FxSpriteManager.getNextSprite(this));
+        imageView.setX(gameUnit.getBounds().getMinX());
+        imageView.setY(gameUnit.getBounds().getMinY());
+    }
+
+    protected abstract void nextSprite();
 
     @Override
     public Object toggle(Object o) {

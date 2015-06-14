@@ -17,6 +17,11 @@ public class FxWorld implements Togglable {
     static final Integer tileSize = 8;
     static final Integer tankSize = 16;
 
+    static final Integer bulletExplosion = 16;
+    static final Integer tankExplosion = 32;
+    static final Integer baseExplosion = 32;
+
+
     static final Integer tileZoneX = 16 * 16;
     static final Integer firstPlayerZoneX = 0 * tankSize;
     static final Integer firstPlayerZoneY = 0 * tankSize;
@@ -27,12 +32,13 @@ public class FxWorld implements Togglable {
     static final Integer waterZoneY = 7 * tileSize;
     static final Integer brickZoneY = 8 * tileSize;
     static final Integer emptyZoneY = 11 * tileSize;
+    static final Integer explozionZoneY = 17 * tileSize;
 
 
     private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/sprites.png");
     static Image sprites = new Image(spritesStream);
     List<FxGameUnit> fxGameUnitsList = new ArrayList<>();
-    //   private FxTank firstPlayerTank;
+    // private FxTank firstPlayerTank;
     private World world;
 
     public FxWorld() {
@@ -54,7 +60,7 @@ public class FxWorld implements Togglable {
     public void setWorld(World world) {
         this.world = world;
         for (GameUnit gameUnit : world.getUnitList()) {
-            fxGameUnitsList.add(new FxGameUnit(gameUnit));
+            fxGameUnitsList.add(FxGameUnit.createFxGameUnit(gameUnit));
         }
 
 

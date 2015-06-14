@@ -183,6 +183,7 @@ public class World implements LoadableCells {
 
     public void initializeWorld() {
         World world = new World();
+
     }
 
     public void loadLevel() {
