@@ -66,6 +66,9 @@ public class FxWorld implements Togglable {
 
     }
 
+    public void handleCollisions() {
+
+    }
     @Override
     public Object toggle(Object o) {
         for (FxGameUnit fxGameUnit : fxGameUnitsList) {

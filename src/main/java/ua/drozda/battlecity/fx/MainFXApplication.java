@@ -2,10 +2,14 @@ package ua.drozda.battlecity.fx;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import ua.drozda.battlecity.core.ActiveUnit;
+import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.io.LevelLoader;
 
@@ -16,7 +20,7 @@ public class MainFXApplication extends Application {
 
     World world = new World();
     FxWorld fxWorld = new FxWorld();
-
+    Boolean sleepCommandHandle = true;
     Long toggleCount = 0l;
 
     public static void main(String[] args) throws Exception {
@@ -30,6 +34,58 @@ public class MainFXApplication extends Application {
         Group root = new Group();
         Scene scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel(), fxWorld.getWorld().getWorldHeightPixel(), Color
                 .BLACK);
+
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent t) {
+                if (sleepCommandHandle) {
+                    return;
+                }
+                TankUnit tankUnit = world.getFirstPlayer();
+                switch (t.getCode()) {
+                    case UP:
+                        tankUnit.setDirection(ActiveUnit.Direction.UP);
+                        tankUnit.setEngineOn(true);
+                        break;
+                    case DOWN:
+                        tankUnit.setDirection(ActiveUnit.Direction.DOWN);
+                        tankUnit.setEngineOn(true);
+                        break;
+                    case LEFT:
+                        tankUnit.setDirection(ActiveUnit.Direction.LEFT);
+                        tankUnit.setEngineOn(true);
+                        break;
+                    case RIGHT:
+                        tankUnit.setDirection(ActiveUnit.Direction.RIGHT);
+                        tankUnit.setEngineOn(true);
+                        break;
+                    default:
+                        tankUnit.setEngineOn(false);
+                        break;
+                }
+                System.out.println("KEY PRESSED " + t.getCode());
+                sleepCommandHandle = true;
+            }
+        });
+//        root.setOnKeyReleased(new EventHandler<KeyEvent>() {
+//
+//            @Override
+//            public void handle(KeyEvent t) {
+//                releaseKey(t.getCharacter().charAt(0));
+//            }
+//        });
+//        root.addEventHandler(EventType.ROOT, new EventHandler<Event>() {
+//
+//            @Override
+//            public void handle(Event t) {
+//                if (t.getClass().equals(KeyEvent.class)) {
+//                    System.out.println("AAARGH! " + ((KeyEvent)t).getCharacter());
+//                }
+//            }
+//        });
+
+
         for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
             root.getChildren().add(fxGameUnit.getImageView());
         }
@@ -44,6 +100,22 @@ public class MainFXApplication extends Application {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        };
+
+        AnimationTimer mainLoop = new AnimationTimer() {
+            private Boolean init = false;
+
+            @Override
+            public void handle(long now) {
+                if (!init) {
+                    world.initializeWorld(now);
+                }
+                world.handleCollisions();
+                world.heartBeat(now);
+                MainFXApplication.this.handleCommands(); // TODO TEST required
+                world.updatePositions(now);
+                world.notifyObservers();
             }
         };
 
@@ -103,8 +175,16 @@ public class MainFXApplication extends Application {
         //     fxWorld.getWorld().toggle(null);
         //     fxWorld.getWorld().toggle(null);
         toggleAnimationTimer.start();
+        mainLoop.start();
         primaryStage.setTitle("JavaFX Scene Graph Demo");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+    public void handleCommands() {
+        sleepCommandHandle = false;
+
+    }
+
+
 }

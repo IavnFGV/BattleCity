@@ -14,7 +14,7 @@ public abstract class ActiveUnit extends GameUnit {
     protected Long lastMove;
     private Bounds newBounds;
     private Direction direction;
-    private Long velocity;
+    private Long velocity = 8L;
 
     public ActiveUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState
             currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
@@ -24,20 +24,19 @@ public abstract class ActiveUnit extends GameUnit {
         this.setNewBounds(getBounds());
     }
 
-    public Bounds getNewBounds() {
-        return newBounds;
-    }
-
-    public void setNewBounds(Bounds newBounds) {
-        this.newBounds = newBounds;
-    }
-
-    public Boolean isEngineOn() {
-        return engineOn;
+    @Override
+    public void initUnit(Long now) {
+        super.initUnit(now);
+        setLastMove(now);
+        setEngineOn(false);
     }
 
     public void setEngineOn(Boolean engineOn) {
         this.engineOn = engineOn;
+    }
+
+    public Boolean isEngineOn() {
+        return engineOn;
     }
 
     public Direction getDirection() {
@@ -62,6 +61,8 @@ public abstract class ActiveUnit extends GameUnit {
             getMoveStrategy().perform(now - getLastMove());
         }
         setLastMove(now);
+        this.setBounds(this.getNewBounds());
+        setChanged();
         ///  notifyObservers(); TODO AFTER COLLISION AFTERCHECK
     }
 
@@ -74,6 +75,14 @@ public abstract class ActiveUnit extends GameUnit {
 
     public Long getLastMove() {
         return lastMove;
+    }
+
+    public Bounds getNewBounds() {
+        return newBounds;
+    }
+
+    public void setNewBounds(Bounds newBounds) {
+        this.newBounds = newBounds;
     }
 
     public void setLastMove(Long lastMove) {

@@ -11,10 +11,10 @@ import java.util.Map;
  */
 public class FxSpriteManager {
 
-    private static Map<TileUnit.TileType, Rectangle2D[]> tileActiveMap = new HashMap();
+    private static Map<TileUnit.TileType, Rectangle2D[]> tileActiveMap = new HashMap<>();
 
     private static Map<TankUnit.TankType, HashMap<ActiveUnit.Direction, Rectangle2D[][]>> tankActiveMap = new
-            HashMap();
+            HashMap<>();
     //2d array for starcount of tank;
 
     private static Map<Class<? extends ActiveUnit>, Rectangle2D[]> explosiveMap = new HashMap<>();

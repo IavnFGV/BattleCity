@@ -24,6 +24,7 @@ public class World implements LoadableCells {
     private Integer tankHeightCells;
     private CollisionManager collisionManager;
 
+    private TankUnit firstPlayer;
     private List<GameUnit> unitList = new ArrayList<>(); // all units will be here
 
     public World() {
@@ -45,12 +46,12 @@ public class World implements LoadableCells {
         tankWidthPixel = tankWidthCells * cellWidth;
     }
 
-    public List<GameUnit> getUnitList() {
-        return unitList;
+    public TankUnit getFirstPlayer() {
+        return firstPlayer;
     }
 
-    public void setUnitList(List<GameUnit> unitList) {
-        this.unitList = unitList;
+    public void setFirstPlayer(TankUnit firstPlayer) {
+        this.firstPlayer = firstPlayer;
     }
 
     public Boolean registrateUnit(GameUnit gameUnit) {
@@ -60,6 +61,10 @@ public class World implements LoadableCells {
             unitList.add(gameUnit);
             return true;
         }
+    }
+
+    public void notifyObservers() {
+        unitList.forEach(u -> u.notifyObservers());
     }
 
     public Boolean unRegistrateUnit(GameUnit gameUnit) {
@@ -83,6 +88,20 @@ public class World implements LoadableCells {
 
     public void setWorldWiddthCells(Integer worldWiddthCells) {
         this.worldWiddthCells = worldWiddthCells;
+    }
+
+    public void heartBeat(Long now) {
+        for (GameUnit gameUnit : getUnitList()) {
+            gameUnit.heartBeat(now);
+        }
+    }
+
+    public List<GameUnit> getUnitList() {
+        return unitList;
+    }
+
+    public void setUnitList(List<GameUnit> unitList) {
+        this.unitList = unitList;
     }
 
     public Integer getWorldHeightCells() {
@@ -181,20 +200,28 @@ public class World implements LoadableCells {
         this.gamePixel = gamePixel;
     }
 
-    public void initializeWorld() {
-        World world = new World();
+    public void initializeWorld(Long now) {
+        TankUnit player = new TankUnit(0, 0, tankWidthPixel, tankHeightPixel, 1l, 0l, GameUnit.BasicState.CREATING,
+                ActiveUnit.Direction.UP, 8l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
+                .FIRST_PLAYER);
+        setFirstPlayer(player);
+        getUnitList().forEach(u -> u.initUnit(now));
+        //World world = new World();
+
 
     }
 
-    public void loadLevel() {
-        //LevelLoader levelLoader = new LevelLoader(String level);
+    public void handleCollisions() {
+
+    }
+
+    public void updatePositions(Long now) { //TODE proofOfConcept
+        unitList.stream().filter(u -> (u instanceof ActiveUnit)).forEach(u -> ((ActiveUnit) u).move(now));
     }
 
     public Boolean addCell(Integer x, Integer y, TileUnit.TileType tileType) {
         new TileUnit(x * cellWidth, y * cellHeight, cellWidth, cellHeight, 1l, 0l,
                 tileType, this::registrateUnit, this::unRegistrateUnit);
-        // gameCells[x][y] = new GameCell(x, y, tileType);
-        //  gameCells[x][y].setCollisionBounds(new CollisionBounds(this, x, y));
         return true;
     }
 

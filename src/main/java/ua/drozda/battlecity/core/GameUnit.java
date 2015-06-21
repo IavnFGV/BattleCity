@@ -65,6 +65,10 @@ public abstract class GameUnit extends Observable {
         this.registrateAction = registrateAction;
     }
 
+    public void initUnit(Long now) {
+        lastHeartBeat = now;
+    }
+
     public Function<GameUnit, Boolean> getUnRegistrateAction() {
         return unRegistrateAction;
     }
