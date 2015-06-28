@@ -36,6 +36,7 @@ public abstract class GameUnit extends Observable {
     protected BasicHeartBeatStrategy heartBeatStrategy;
     protected Function<GameUnit, Boolean> registrateAction;
     protected Function<GameUnit, Boolean> unRegistrateAction;
+    protected Long deltaHeartBeat;
 
     public GameUnit(double x, double y, double width, double height, Long lifes, Long currentTime, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
         this(x, y, width, height, lifes, currentTime, BasicState.CREATING, registerAction, unRegisterAction);
@@ -67,6 +68,15 @@ public abstract class GameUnit extends Observable {
 
     public void initUnit(Long now) {
         lastHeartBeat = now;
+        deltaHeartBeat = 0l;
+    }
+
+    public Long getDeltaHeartBeat() {
+        return deltaHeartBeat;
+    }
+
+    public void setDeltaHeartBeat(Long deltaHeartBeat) {
+        this.deltaHeartBeat = deltaHeartBeat;
     }
 
     public Function<GameUnit, Boolean> getUnRegistrateAction() {
@@ -112,7 +122,8 @@ public abstract class GameUnit extends Observable {
 
     public void heartBeat(Long now) {
         if (!isPause()) {
-            getHeartBeatStrategy().perform(now - getLastHeartBeat());
+            deltaHeartBeat = now - getLastHeartBeat();
+            getHeartBeatStrategy().perform(deltaHeartBeat);
         }
         setLastHeartBeat(now);
         notifyObservers();
@@ -120,6 +131,10 @@ public abstract class GameUnit extends Observable {
 
     public static Boolean isPause() {
         return pause;
+    }
+
+    public Long getLastHeartBeat() {
+        return lastHeartBeat;
     }
 
     public BasicHeartBeatStrategy getHeartBeatStrategy() {
@@ -131,10 +146,6 @@ public abstract class GameUnit extends Observable {
 
     public void setHeartBeatStrategy(BasicHeartBeatStrategy heartBeatStrategy) {
         this.heartBeatStrategy = heartBeatStrategy;
-    }
-
-    public Long getLastHeartBeat() {
-        return lastHeartBeat;
     }
 
     public void setLastHeartBeat(Long lastHeartBeat) {

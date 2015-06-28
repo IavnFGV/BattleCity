@@ -3,6 +3,7 @@ package ua.drozda.battlecity.fx;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.ImageView;
 import ua.drozda.battlecity.core.GameUnit;
+import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.TileUnit;
 import ua.drozda.battlecity.core.interfaces.Togglable;
 
@@ -18,6 +19,7 @@ public abstract class FxGameUnit implements Observer, Togglable {
     protected Integer curToggle = 0;
     private ImageView imageView = new ImageView(FxWorld.sprites);
     private Rectangle2D curSprite;
+
     public FxGameUnit(GameUnit gameUnit) {
         this.gameUnit = gameUnit;
 //        if (gameUnit instanceof TileUnit) {
@@ -37,7 +39,11 @@ public abstract class FxGameUnit implements Observer, Togglable {
         if (gameUnit instanceof TileUnit) {
             return new FxTileUnit((TileUnit) gameUnit);
         }
-        return null;
+        if (gameUnit instanceof TankUnit) {
+            return new FxTankUnit((TankUnit) gameUnit);
+        }
+        throw new Error("Unknown gameUnit subClass = " + gameUnit.getClass().getName());
+
     }
 
     public ImageView getImageView() {
@@ -63,11 +69,7 @@ public abstract class FxGameUnit implements Observer, Togglable {
     protected abstract void nextSprite();
 
     @Override
-    public Object toggle(Object o) {
-        curToggle = ++curToggle % maxToggle;
-        updateSprite();
-        return null;
-    }
+    public abstract Object toggle(Object o);
 
     public Rectangle2D getCurSprite() {
         return curSprite;

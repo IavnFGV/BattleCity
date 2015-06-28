@@ -1,7 +1,6 @@
 package ua.drozda.battlecity.fx;
 
 import javafx.scene.image.Image;
-import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.core.interfaces.Togglable;
 
@@ -49,7 +48,9 @@ public class FxWorld implements Togglable {
 //        return firstPlayerTank;
 //    }
 
-    //    public void setFirstPlayerTank(FxTank firstPlayerTank) {
+    public void handleCollisions() {
+
+    }    //    public void setFirstPlayerTank(FxTank firstPlayerTank) {
 //        this.firstPlayerTank = firstPlayerTank;
 //    }
 //
@@ -57,18 +58,6 @@ public class FxWorld implements Togglable {
         return world;
     }
 
-    public void setWorld(World world) {
-        this.world = world;
-        for (GameUnit gameUnit : world.getUnitList()) {
-            fxGameUnitsList.add(FxGameUnit.createFxGameUnit(gameUnit));
-        }
-
-
-    }
-
-    public void handleCollisions() {
-
-    }
     @Override
     public Object toggle(Object o) {
         for (FxGameUnit fxGameUnit : fxGameUnitsList) {
@@ -76,4 +65,14 @@ public class FxWorld implements Togglable {
         }
         return null;
     }
+
+    public void setWorld(World world) {
+        this.world = world;
+
+        getWorld().getUnitList().forEach(u -> {
+            fxGameUnitsList.add(FxGameUnit.createFxGameUnit(u));
+        });
+    }
+
+
 }

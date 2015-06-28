@@ -83,7 +83,14 @@ public class FxTileUnit extends FxGameUnit {
         }
     }
 
-    private TileUnit getTile() {
+    @Override
+    public Object toggle(Object o) {
+        curToggle = ++curToggle % maxToggle;
+        updateSprite();
+        return null;
+    }
+
+    public TileUnit getTile() {
         return (TileUnit) this.gameUnit;
     }
 }

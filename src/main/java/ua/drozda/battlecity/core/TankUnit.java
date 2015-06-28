@@ -54,6 +54,15 @@ public class TankUnit extends ActiveUnit {
         this.bonusStrategy = bonusStrategy;
     }
 
+    @Override
+    public MoveStrategy getMoveStrategy() {
+        if (this.moveStrategy == null) {
+            //ActiveUnit.class.getDeclaredClasses()
+            this.setMoveStrategy(this.new TankMoveStrategy());
+        }
+        return moveStrategy;
+    }
+
     public enum TankType {
         FIRST_PLAYER, SECOND_PLAYER, SIMPLE_ENEMY, FAST_ENEMY, POWER_ENEMY, ARMOR_ENEMY
     }
@@ -104,6 +113,13 @@ public class TankUnit extends ActiveUnit {
                 case GUN:
                     break;
             }
+        }
+    }
+
+    protected class TankMoveStrategy extends MoveStrategy {
+        @Override
+        public void perform(Long deltaTime) {
+            super.perform(deltaTime);
         }
     }
 

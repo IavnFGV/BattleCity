@@ -168,22 +168,6 @@ public class World implements LoadableCells {
         this.worldSizeCells = worldSizeCells;
     }
 
-    public Integer getCellHeight() {
-        return cellHeight;
-    }
-
-    public void setCellHeight(Integer cellHeight) {
-        this.cellHeight = cellHeight;
-    }
-
-    public Integer getCellWidth() {
-        return cellWidth;
-    }
-
-    public void setCellWidth(Integer cellWidth) {
-        this.cellWidth = cellWidth;
-    }
-
     public Integer getWorldHeightPixel() {
         return worldHeightPixel;
     }
@@ -201,14 +185,32 @@ public class World implements LoadableCells {
     }
 
     public void initializeWorld(Long now) {
-        TankUnit player = new TankUnit(0, 0, tankWidthPixel, tankHeightPixel, 1l, 0l, GameUnit.BasicState.CREATING,
-                ActiveUnit.Direction.UP, 8l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
+        TankUnit player = new TankUnit(8 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel, 1l,
+                0l, GameUnit
+                .BasicState.CREATING,
+                ActiveUnit.Direction.UP, 48l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
                 .FIRST_PLAYER);
         setFirstPlayer(player);
         getUnitList().forEach(u -> u.initUnit(now));
-        //World world = new World();
+        setCollisionManager(new CollisionManager(this));
 
 
+    }
+
+    public Integer getCellWidth() {
+        return cellWidth;
+    }
+
+    public Integer getCellHeight() {
+        return cellHeight;
+    }
+
+    public void setCellHeight(Integer cellHeight) {
+        this.cellHeight = cellHeight;
+    }
+
+    public void setCellWidth(Integer cellWidth) {
+        this.cellWidth = cellWidth;
     }
 
     public void handleCollisions() {
