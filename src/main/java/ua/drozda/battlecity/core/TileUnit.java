@@ -14,6 +14,7 @@ public class TileUnit extends GameUnit {
         this.setTileType(tileType);
     }
 
+
     public TileType getTileType() {
         return tileType;
     }
