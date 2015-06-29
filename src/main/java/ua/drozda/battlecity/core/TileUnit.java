@@ -14,6 +14,12 @@ public class TileUnit extends GameUnit {
         this.setTileType(tileType);
     }
 
+    @Override
+    public String toString() {
+        return "TileUnit{" +
+                "tileType=" + tileType +
+                "} " + super.toString();
+    }
 
     public TileType getTileType() {
         return tileType;

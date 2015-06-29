@@ -28,37 +28,38 @@ public class FxTileUnit extends FxGameUnit {
     static {
         Rectangle2D[] rectangle2Ds = new Rectangle2D[15];
         for (int i = 0; i < 15; i++) {
-            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.brickZoneY, 8, 8);
+            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.brickZoneY, FxWorld.tileSize,
+                    FxWorld.tileSize);
         }
         tileActiveMap.put(TileUnit.TileType.BRICK, rectangle2Ds);
 
         rectangle2Ds = new Rectangle2D[3];
         for (int i = 0; i < 3; i++) {
-            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.waterZoneY, 8, 8);
+            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.waterZoneY, FxWorld.tileSize, FxWorld.tileSize);
         }
         tileActiveMap.put(TileUnit.TileType.WATER, rectangle2Ds);
 
         rectangle2Ds = new Rectangle2D[1];
         for (int i = 0; i < 1; i++) {
-            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.emptyZoneY, 8, 8);
+            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.emptyZoneY, FxWorld.tileSize, FxWorld.tileSize);
         }
         tileActiveMap.put(TileUnit.TileType.EMPTY, rectangle2Ds);
 
         rectangle2Ds = new Rectangle2D[1];
         for (int i = 0; i < 1; i++) {
-            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.steelZoneY, 8, 8);
+            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.steelZoneY, FxWorld.tileSize, FxWorld.tileSize);
         }
         tileActiveMap.put(TileUnit.TileType.STEEL, rectangle2Ds);
 
         rectangle2Ds = new Rectangle2D[1];
         for (int i = 0; i < 1; i++) {
-            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.forestZoneY, 8, 8);
+            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.forestZoneY, FxWorld.tileSize, FxWorld.tileSize);
         }
         tileActiveMap.put(TileUnit.TileType.FOREST, rectangle2Ds);
 
         rectangle2Ds = new Rectangle2D[1];
         for (int i = 0; i < 1; i++) {
-            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.iceZoneY, 8, 8);
+            rectangle2Ds[i] = new Rectangle2D(FxWorld.tileZoneX + FxWorld.tileSize * i, FxWorld.iceZoneY, FxWorld.tileSize, FxWorld.tileSize);
         }
         tileActiveMap.put(TileUnit.TileType.ICE, rectangle2Ds); // todo test
 

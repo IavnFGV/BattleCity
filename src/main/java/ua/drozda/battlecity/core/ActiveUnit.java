@@ -12,16 +12,41 @@ public abstract class ActiveUnit extends GameUnit {
     protected Boolean engineOn = false;
     protected MoveStrategy moveStrategy;
     protected Long moveAccumulator;
+    private volatile boolean cantMove;
     private Bounds newBounds;
     private Direction direction;
     private Long velocity = 8L;
-
     public ActiveUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState
             currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
         super(x, y, width, height, lives, currentTime, currentBasicState, registerAction, unRegisterAction);
         this.setDirection(direction);
         this.setVelocity(velocity);
         this.setNewBounds(getBounds());
+    }
+
+    public boolean isCantMove() {
+        return cantMove;
+    }
+
+    public void setCantMove(boolean cantMove) {
+        this.cantMove = cantMove;
+    }
+
+    public void stopOnCollision() {
+        setCantMove(true);
+    }
+
+    @Override
+    public String toString() {
+        return "ActiveUnit{" +
+                "cantMove=" + cantMove +
+                ", engineOn=" + engineOn +
+                ", moveStrategy=" + moveStrategy +
+                ", moveAccumulator=" + moveAccumulator +
+                ", newBounds=" + newBounds +
+                ", direction=" + direction +
+                ", velocity=" + velocity +
+                "} " + super.toString();
     }
 
     @Override
@@ -64,7 +89,7 @@ public abstract class ActiveUnit extends GameUnit {
             getMoveStrategy().perform(getDeltaHeartBeat());// getMoveAccumulator());
         }
         //      setMoveAccumulator(now);
-        this.setBounds(this.getNewBounds());
+        //this.setBounds(this.getNewBounds());
         setChanged();
         ///  notifyObservers(); TODO AFTER COLLISION AFTERCHECK
     }
@@ -77,16 +102,16 @@ public abstract class ActiveUnit extends GameUnit {
         return moveStrategy;
     }
 
+    public void setMoveStrategy(MoveStrategy moveStrategy) {
+        this.moveStrategy = moveStrategy;
+    }
+
     public Bounds getNewBounds() {
         return newBounds;
     }
 
     public void setNewBounds(Bounds newBounds) {
         this.newBounds = newBounds;
-    }
-
-    public void setMoveStrategy(MoveStrategy moveStrategy) {
-        this.moveStrategy = moveStrategy;
     }
 
     public Long getMoveAccumulator() {
@@ -114,12 +139,12 @@ public abstract class ActiveUnit extends GameUnit {
         protected Bounds calcNewPosition(Long deltaTime) { // this method can be override in children
             if (isEngineOn() && getVelocity() > 0) {
                 setMoveAccumulator(getMoveAccumulator() + deltaTime);
-                if (getMoveAccumulator() < 1000000000 / 60) {
+                if (getMoveAccumulator() < 1000000000 / 64) {
                     setNewBounds(getBounds());
                     return getBounds();
                 }
                 setMoveAccumulator(0l);
-                Double deltaPosition = (Double.valueOf(getVelocity()) / 60); // TODO MAY FROZE???
+                Double deltaPosition = (Double.valueOf(getVelocity())); // TODO MAY FROZE???
                 switch (getDirection()) {
                     case UP:
                         newBounds = new BoundingBox(getBounds().getMinX(), getBounds().getMinY() - deltaPosition,

@@ -55,6 +55,15 @@ public class TankUnit extends ActiveUnit {
     }
 
     @Override
+    public String toString() {
+        return "TankUnit{" +
+                "tankType=" + tankType +
+                ", bonusStrategy=" + bonusStrategy +
+                ", starCount=" + starCount +
+                "} " + super.toString();
+    }
+
+    @Override
     public MoveStrategy getMoveStrategy() {
         if (this.moveStrategy == null) {
             //ActiveUnit.class.getDeclaredClasses()

@@ -8,10 +8,7 @@ import ua.drozda.battlecity.core.TileUnit;
 import ua.drozda.battlecity.core.World;
 
 import java.util.EnumSet;
-import java.util.Map;
 import java.util.Set;
-
-import static java.lang.Math.round;
 
 /**
  * Created by GFH on 14.05.2015.
@@ -80,108 +77,78 @@ public class CollisionManager {
 ////
 ////        }
 ////    }
-    public Bounds newPosition(ActiveUnit activeUnit) {
+    //  private Bounds correctPosition
 
-        // find all cells between cur position and new position
+    public void newPosition(ActiveUnit activeUnit) {
+        final boolean stop;
+        world.getUnitList().stream().filter(u -> (u instanceof TileUnit)).forEach(u -> {
+                    TileUnit tileUnit = (TileUnit) u;
+                    Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX(),
+                            activeUnit.getNewBounds().getMinY(),
+                            activeUnit.getNewBounds().getWidth() - 1,
+                            activeUnit.getNewBounds().getHeight() - 1);
+                    if ((!rideTiles.contains(tileUnit.getTileType())) && tileUnit.getBounds().intersects(activeUnit
+                            .getNewBounds())) {
+                        System.out.println("TileUnit =" + tileUnit + ";activeUnit = [" + activeUnit + "]");
 
-        Integer x = Integer.valueOf((int) round(activeUnit.getBounds().getMinX()) / world.getCellWidth());
-        Integer y = Integer.valueOf((int) round(activeUnit.getBounds().getMinY()) / world.getCellHeight());
-        Integer xn = Integer.valueOf((int) round(activeUnit.getNewBounds().getMinX()) / world.getCellWidth());
-        Integer yn = Integer.valueOf((int) round(activeUnit.getNewBounds().getMinY()) / world.getCellHeight());
+                        ActiveUnit.Direction direction;
+                        if (tileUnit.getBounds().getMinX() > activeUnit.getBounds().getMinX()) {
+                            direction = ActiveUnit.Direction.LEFT;
+                        } else {
+                            direction = ActiveUnit.Direction.RIGHT;
+                        }
+                        if (tileUnit.getBounds().getMinY() > activeUnit.getBounds().getMinY()) {
+                            direction = ActiveUnit.Direction.UP;
+                        } else {
+                            direction = ActiveUnit.Direction.DOWN;
+                        }
 
-
-        x = Integer.valueOf((int) round(activeUnit.getBounds().getMinX()) % world.getCellWidth()) == 0 ? x + 1 : x;
-        y = Integer.valueOf((int) round(activeUnit.getBounds().getMinY()) % world.getCellHeight()) == 0 ? y - 1 : y;
-        xn = Integer.valueOf((int) round(activeUnit.getNewBounds().getMinX()) % world.getCellWidth()) == 0 ? xn + 1 : xn;
-        yn = Integer.valueOf((int) round(activeUnit.getNewBounds().getMinY()) % world.getCellHeight()) == 0 ? yn - 1 : yn;
-
-        Integer stopx = null;
-        Integer stopy = null;
-
-        Map<String, TileUnit> tileMap = world.getTileMap();
-
-        switch (activeUnit.getDirection()) {
-            case UP: {
-                for (int i = y; i >= yn; i--) {
-                    if (tileMap.containsKey(i + "-" + x) && !rideTiles.contains(tileMap.get(i + "-" + x).getTileType()
-                            .getClass())) {
-                        stopy = i;
-                        stopx = x;
-                        break;
-                    }
-                    if (tileMap.containsKey(i + "-" + x + 1) && !rideTiles.contains(tileMap.get(i + "-" + x + 1)
-                            .getTileType().getClass())) {
-                        stopy = i;
-                        stopx = x + 1;
-                        break;
-                    }
-                }
-                if (stopx != null) {
-                    break;
-                }
-                break;
-            }
-            case RIGHT: {
-                for (int i = x + 1; i <= xn + 1; i++) {
-                    if (tileMap.containsKey(i + "-" + x + 1) && !rideTiles.contains(tileMap.get(y + "-" + i).getTileType().getClass())) {
-                        stopy = y;
-                        stopx = i;
-                        break;
-                    }
-                    if (tileMap.containsKey(i + "-" + x + 1) && !rideTiles.contains(tileMap.get(y + 1 + "-" + i).getTileType().getClass())) {
-                        stopy = y + 1;
-                        stopx = i;
-                        break;
-                    }
-                }
-                if (stopx != null) {
-                    break;
-                }
-                break;
-            }
-            case DOWN: {
-                for (int i = y + 1; i <= yn + 1; i++) {
-                    if (tileMap.containsKey(i + "-" + x) && !rideTiles.contains(tileMap.get(i + "-" + x).getTileType().getClass())) {
-                        stopy = i;
-                        stopx = x;
-                        break;
-                    }
-                    if (tileMap.containsKey(i + "-" + x + 1) && !rideTiles.contains(tileMap.get(i + "-" + x + 1).getTileType().getClass())) {
-                        stopy = i;
-                        stopx = x + 1;
-                        break;
+                        switch (activeUnit.getDirection()) {
+                            case UP: {
+                                double deltaY = tileUnit.getBounds().getMaxY() - activeUnit.getNewBounds().getMinY();
+                                activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX(),
+                                        activeUnit.getNewBounds().getMinY() + (deltaY),
+                                        activeUnit.getNewBounds().getWidth(),
+                                        activeUnit.getNewBounds().getHeight()));
+                            }
+                            break;
+                            case LEFT: {
+                                double deltaX = tileUnit.getBounds().getMaxX() - activeUnit.getNewBounds().getMinX();
+                                activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX() + deltaX,
+                                        activeUnit.getNewBounds().getMinY(),
+                                        activeUnit.getNewBounds().getWidth(),
+                                        activeUnit.getNewBounds().getHeight()));
+                            }
+                            break;
+                            case DOWN: {
+                                double deltaY = activeUnit.getNewBounds().getMaxY() - tileUnit.getBounds().getMinY();
+                                activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX(),
+                                        activeUnit.getNewBounds().getMinY() - (deltaY),
+                                        activeUnit.getNewBounds().getWidth(),
+                                        activeUnit.getNewBounds().getHeight()));
+                            }
+                            break;
+                            case RIGHT: {
+                                double deltaX = activeUnit.getNewBounds().getMaxX() - tileUnit.getBounds().getMinX();
+                                activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX() - deltaX,
+                                        activeUnit.getNewBounds().getMinY(),
+                                        activeUnit.getNewBounds().getWidth(),
+                                        activeUnit.getNewBounds().getHeight()));
+                            }
+                            break;
+                        }
+                        activeUnit.stopOnCollision();
+                        return;
+                    } else {
+                        return;
                     }
                 }
-                if (stopx != null) {
-                    break;
-                }
-                break;
-            }
-            case LEFT: {
-                for (int i = x; i >= xn; i--) {
-                    if (tileMap.containsKey(y + "-" + i) && !rideTiles.contains(tileMap.get(y + "-" + i).getTileType().getClass())) {
-                        stopy = y;
-                        stopx = i;
-                        break;
-                    }
-                    if (tileMap.containsKey(y + 1 + "-" + i) && !rideTiles.contains(tileMap.get(y + 1 + "-" + i).getTileType().getClass())) {
-                        stopy = y + 1;
-                        stopx = i;
-                        break;
-                    }
-                }
-                if (stopx != null) {
-                    break;
-                }
-                break;
-            }
-        }
-        if (stopx != null) {
-            activeUnit.setBounds(new BoundingBox(stopx * world.getCellWidth(), stopy * world.getCellHeight(), world
-                    .getCellWidth(), world.getCellHeight()));
-        }
-        return activeUnit.getBounds();
-
+        );
+        //   if (!activeUnit.isCantMove()) {
+        activeUnit.setBounds(activeUnit.getNewBounds());
+//        } else {
+//            activeUnit.setNewBounds(activeUnit.getBounds());
+        //   }
     }
 
 

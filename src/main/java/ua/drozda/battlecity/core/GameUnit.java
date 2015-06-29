@@ -19,7 +19,6 @@ public abstract class GameUnit extends Observable {
     private static Boolean pause = false;
     private static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
 
-
     static {
         timeInState.put(BasicState.CREATING, 500000000L);
         timeInState.put(BasicState.ACTIVE, 0L);
@@ -37,7 +36,6 @@ public abstract class GameUnit extends Observable {
     protected Function<GameUnit, Boolean> registrateAction;
     protected Function<GameUnit, Boolean> unRegistrateAction;
     protected Long deltaHeartBeat;
-
     public GameUnit(double x, double y, double width, double height, Long lifes, Long currentTime, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
         this(x, y, width, height, lifes, currentTime, BasicState.CREATING, registerAction, unRegisterAction);
     }
@@ -56,6 +54,22 @@ public abstract class GameUnit extends Observable {
 
     public static void setPause(Boolean pause) {
         GameUnit.setPause(pause);
+    }
+
+    @Override
+    public String toString() {
+        return "GameUnit{" +
+                "bounds=" + bounds +
+                ", leftTimeInBasicState=" + leftTimeInBasicState +
+                ", currentBasicState=" + currentBasicState +
+                ", blockCurrentState=" + blockCurrentState +
+                ", lastHeartBeat=" + lastHeartBeat +
+                ", lifes=" + lifes +
+                ", heartBeatStrategy=" + heartBeatStrategy +
+                ", registrateAction=" + registrateAction +
+                ", unRegistrateAction=" + unRegistrateAction +
+                ", deltaHeartBeat=" + deltaHeartBeat +
+                "} ";
     }
 
     public Function<GameUnit, Boolean> getRegistrateAction() {

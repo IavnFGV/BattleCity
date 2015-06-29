@@ -78,6 +78,7 @@ public class World implements LoadableCells {
 
     public void notifyObservers() {
         unitList.forEach(u -> u.notifyObservers());
+        unitList.stream().filter(u -> (u instanceof ActiveUnit)).forEach(u -> ((ActiveUnit) u).setCantMove(false));
     }
 
     public Boolean unRegistrateUnit(GameUnit gameUnit) {
@@ -222,10 +223,11 @@ public class World implements LoadableCells {
     }
 
     public void initializeWorld(Long now) {
-        TankUnit player = new TankUnit(8 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel, 1l,
+        TankUnit player = new TankUnit(8 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
+                1l,
                 0l, GameUnit
                 .BasicState.CREATING,
-                ActiveUnit.Direction.UP, 48l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
+                ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
                 .FIRST_PLAYER);
         setFirstPlayer(player);
         getUnitList().forEach(u -> u.initUnit(now));

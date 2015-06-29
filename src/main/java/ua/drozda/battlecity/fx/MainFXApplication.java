@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public class MainFXApplication extends Application {
 
-    World world = new World();
+    World world = new World(2);
     FxWorld fxWorld = new FxWorld();
     Boolean sleepKeyPressHandle = true;
     Long toggleCount = 0l;
@@ -34,7 +34,7 @@ public class MainFXApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        LevelLoader.loadlevel("20", world);
+        LevelLoader.loadlevel("23", world);
         fxWorld.setWorld(world);
         Group root = new Group();
         Scene scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel(), fxWorld.getWorld().getWorldHeightPixel(), Color

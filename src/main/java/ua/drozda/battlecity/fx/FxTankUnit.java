@@ -23,41 +23,41 @@ public class FxTankUnit extends FxGameUnit {
         Rectangle2D[][] rectangle2Ds = new Rectangle2D[4][2];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 2; j++) {
-                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * j, FxWorld
-                        .firstPlayerZoneY + FxWorld.tankSize * i - 1, FxWorld.tankSize, FxWorld.tankSize);
+                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 0, FxWorld
+                        .firstPlayerZoneY + FxWorld.tankSize * j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld
+                        .tankSize);
             }
         }
         bufHashMap.put(ActiveUnit.Direction.UP, rectangle2Ds);
-        //LEFT
-        rectangle2Ds = new Rectangle2D[4][2];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 2; j++) {
-                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 2 + FxWorld.tankSize *
-                        j, FxWorld
-                        .firstPlayerZoneY + FxWorld.tankSize * i, FxWorld.tankSize, FxWorld.tankSize);
-            }
-        }
-        bufHashMap.put(ActiveUnit.Direction.LEFT, rectangle2Ds);
-        //DOWN
-        rectangle2Ds = new Rectangle2D[4][2];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 2; j++) {
-                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 4 + FxWorld.tankSize *
-                        j, FxWorld
-                        .firstPlayerZoneY + FxWorld.tankSize * i - 1, FxWorld.tankSize, FxWorld.tankSize);
-            }
-        }
-        bufHashMap.put(ActiveUnit.Direction.DOWN, rectangle2Ds);
         //RIGHT
         rectangle2Ds = new Rectangle2D[4][2];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 2; j++) {
-                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 6 + FxWorld.tankSize *
-                        j, FxWorld
-                        .firstPlayerZoneY + FxWorld.tankSize * i, FxWorld.tankSize, FxWorld.tankSize);
+                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 1, FxWorld
+                        .tankSize *
+                        j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld.tankSize);
             }
         }
         bufHashMap.put(ActiveUnit.Direction.RIGHT, rectangle2Ds);
+        //DOWN
+        rectangle2Ds = new Rectangle2D[4][2];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 2; j++) {
+                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 2, FxWorld
+                        .tankSize *
+                        j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld.tankSize);
+            }
+        }
+        bufHashMap.put(ActiveUnit.Direction.DOWN, rectangle2Ds);
+        //LEFT
+        rectangle2Ds = new Rectangle2D[4][2];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 2; j++) {
+                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 3, FxWorld
+                        .tankSize * j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld.tankSize);
+            }
+        }
+        bufHashMap.put(ActiveUnit.Direction.LEFT, rectangle2Ds);
         tankActiveMap.put(TankUnit.TankType.FIRST_PLAYER, bufHashMap);
     }
 

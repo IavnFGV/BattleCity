@@ -13,28 +13,30 @@ import java.util.List;
  */
 public class FxWorld implements Togglable {
 
-    static final Integer tileSize = 8;
-    static final Integer tankSize = 16;
+    static final Integer tileSize = 16;
+    static final Integer tankSize = 32;
 
-    static final Integer bulletExplosion = 16;
-    static final Integer tankExplosion = 32;
-    static final Integer baseExplosion = 32;
+    static final Integer bulletExplosion = 32;
+    static final Integer tankExplosion = 64;
+    static final Integer baseExplosion = 64;
 
 
-    static final Integer tileZoneX = 16 * 16;
-    static final Integer firstPlayerZoneX = 0 * tankSize;
+    static final Integer tileZoneX = 28 * 32;
+    static final Integer firstPlayerZoneX = 20 * tankSize;
     static final Integer firstPlayerZoneY = 0 * tankSize;
 
-    static final Integer steelZoneY = 4 * tileSize;
-    static final Integer forestZoneY = 5 * tileSize;
-    static final Integer iceZoneY = 6 * tileSize;
-    static final Integer waterZoneY = 7 * tileSize;
-    static final Integer brickZoneY = 8 * tileSize;
+    static final Integer brickZoneY = 0 * tileSize;
+    static final Integer steelZoneY = 1 * tileSize;
+    static final Integer waterZoneY = 2 * tileSize;
+    static final Integer forestZoneY = 3 * tileSize;
+    static final Integer iceZoneY = 4 * tileSize;
+
     static final Integer emptyZoneY = 11 * tileSize;
     static final Integer explozionZoneY = 17 * tileSize;
 
 
-    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/sprites.png");
+    // private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/sprites.png");
+    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics_debug.png");
     static Image sprites = new Image(spritesStream);
     List<FxGameUnit> fxGameUnitsList = new ArrayList<>();
     // private FxTank firstPlayerTank;
@@ -51,12 +53,6 @@ public class FxWorld implements Togglable {
     public void handleCollisions() {
 
     }    //    public void setFirstPlayerTank(FxTank firstPlayerTank) {
-//        this.firstPlayerTank = firstPlayerTank;
-//    }
-//
-    public World getWorld() {
-        return world;
-    }
 
     @Override
     public Object toggle(Object o) {
@@ -64,7 +60,13 @@ public class FxWorld implements Togglable {
             fxGameUnit.toggle(null);
         }
         return null;
+    }//        this.firstPlayerTank = firstPlayerTank;
+//    }
+//
+    public World getWorld() {
+        return world;
     }
+
 
     public void setWorld(World world) {
         this.world = world;
