@@ -69,7 +69,7 @@ public abstract class FxGameUnit implements Observer, Togglable {
     protected abstract void nextSprite();
 
     @Override
-    public abstract Object toggle(Object o);
+    public abstract Object toggle(Long now);
 
     public Rectangle2D getCurSprite() {
         return curSprite;

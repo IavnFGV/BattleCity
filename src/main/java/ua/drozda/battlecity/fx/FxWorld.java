@@ -55,9 +55,9 @@ public class FxWorld implements Togglable {
     }    //    public void setFirstPlayerTank(FxTank firstPlayerTank) {
 
     @Override
-    public Object toggle(Object o) {
+    public Object toggle(Long now) {
         for (FxGameUnit fxGameUnit : fxGameUnitsList) {
-            fxGameUnit.toggle(null);
+            fxGameUnit.toggle(now);
         }
         return null;
     }//        this.firstPlayerTank = firstPlayerTank;

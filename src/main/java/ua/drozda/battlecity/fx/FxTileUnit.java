@@ -85,7 +85,7 @@ public class FxTileUnit extends FxGameUnit {
     }
 
     @Override
-    public Object toggle(Object o) {
+    public Object toggle(Long now) {
         curToggle = ++curToggle % maxToggle;
         updateSprite();
         return null;
