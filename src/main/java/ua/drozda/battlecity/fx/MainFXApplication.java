@@ -34,7 +34,7 @@ public class MainFXApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        LevelLoader.loadlevel("23", world);
+        LevelLoader.loadlevel("20", world);
         fxWorld.setWorld(world);
         Group root = new Group();
         Scene scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel(), fxWorld.getWorld().getWorldHeightPixel(), Color

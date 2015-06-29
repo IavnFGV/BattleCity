@@ -83,12 +83,11 @@ public class CollisionManager {
         final boolean stop;
         world.getUnitList().stream().filter(u -> (u instanceof TileUnit)).forEach(u -> {
                     TileUnit tileUnit = (TileUnit) u;
-                    Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX(),
-                            activeUnit.getNewBounds().getMinY(),
-                            activeUnit.getNewBounds().getWidth() - 1,
-                            activeUnit.getNewBounds().getHeight() - 1);
-                    if ((!rideTiles.contains(tileUnit.getTileType())) && tileUnit.getBounds().intersects(activeUnit
-                            .getNewBounds())) {
+                    Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
+                            activeUnit.getNewBounds().getMinY() + 1,
+                            activeUnit.getNewBounds().getWidth() - 2,
+                            activeUnit.getNewBounds().getHeight() - 2);
+                    if ((!rideTiles.contains(tileUnit.getTileType())) && tileUnit.getBounds().intersects(newBounds)) {
                         System.out.println("TileUnit =" + tileUnit + ";activeUnit = [" + activeUnit + "]");
 
                         ActiveUnit.Direction direction;
