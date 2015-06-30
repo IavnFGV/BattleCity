@@ -4,6 +4,7 @@ package ua.drozda.battlecity.core.interfaces;
  * Created by GFH on 12.05.2015.
  */
 public interface Togglable {
+
     default void toggle(Long now) {
         if (!canToggle(now)) {
             return;
@@ -20,8 +21,6 @@ public interface Togglable {
     default void beforeToggle(Long now) {
         return;
     }
-
-    ;
 
     void doToggle(Long now);
 

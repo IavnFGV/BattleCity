@@ -5,6 +5,9 @@ import javafx.geometry.Bounds;
 
 import java.util.function.Function;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
+
 /**
  * Created by GFH on 10.06.2015.
  */
@@ -16,12 +19,45 @@ public abstract class ActiveUnit extends GameUnit {
     private Bounds newBounds;
     private Direction direction;
     private Long velocity = 8L;
+    private Integer cellSize = 16;//bad idea TODO maybe we can use EasyDI lib???
+
     public ActiveUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState
             currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
         super(x, y, width, height, lives, currentTime, currentBasicState, registerAction, unRegisterAction);
         this.setDirection(direction);
         this.setVelocity(velocity);
         this.setNewBounds(getBounds());
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    private void fixPosition() {
+        Long x = nearest(getBounds().getMinX(), cellSize);
+        Long y = nearest(getBounds().getMinY(), cellSize);
+        Double newX = getBounds().getMinX();
+        Double newY = getBounds().getMinY();
+
+        if (abs(newX - x) < (cellSize / 2 + 1)) {
+            newX = Double.valueOf(x);
+        }
+        if (abs(newY - y) < (cellSize / 2 + 1)) {
+            newY = Double.valueOf(y);
+        }
+        setBounds(new BoundingBox(newX, newY, cellSize * 2, cellSize * 2));
+    }
+
+    private long nearest(double num, Integer base) {
+        return (round(num / (base * 1.)) * base);
+    }
+
+    public void setDirection(Direction direction) {
+        if (direction != getDirection()) {
+            fixPosition();
+        }
+        this.direction = direction;
+
     }
 
     public boolean isCantMove() {
@@ -65,14 +101,6 @@ public abstract class ActiveUnit extends GameUnit {
 
     public Boolean isEngineOn() {
         return engineOn;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
     }
 
     public Long getVelocity() {
