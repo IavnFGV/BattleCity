@@ -15,6 +15,8 @@ public class FxTankUnit extends FxGameUnit {
 
     private static Map<TankUnit.TankType, HashMap<ActiveUnit.Direction, Rectangle2D[][]>> tankActiveMap = new
             HashMap<>();
+    private static Long tankTogggleTimer = 100000000l;
+
 
     static {
         //for player tank
@@ -78,14 +80,15 @@ public class FxTankUnit extends FxGameUnit {
     }
 
     @Override
-    public Object toggle(Long now) {
-        if (!getTank().isEngineOn()) {
-            return null;
-        }
+    public void doToggle(Long now) {
         curToggle = ++curToggle % maxToggle;
         updateSprite();
+        toggleTime = now;
+    }
 
-        return null;
+    @Override
+    public Boolean canToggle(Long now) {
+        return (getTank().isEngineOn()) && (now - toggleTime >= tankTogggleTimer);
     }
 
     public TankUnit getTank() {

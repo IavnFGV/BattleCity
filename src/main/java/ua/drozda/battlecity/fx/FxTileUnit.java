@@ -14,6 +14,8 @@ public class FxTileUnit extends FxGameUnit {
 
     private static Map<TileUnit.TileType, Rectangle2D[]> tileActiveMap = new HashMap();
     private static HashMap<TileUnit.TileType, Integer> toggleTileCountMap = new HashMap();
+    //protected static HashMap<TankUnit.TankType, Integer> toggleTankCountMap = new HashMap();
+    static private Long waterTimer = 500000000l;
 
     static {
         toggleTileCountMap.put(TileUnit.TileType.BRICK, 1);
@@ -23,7 +25,7 @@ public class FxTileUnit extends FxGameUnit {
         toggleTileCountMap.put(TileUnit.TileType.ICE, 1);
         toggleTileCountMap.put(TileUnit.TileType.STEEL, 1);
     }
-    //protected static HashMap<TankUnit.TankType, Integer> toggleTankCountMap = new HashMap();
+    //   private static Long toggleTime = 0l; if we change to static - behaviour will be VERY strange
 
     static {
         Rectangle2D[] rectangle2Ds = new Rectangle2D[15];
@@ -85,13 +87,18 @@ public class FxTileUnit extends FxGameUnit {
     }
 
     @Override
-    public Object toggle(Long now) {
+    public void doToggle(Long now) {
         curToggle = ++curToggle % maxToggle;
         updateSprite();
-        return null;
+        toggleTime = now;
     }
 
     public TileUnit getTile() {
         return (TileUnit) this.gameUnit;
+    }
+
+    @Override
+    public Boolean canToggle(Long now) {
+        return now - toggleTime >= waterTimer;
     }
 }

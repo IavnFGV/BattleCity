@@ -17,6 +17,7 @@ public abstract class FxGameUnit implements Observer, Togglable {
     protected GameUnit gameUnit;
     protected Integer maxToggle;
     protected Integer curToggle = 0;
+    protected Long toggleTime = 0l;
     private ImageView imageView = new ImageView(FxWorld.sprites);
     private Rectangle2D curSprite;
 
@@ -69,7 +70,7 @@ public abstract class FxGameUnit implements Observer, Togglable {
     protected abstract void nextSprite();
 
     @Override
-    public abstract Object toggle(Long now);
+    public abstract void doToggle(Long now);
 
     public Rectangle2D getCurSprite() {
         return curSprite;

@@ -46,7 +46,7 @@ public class MainFXApplication extends Application {
             public void handle(long now) {
                 try {
                     if (now - toggleCount >= 500000000l) {
-                        fxWorld.toggle(null);
+                        fxWorld.toggle(now);
                         toggleCount = now;
                     }
                 } catch (Exception e) {
