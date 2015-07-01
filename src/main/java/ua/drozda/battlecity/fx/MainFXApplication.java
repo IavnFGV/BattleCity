@@ -28,6 +28,7 @@ public class MainFXApplication extends Application {
     TankUnit firstPlayerTank;
     private Set<KeyCode> firstPlayerMovements = EnumSet.of(KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT);
 
+
     public static void main(String[] args) throws Exception {
         launch(args);
     }
@@ -45,10 +46,10 @@ public class MainFXApplication extends Application {
             @Override
             public void handle(long now) {
                 try {
-                    if (now - toggleCount >= 500000000l) {
+                    //     if (now - toggleCount >= 500000000l) {
                         fxWorld.toggle(now);
                         toggleCount = now;
-                    }
+                    //   }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -76,6 +77,7 @@ public class MainFXApplication extends Application {
                 handleCommands(); // TODO TEST required
                 world.updatePositions(now);
                 world.notifyObservers();
+                handleSound(now);
             }
         };
 
@@ -110,4 +112,14 @@ public class MainFXApplication extends Application {
 
     }
 
+    private void handleSound(Long now) {
+        SoundManager.handleSoundQueue(now);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        SoundManager.shutdown();
+
+    }
 }

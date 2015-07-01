@@ -78,7 +78,6 @@ public class World implements LoadableCells {
 
     public void notifyObservers() {
         unitList.forEach(u -> u.notifyObservers());
-        unitList.stream().filter(u -> (u instanceof ActiveUnit)).forEach(u -> ((ActiveUnit) u).setCantMove(false));
     }
 
     public Boolean unRegistrateUnit(GameUnit gameUnit) {

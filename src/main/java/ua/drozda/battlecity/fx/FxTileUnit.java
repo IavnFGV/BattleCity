@@ -76,6 +76,11 @@ public class FxTileUnit extends FxGameUnit {
     }
 
     @Override
+    protected void handleSounds() {
+        return;
+    }
+
+    @Override
     protected void nextSprite() {
         if (getTile().getTileType() == TileUnit.TileType.BRICK) {
             setCurSprite(tileActiveMap.get((getTile().getTileType()))[this.visualState]);

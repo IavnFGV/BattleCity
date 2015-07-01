@@ -136,7 +136,6 @@ public class CollisionManager {
                             }
                             break;
                         }
-                        activeUnit.stopOnCollision();
                         return;
                     } else {
                         return;

@@ -15,7 +15,6 @@ public abstract class ActiveUnit extends GameUnit {
     protected Boolean engineOn = false;
     protected MoveStrategy moveStrategy;
     protected Long moveAccumulator;
-    private volatile boolean cantMove;
     private Bounds newBounds;
     private Direction direction;
     private Long velocity = 8L;
@@ -60,22 +59,9 @@ public abstract class ActiveUnit extends GameUnit {
 
     }
 
-    public boolean isCantMove() {
-        return cantMove;
-    }
-
-    public void setCantMove(boolean cantMove) {
-        this.cantMove = cantMove;
-    }
-
-    public void stopOnCollision() {
-        setCantMove(true);
-    }
-
     @Override
     public String toString() {
         return "ActiveUnit{" +
-                "cantMove=" + cantMove +
                 ", engineOn=" + engineOn +
                 ", moveStrategy=" + moveStrategy +
                 ", moveAccumulator=" + moveAccumulator +
@@ -99,7 +85,7 @@ public abstract class ActiveUnit extends GameUnit {
         }
     }
 
-    public Boolean isEngineOn() {
+    public synchronized Boolean isEngineOn() {
         return engineOn;
     }
 
@@ -170,6 +156,7 @@ public abstract class ActiveUnit extends GameUnit {
                 if (getMoveAccumulator() < 1000000000 / 64) {
                     setNewBounds(getBounds());
                     return getBounds();
+
                 }
                 setMoveAccumulator(0l);
                 Double deltaPosition = (Double.valueOf(getVelocity())); // TODO MAY FROZE???
