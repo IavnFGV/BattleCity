@@ -12,6 +12,7 @@ import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.io.LevelLoader;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -26,7 +27,10 @@ public class MainFXApplication extends Application {
     Long toggleCount = 0l;
     KeyPressedEventHandler keyPressedEventHandler = new KeyPressedEventHandler();
     TankUnit firstPlayerTank;
-    private Set<KeyCode> firstPlayerMovements = EnumSet.of(KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT);
+    TankUnit secondPlayerTank;
+
+    private Set<KeyCode> firstPlayerMovements = EnumSet.of(KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D);
+    private Set<KeyCode> secondPlayerMovements = EnumSet.of(KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT);
 
 
     public static void main(String[] args) throws Exception {
@@ -45,14 +49,8 @@ public class MainFXApplication extends Application {
         AnimationTimer toggleAnimationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                try {
-                    //     if (now - toggleCount >= 500000000l) {
-                        fxWorld.toggle(now);
-                        toggleCount = now;
-                    //   }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                fxWorld.toggle(now);
+                toggleCount = now;
             }
         };
 
@@ -62,14 +60,23 @@ public class MainFXApplication extends Application {
             @Override
             public void handle(long now) {
                 if (!init) {
+
                     world.initializeWorld(now);
+                    FxGameUnit tank = FxGameUnit.createFxGameUnit(world.getFirstPlayer());
+                    fxWorld.fxGameUnitsList.add(tank);
+                    firstPlayerTank = world.getFirstPlayer();
+                    // root.getChildren().add(tank.getImageView());
+
+                    FxGameUnit tank2 = FxGameUnit.createFxGameUnit(world.getSecondPlayer());
+                    fxWorld.fxGameUnitsList.add(tank2);
+                    secondPlayerTank = world.getSecondPlayer();
+                    //root.getChildren().add(tank2.getImageView());
+                    //fxWorld.ga
+                    Collections.reverse(fxWorld.fxGameUnitsList);
                     for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
                         root.getChildren().add(fxGameUnit.getImageView());
                     }
-                    FxGameUnit firstTank = FxGameUnit.createFxGameUnit(world.getFirstPlayer());
-                    fxWorld.fxGameUnitsList.add(firstTank);
-                    firstPlayerTank = world.getFirstPlayer();
-                    root.getChildren().add(firstTank.getImageView());
+
                     init = true;
                 }
                 world.handleCollisions();
@@ -91,25 +98,72 @@ public class MainFXApplication extends Application {
     public void handleCommands() {
         if (!keyPressedEventHandler.isAnyKeyDown(firstPlayerMovements)) {
             firstPlayerTank.setEngineOn(false);
-            return;
+        } else {
+            firstPlayerMovements();
         }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.UP)) {
+        if (!keyPressedEventHandler.isAnyKeyDown(secondPlayerMovements)) {
+            secondPlayerTank.setEngineOn(false);
+        } else {
+            secondPlayerMovements();
+        }
+
+    }
+
+    private void firstPlayerMovements() {
+        if (keyPressedEventHandler.isKeyDown(KeyCode.W)) {
             firstPlayerTank.setDirection(ActiveUnit.Direction.UP);
             firstPlayerTank.setEngineOn(true);
         }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.DOWN)) {
+        if (keyPressedEventHandler.isKeyDown(KeyCode.S)) {
             firstPlayerTank.setDirection(ActiveUnit.Direction.DOWN);
             firstPlayerTank.setEngineOn(true);
         }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.LEFT)) {
+        if (keyPressedEventHandler.isKeyDown(KeyCode.A)) {
             firstPlayerTank.setDirection(ActiveUnit.Direction.LEFT);
             firstPlayerTank.setEngineOn(true);
         }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.RIGHT)) {
+        if (keyPressedEventHandler.isKeyDown(KeyCode.D)) {
             firstPlayerTank.setDirection(ActiveUnit.Direction.RIGHT);
             firstPlayerTank.setEngineOn(true);
         }
+    }
 
+    private void secondPlayerMovements() {
+        if (keyPressedEventHandler.isKeyDown(KeyCode.UP)) {
+            secondPlayerTank.setDirection(ActiveUnit.Direction.UP);
+            secondPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.DOWN)) {
+            secondPlayerTank.setDirection(ActiveUnit.Direction.DOWN);
+            secondPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.LEFT)) {
+            secondPlayerTank.setDirection(ActiveUnit.Direction.LEFT);
+            secondPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.RIGHT)) {
+            secondPlayerTank.setDirection(ActiveUnit.Direction.RIGHT);
+            secondPlayerTank.setEngineOn(true);
+        }
+    }
+
+    private void secondPlayerMovements() {
+        if (keyPressedEventHandler.isKeyDown(KeyCode.UP)) {
+            secondPlayerTank.setDirection(ActiveUnit.Direction.UP);
+            secondPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.DOWN)) {
+            secondPlayerTank.setDirection(ActiveUnit.Direction.DOWN);
+            secondPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.LEFT)) {
+            secondPlayerTank.setDirection(ActiveUnit.Direction.LEFT);
+            secondPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.RIGHT)) {
+            secondPlayerTank.setDirection(ActiveUnit.Direction.RIGHT);
+            secondPlayerTank.setEngineOn(true);
+        }
     }
 
     private void handleSound(Long now) {

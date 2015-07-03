@@ -4,6 +4,7 @@ package ua.drozda.battlecity.core.collisions;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import ua.drozda.battlecity.core.ActiveUnit;
+import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TileUnit;
 import ua.drozda.battlecity.core.World;
 
@@ -51,6 +52,64 @@ public class CollisionManager {
         this.world = world;
     }
 
+    public void newPosition(ActiveUnit activeUnit) {
+        final boolean stop;
+        world.getUnitList().stream().filter(u -> (u != activeUnit))
+                .forEach(u -> {
+                            Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
+                                    activeUnit.getNewBounds().getMinY() + 1,
+                                    activeUnit.getNewBounds().getWidth() - 2,
+                                    activeUnit.getNewBounds().getHeight() - 2);
+                            if (!canRide(u) && u.getBounds().intersects(newBounds)) {
+                                System.out.println("TileUnit =" + u + ";activeUnit = [" + activeUnit + "]");
+
+                                switch (activeUnit.getDirection()) {
+                                    case UP: {
+                                        double deltaY = u.getBounds().getMaxY() - activeUnit.getNewBounds().getMinY();
+                                        activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX(),
+                                                activeUnit.getNewBounds().getMinY() + (deltaY),
+                                                activeUnit.getNewBounds().getWidth(),
+                                                activeUnit.getNewBounds().getHeight()));
+                                    }
+                                    break;
+                                    case LEFT: {
+                                        double deltaX = u.getBounds().getMaxX() - activeUnit.getNewBounds().getMinX();
+                                        activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX() + deltaX,
+                                                activeUnit.getNewBounds().getMinY(),
+                                                activeUnit.getNewBounds().getWidth(),
+                                                activeUnit.getNewBounds().getHeight()));
+                                    }
+                                    break;
+                                    case DOWN: {
+                                        double deltaY = activeUnit.getNewBounds().getMaxY() - u.getBounds().getMinY();
+                                        activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX(),
+                                                activeUnit.getNewBounds().getMinY() - (deltaY),
+                                                activeUnit.getNewBounds().getWidth(),
+                                                activeUnit.getNewBounds().getHeight()));
+                                    }
+                                    break;
+                                    case RIGHT: {
+                                        double deltaX = activeUnit.getNewBounds().getMaxX() - u.getBounds().getMinX();
+                                        activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX() - deltaX,
+                                                activeUnit.getNewBounds().getMinY(),
+                                                activeUnit.getNewBounds().getWidth(),
+                                                activeUnit.getNewBounds().getHeight()));
+                                    }
+                                    break;
+                                }
+                                return;
+                            } else {
+                                return;
+                            }
+                        }
+                );
+        //   if (!activeUnit.isCantMove()) {
+        activeUnit.setBounds(activeUnit.getNewBounds());
+//        } else {
+//            activeUnit.setNewBounds(activeUnit.getBounds());
+        //   }
+    }
+
     //
 //    public List<Actor> getActorList() {
 //        return actorList;
@@ -78,75 +137,12 @@ public class CollisionManager {
 ////        }
 ////    }
     //  private Bounds correctPosition
-
-    public void newPosition(ActiveUnit activeUnit) {
-        final boolean stop;
-        world.getUnitList().stream().filter(u -> (u instanceof TileUnit)).forEach(u -> {
-                    TileUnit tileUnit = (TileUnit) u;
-                    Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
-                            activeUnit.getNewBounds().getMinY() + 1,
-                            activeUnit.getNewBounds().getWidth() - 2,
-                            activeUnit.getNewBounds().getHeight() - 2);
-                    if ((!rideTiles.contains(tileUnit.getTileType())) && tileUnit.getBounds().intersects(newBounds)) {
-                        System.out.println("TileUnit =" + tileUnit + ";activeUnit = [" + activeUnit + "]");
-
-                        ActiveUnit.Direction direction;
-                        if (tileUnit.getBounds().getMinX() > activeUnit.getBounds().getMinX()) {
-                            direction = ActiveUnit.Direction.LEFT;
-                        } else {
-                            direction = ActiveUnit.Direction.RIGHT;
-                        }
-                        if (tileUnit.getBounds().getMinY() > activeUnit.getBounds().getMinY()) {
-                            direction = ActiveUnit.Direction.UP;
-                        } else {
-                            direction = ActiveUnit.Direction.DOWN;
-                        }
-
-                        switch (activeUnit.getDirection()) {
-                            case UP: {
-                                double deltaY = tileUnit.getBounds().getMaxY() - activeUnit.getNewBounds().getMinY();
-                                activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX(),
-                                        activeUnit.getNewBounds().getMinY() + (deltaY),
-                                        activeUnit.getNewBounds().getWidth(),
-                                        activeUnit.getNewBounds().getHeight()));
-                            }
-                            break;
-                            case LEFT: {
-                                double deltaX = tileUnit.getBounds().getMaxX() - activeUnit.getNewBounds().getMinX();
-                                activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX() + deltaX,
-                                        activeUnit.getNewBounds().getMinY(),
-                                        activeUnit.getNewBounds().getWidth(),
-                                        activeUnit.getNewBounds().getHeight()));
-                            }
-                            break;
-                            case DOWN: {
-                                double deltaY = activeUnit.getNewBounds().getMaxY() - tileUnit.getBounds().getMinY();
-                                activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX(),
-                                        activeUnit.getNewBounds().getMinY() - (deltaY),
-                                        activeUnit.getNewBounds().getWidth(),
-                                        activeUnit.getNewBounds().getHeight()));
-                            }
-                            break;
-                            case RIGHT: {
-                                double deltaX = activeUnit.getNewBounds().getMaxX() - tileUnit.getBounds().getMinX();
-                                activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX() - deltaX,
-                                        activeUnit.getNewBounds().getMinY(),
-                                        activeUnit.getNewBounds().getWidth(),
-                                        activeUnit.getNewBounds().getHeight()));
-                            }
-                            break;
-                        }
-                        return;
-                    } else {
-                        return;
-                    }
-                }
-        );
-        //   if (!activeUnit.isCantMove()) {
-        activeUnit.setBounds(activeUnit.getNewBounds());
-//        } else {
-//            activeUnit.setNewBounds(activeUnit.getBounds());
-        //   }
+    private Boolean canRide(GameUnit unit) {
+        Boolean result = false;
+        if (unit instanceof TileUnit) {
+            result = (rideTiles.contains(((TileUnit) unit).getTileType()));
+        }
+        return result;
     }
 
 

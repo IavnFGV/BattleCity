@@ -23,17 +23,7 @@ public abstract class FxGameUnit implements Observer, Togglable {
 
     public FxGameUnit(GameUnit gameUnit) {
         this.gameUnit = gameUnit;
-//        if (gameUnit instanceof TileUnit) {
-//
-//        }
-//        if (gameUnit instanceof TankUnit) {
-//            maxToggle = 2;
-//        }
-//        if (gameUnit instanceof BulletUnit) {
-//            maxToggle = 1;
-//        }
         gameUnit.addObserver(this);
-//        updateSprite();
     }
 
     public static FxGameUnit createFxGameUnit(GameUnit gameUnit) {
@@ -63,8 +53,9 @@ public abstract class FxGameUnit implements Observer, Togglable {
     protected void updateSprite() {
         nextSprite();
         //   setCurSprite(FxSpriteManager.getNextSprite(this));
-        imageView.setX(gameUnit.getBounds().getMinX());
-        imageView.setY(gameUnit.getBounds().getMinY());
+        imageView.relocate(gameUnit.getBounds().getMinX(), gameUnit.getBounds().getMinY());
+//                .setX(gameUnit.getBounds().getMinX());
+//        imageView.setY(gameUnit.getBounds().getMinY());
         handleSounds();
     }
 

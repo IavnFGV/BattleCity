@@ -19,51 +19,15 @@ public class FxTankUnit extends FxGameUnit {
 
     private static Map<TankUnit.TankType, HashMap<ActiveUnit.Direction, Rectangle2D[][]>> tankActiveMap = new
             HashMap<>();
-    private static Long tankTogggleTimer = 1000000l;
+    private static Long tankTogggleTimer = 50000000l;
 
     static {
-        //for player tank
-        HashMap<ActiveUnit.Direction, Rectangle2D[][]> bufHashMap = new HashMap<>();
-        //UP
-        Rectangle2D[][] rectangle2Ds = new Rectangle2D[4][2];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 2; j++) {
-                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 0, FxWorld
-                        .firstPlayerZoneY + FxWorld.tankSize * j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld
-                        .tankSize);
-            }
-        }
-        bufHashMap.put(ActiveUnit.Direction.UP, rectangle2Ds);
-        //RIGHT
-        rectangle2Ds = new Rectangle2D[4][2];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 2; j++) {
-                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 1, FxWorld
-                        .tankSize *
-                        j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld.tankSize);
-            }
-        }
-        bufHashMap.put(ActiveUnit.Direction.RIGHT, rectangle2Ds);
-        //DOWN
-        rectangle2Ds = new Rectangle2D[4][2];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 2; j++) {
-                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 2, FxWorld
-                        .tankSize *
-                        j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld.tankSize);
-            }
-        }
-        bufHashMap.put(ActiveUnit.Direction.DOWN, rectangle2Ds);
-        //LEFT
-        rectangle2Ds = new Rectangle2D[4][2];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 2; j++) {
-                rectangle2Ds[i][j] = new Rectangle2D(FxWorld.firstPlayerZoneX + FxWorld.tankSize * 3, FxWorld
-                        .tankSize * j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld.tankSize);
-            }
-        }
-        bufHashMap.put(ActiveUnit.Direction.LEFT, rectangle2Ds);
+        //for players tanks
+        HashMap<ActiveUnit.Direction, Rectangle2D[][]> bufHashMap = getPlayerDirectionHashMap(FxWorld.firstPlayerZoneX);
         tankActiveMap.put(TankUnit.TankType.FIRST_PLAYER, bufHashMap);
+        bufHashMap = getPlayerDirectionHashMap(FxWorld.secondPlayerZoneX);
+        tankActiveMap.put(TankUnit.TankType.SECOND_PLAYER, bufHashMap);
+
     }
 
     ThreadFactory threadFactory =
@@ -74,16 +38,19 @@ public class FxTankUnit extends FxGameUnit {
                     return t;
                 }
             };
-    private ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(threadFactory);
 
+    //    private static HashMap<ActiveUnit.Direction, Rectangle2D[][]> loadSprites(Integer offset) {
+//
+//    }
+    private ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(threadFactory);
     public FxTankUnit(TankUnit gameUnit) {
         super(gameUnit);
         service.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 if (getTank().isEngineOn()) {
-                    SoundManager.soundEventsQueue.add("moving");
-                    //   SoundManager.playSound("moving");
+                    //     SoundManager.soundEventsQueue.add("moving");
+                    SoundManager.playSound("moving");
                 }
             }
         }, 0, 154, TimeUnit.MILLISECONDS);
@@ -92,6 +59,50 @@ public class FxTankUnit extends FxGameUnit {
 
     public TankUnit getTank() {
         return (TankUnit) getGameUnit();
+    }
+
+    private static HashMap<ActiveUnit.Direction, Rectangle2D[][]> getPlayerDirectionHashMap(Integer offsetX) {
+        HashMap<ActiveUnit.Direction, Rectangle2D[][]> hashMap = new HashMap<>();
+        //UP
+        Rectangle2D[][] rectangle2Ds = new Rectangle2D[4][2];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 2; j++) {
+                rectangle2Ds[i][j] = new Rectangle2D(offsetX + FxWorld.tankSize * 0, FxWorld
+                        .firstPlayerZoneY + FxWorld.tankSize * j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld
+                        .tankSize);
+            }
+        }
+        hashMap.put(ActiveUnit.Direction.UP, rectangle2Ds);
+        //RIGHT
+        rectangle2Ds = new Rectangle2D[4][2];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 2; j++) {
+                rectangle2Ds[i][j] = new Rectangle2D(offsetX + FxWorld.tankSize * 1, FxWorld
+                        .tankSize *
+                        j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld.tankSize);
+            }
+        }
+        hashMap.put(ActiveUnit.Direction.RIGHT, rectangle2Ds);
+        //DOWN
+        rectangle2Ds = new Rectangle2D[4][2];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 2; j++) {
+                rectangle2Ds[i][j] = new Rectangle2D(offsetX + FxWorld.tankSize * 2, FxWorld
+                        .tankSize *
+                        j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld.tankSize);
+            }
+        }
+        hashMap.put(ActiveUnit.Direction.DOWN, rectangle2Ds);
+        //LEFT
+        rectangle2Ds = new Rectangle2D[4][2];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 2; j++) {
+                rectangle2Ds[i][j] = new Rectangle2D(offsetX + FxWorld.tankSize * 3, FxWorld
+                        .tankSize * j + FxWorld.tankSize * i * 2, FxWorld.tankSize, FxWorld.tankSize);
+            }
+        }
+        hashMap.put(ActiveUnit.Direction.LEFT, rectangle2Ds);
+        return hashMap;
     }
 
     @Override

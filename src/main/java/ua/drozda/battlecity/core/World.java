@@ -29,6 +29,7 @@ public class World implements LoadableCells {
     private CollisionManager collisionManager;
 
     private TankUnit firstPlayer;
+    private TankUnit secondPlayer;
     private List<GameUnit> unitList = new ArrayList<>(); // all units will be here TODO Think about concurrency
     private Map<String, TileUnit> tileMap = new HashMap<>();
 
@@ -49,6 +50,14 @@ public class World implements LoadableCells {
         tankWidthCells = 2;
         tankHeightPixel = tankHeightCells * cellHeight;
         tankWidthPixel = tankWidthCells * cellWidth;
+    }
+
+    public TankUnit getSecondPlayer() {
+        return secondPlayer;
+    }
+
+    public void setSecondPlayer(TankUnit secondPlayer) {
+        this.secondPlayer = secondPlayer;
     }
 
     public Map<String, TileUnit> getTileMap() {
@@ -222,13 +231,21 @@ public class World implements LoadableCells {
     }
 
     public void initializeWorld(Long now) {
-        TankUnit player = new TankUnit(8 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
+        TankUnit tank = new TankUnit(8 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
                 1l,
                 0l, GameUnit
                 .BasicState.CREATING,
                 ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
                 .FIRST_PLAYER);
-        setFirstPlayer(player);
+        setFirstPlayer(tank);
+        tank = new TankUnit(16 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
+                1l,
+                0l, GameUnit
+                .BasicState.CREATING,
+                ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
+                .SECOND_PLAYER);
+        setSecondPlayer(tank);
+
         getUnitList().forEach(u -> u.initUnit(now));
         setCollisionManager(new CollisionManager(this));
 
