@@ -1,5 +1,8 @@
 package ua.drozda.battlecity.core;
 
+import javafx.geometry.Bounds;
+import ua.drozda.battlecity.fx.FxWorld;
+
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -12,6 +15,7 @@ public class TankUnit extends ActiveUnit {
     protected TankType tankType;
     protected BonusStrategy bonusStrategy;
     protected Integer starCount = 0;
+
 
     public TankUnit(double x, double y, double width, double height, Long lives, Long currentTime,
                     BasicState currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
@@ -70,6 +74,18 @@ public class TankUnit extends ActiveUnit {
             this.setMoveStrategy(this.new TankMoveStrategy());
         }
         return moveStrategy;
+    }
+
+    @Override
+    protected Boolean checkBounds(Bounds bounds) {
+        if (bounds.getMinX() < 0 ||
+                bounds.getMinX() > 24 * FxWorld.tileSize ||
+                bounds.getMinY() < 0 ||
+                bounds.getMinY() > 24 * FxWorld.tileSize
+                ) {
+            return false;
+        }
+        return super.checkBounds(bounds);
     }
 
     public enum TankType {

@@ -53,7 +53,6 @@ public class CollisionManager {
     }
 
     public void newPosition(ActiveUnit activeUnit) {
-        final boolean stop;
         world.getUnitList().stream().filter(u -> (u != activeUnit))
                 .forEach(u -> {
                             Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
@@ -61,7 +60,7 @@ public class CollisionManager {
                                     activeUnit.getNewBounds().getWidth() - 2,
                                     activeUnit.getNewBounds().getHeight() - 2);
                             if (!canRide(u) && u.getBounds().intersects(newBounds)) {
-                                System.out.println("TileUnit =" + u + ";activeUnit = [" + activeUnit + "]");
+                                System.out.println("OtherUnit =" + u + ";activeUnit = [" + activeUnit + "]");
 
                                 switch (activeUnit.getDirection()) {
                                     case UP: {
@@ -103,11 +102,10 @@ public class CollisionManager {
                             }
                         }
                 );
-        //   if (!activeUnit.isCantMove()) {
-        activeUnit.setBounds(activeUnit.getNewBounds());
-//        } else {
-//            activeUnit.setNewBounds(activeUnit.getBounds());
-        //   }
+        if (activeUnit.isEngineOn()) {
+            activeUnit.setBounds(activeUnit.getNewBounds());
+        }
+
     }
 
     //

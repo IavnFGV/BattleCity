@@ -36,6 +36,7 @@ public abstract class GameUnit extends Observable {
     protected Function<GameUnit, Boolean> registrateAction;
     protected Function<GameUnit, Boolean> unRegistrateAction;
     protected Long deltaHeartBeat;
+
     public GameUnit(double x, double y, double width, double height, Long lifes, Long currentTime, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
         this(x, y, width, height, lifes, currentTime, BasicState.CREATING, registerAction, unRegisterAction);
     }
@@ -111,7 +112,14 @@ public abstract class GameUnit extends Observable {
     }
 
     public void setBounds(Bounds bounds) {
-        this.bounds = bounds;
+        System.out.println("setBounds for" + this);
+        if (checkBounds(bounds)) {
+            this.bounds = bounds;
+        }
+    }
+
+    protected Boolean checkBounds(Bounds bounds) {
+        return true;
     }
 
     public void decLifes(Long lifes) {

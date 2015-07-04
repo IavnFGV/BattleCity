@@ -41,9 +41,17 @@ public class MainFXApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         LevelLoader.loadlevel("20", world);
         fxWorld.setWorld(world);
+        Group playGround = new Group();
         Group root = new Group();
-        Scene scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel(), fxWorld.getWorld().getWorldHeightPixel(), Color
-                .BLACK);
+        root.getChildren().add(FxBorder.group);
+        root.getChildren().add(playGround);
+        Scene scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel() +
+                fxWorld.getWorld().getCellWidth() * 6,//for bounds around playground
+                fxWorld.getWorld().getWorldHeightPixel() +
+                        fxWorld.getWorld().getCellWidth() * 4, //for bounds around playground
+                Color.BLACK);
+        playGround.setLayoutX(fxWorld.getWorld().getCellWidth() * 2);
+        playGround.setLayoutY(fxWorld.getWorld().getCellHeight() * 2);
         scene.setOnKeyReleased(keyPressedEventHandler);
         scene.setOnKeyPressed(keyPressedEventHandler);
         AnimationTimer toggleAnimationTimer = new AnimationTimer() {
@@ -54,6 +62,8 @@ public class MainFXApplication extends Application {
             }
         };
 
+        Group bounds = new Group();
+
         AnimationTimer mainLoop = new AnimationTimer() {
             private Boolean init = false;
 
@@ -63,18 +73,19 @@ public class MainFXApplication extends Application {
 
                     world.initializeWorld(now);
                     FxGameUnit tank = FxGameUnit.createFxGameUnit(world.getFirstPlayer());
-                    fxWorld.fxGameUnitsList.add(tank);
+
                     firstPlayerTank = world.getFirstPlayer();
-                    // root.getChildren().add(tank.getImageView());
+                    // playGround.getChildren().add(tank.getImageView());
 
                     FxGameUnit tank2 = FxGameUnit.createFxGameUnit(world.getSecondPlayer());
                     fxWorld.fxGameUnitsList.add(tank2);
+                    fxWorld.fxGameUnitsList.add(tank);
                     secondPlayerTank = world.getSecondPlayer();
-                    //root.getChildren().add(tank2.getImageView());
+                    //playGround.getChildren().add(tank2.getImageView());
                     //fxWorld.ga
                     Collections.reverse(fxWorld.fxGameUnitsList);
                     for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
-                        root.getChildren().add(fxGameUnit.getImageView());
+                        playGround.getChildren().add(fxGameUnit.getImageView());
                     }
 
                     init = true;

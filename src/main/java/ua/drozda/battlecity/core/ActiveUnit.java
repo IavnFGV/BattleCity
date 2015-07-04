@@ -21,7 +21,8 @@ public abstract class ActiveUnit extends GameUnit {
     private Integer cellSize = 16;//bad idea TODO maybe we can use EasyDI lib???
 
     public ActiveUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState
-            currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
+            currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
+                      Function<GameUnit, Boolean> unRegisterAction) {
         super(x, y, width, height, lives, currentTime, currentBasicState, registerAction, unRegisterAction);
         this.setDirection(direction);
         this.setVelocity(velocity);
@@ -33,6 +34,7 @@ public abstract class ActiveUnit extends GameUnit {
     }
 
     private void fixPosition() {
+        // System.out.println("fixPosition for" + this);
         Long x = nearest(getBounds().getMinX(), cellSize);
         Long y = nearest(getBounds().getMinY(), cellSize);
         Double newX = getBounds().getMinX();
@@ -52,6 +54,7 @@ public abstract class ActiveUnit extends GameUnit {
     }
 
     public void setDirection(Direction direction) {
+        System.out.println("setDirection for" + this);
         if (direction != getDirection()) {
             fixPosition();
         }

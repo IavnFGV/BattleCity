@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class FxWorld implements Togglable {
 
-    static final Integer tileSize = 16;
-    static final Integer tankSize = 32;
+    static public final Integer tileSize = 16;
+    static public final Integer tankSize = 32;
 
     static final Integer bulletExplosion = 32;
     static final Integer tankExplosion = 64;
@@ -27,6 +27,9 @@ public class FxWorld implements Togglable {
     static final Integer secondPlayerZoneX = 24 * tankSize;
     static final Integer secondPlayerZoneY = 0 * tankSize;
 
+    static final Integer borderZoneX = 15 * tankSize;
+    static final Integer borderZoneY = 8 * tankSize;
+
     static final Integer brickZoneY = 0 * tileSize;
     static final Integer steelZoneY = 1 * tileSize;
     static final Integer waterZoneY = 2 * tileSize;
@@ -38,8 +41,8 @@ public class FxWorld implements Togglable {
 
 
     //     private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/sprites.png");
-//    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics_debug.png");
-    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics.png");
+    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics_debug.png");
+    //   private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics.png");
     static Image sprites = new Image(spritesStream);
     List<FxGameUnit> fxGameUnitsList = new ArrayList<>();
     // private FxTank firstPlayerTank;
@@ -63,6 +66,7 @@ public class FxWorld implements Togglable {
             fxGameUnit.toggle(now);
         }
     }
+
     public World getWorld() {
         return world;
     }
