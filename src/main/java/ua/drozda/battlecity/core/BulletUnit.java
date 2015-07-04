@@ -1,5 +1,7 @@
 package ua.drozda.battlecity.core;
 
+import ua.drozda.battlecity.core.collisions.CollisionManager;
+
 import java.util.function.Function;
 
 /**
@@ -10,9 +12,9 @@ public class BulletUnit extends ActiveUnit {
 
     public BulletUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState
             currentBasicState, Direction direction, Long velocity, TankUnit owner, Function<GameUnit, Boolean> registerAction,
-                      Function<GameUnit, Boolean> unRegisterAction) {
+                      Function<GameUnit, Boolean> unRegisterAction, CollisionManager collisionManager) {
         super(x, y, width, height, lives, currentTime, currentBasicState, direction, velocity, registerAction,
-                unRegisterAction);
+                unRegisterAction, collisionManager);
         setOwner(owner);
     }
 

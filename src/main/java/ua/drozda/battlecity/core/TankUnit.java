@@ -1,6 +1,7 @@
 package ua.drozda.battlecity.core;
 
 import javafx.geometry.Bounds;
+import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.fx.FxWorld;
 
 import java.util.EnumSet;
@@ -19,9 +20,9 @@ public class TankUnit extends ActiveUnit {
 
     public TankUnit(double x, double y, double width, double height, Long lives, Long currentTime,
                     BasicState currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
-                    Function<GameUnit, Boolean> unRegisterAction, TankType tankType) {
+                    Function<GameUnit, Boolean> unRegisterAction, TankType tankType, CollisionManager collisionManager) {
         super(x, y, width, height, lives, currentTime, currentBasicState, direction, velocity, registerAction,
-                unRegisterAction);
+                unRegisterAction, collisionManager);
         setTankType(tankType);
         if (playerTanks.contains(tankType)) {
             setBonusStrategy(this.new PlayerBonusStrategy());

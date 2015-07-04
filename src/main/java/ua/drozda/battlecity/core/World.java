@@ -237,14 +237,14 @@ public class World implements LoadableCells {
                 0l, GameUnit
                 .BasicState.CREATING,
                 ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
-                .FIRST_PLAYER);
+                .FIRST_PLAYER, collisionManager);
         setFirstPlayer(tank);
         tank = new TankUnit(16 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
                 1l,
                 0l, GameUnit
                 .BasicState.CREATING,
                 ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
-                .SECOND_PLAYER);
+                .SECOND_PLAYER, collisionManager);
         setSecondPlayer(tank);
 
         getUnitList().forEach(u -> u.initUnit(now));

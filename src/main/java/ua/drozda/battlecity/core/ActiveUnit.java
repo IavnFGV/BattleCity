@@ -2,6 +2,7 @@ package ua.drozda.battlecity.core;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import ua.drozda.battlecity.core.collisions.CollisionManager;
 
 import java.util.function.Function;
 
@@ -15,6 +16,7 @@ public abstract class ActiveUnit extends GameUnit {
     protected Boolean engineOn = false;
     protected MoveStrategy moveStrategy;
     protected Long moveAccumulator;
+    protected CollisionManager collisionManager;
     private Bounds newBounds;
     private Direction direction;
     private Long velocity = 8L;
@@ -22,11 +24,12 @@ public abstract class ActiveUnit extends GameUnit {
 
     public ActiveUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState
             currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
-                      Function<GameUnit, Boolean> unRegisterAction) {
+                      Function<GameUnit, Boolean> unRegisterAction, CollisionManager collisionManager) {
         super(x, y, width, height, lives, currentTime, currentBasicState, registerAction, unRegisterAction);
         this.setDirection(direction);
         this.setVelocity(velocity);
         this.setNewBounds(getBounds());
+        this.collisionManager = collisionManager;
     }
 
     public Direction getDirection() {
@@ -46,7 +49,10 @@ public abstract class ActiveUnit extends GameUnit {
         if (abs(newY - y) < (cellSize / 2 + 1)) {
             newY = Double.valueOf(y);
         }
-        setBounds(new BoundingBox(newX, newY, cellSize * 2, cellSize * 2));
+        setNewBounds(new BoundingBox(newX, newY, cellSize * 2, cellSize * 2));
+        if (collisionManager != null) {
+            collisionManager.fixPosition(this);
+        }
     }
 
     private long nearest(double num, Integer base) {
@@ -57,6 +63,7 @@ public abstract class ActiveUnit extends GameUnit {
         System.out.println("setDirection for" + this);
         if (direction != getDirection()) {
             fixPosition();
+
         }
         this.direction = direction;
 

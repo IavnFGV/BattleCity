@@ -3,13 +3,11 @@ package ua.drozda.battlecity.core.collisions;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import ua.drozda.battlecity.core.ActiveUnit;
-import ua.drozda.battlecity.core.GameUnit;
-import ua.drozda.battlecity.core.TileUnit;
-import ua.drozda.battlecity.core.World;
+import ua.drozda.battlecity.core.*;
 
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Created by GFH on 14.05.2015.
@@ -52,10 +50,30 @@ public class CollisionManager {
         this.world = world;
     }
 
+    public void fixPosition(ActiveUnit activeUnit) {
+        Predicate<GameUnit> onlyTank = gameUnit -> (gameUnit instanceof TankUnit);
+        Predicate<GameUnit> notMe = gameUnit -> (gameUnit != activeUnit);
+        Predicate<GameUnit> onlyTankAndNotMe = onlyTank.and(notMe);
+        world.getUnitList().stream().filter(onlyTankAndNotMe).forEach(gameUnit -> {
+            Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
+                    activeUnit.getNewBounds().getMinY() + 1,
+                    activeUnit.getNewBounds().getWidth() - 2,
+                    activeUnit.getNewBounds().getHeight() - 2);
+            if (!newBounds.intersects(gameUnit.getBounds())) {
+                activeUnit.setBounds(activeUnit.getNewBounds());
+            }
+        });
+
+
+    }
+
+
     public void newPosition(ActiveUnit activeUnit) {
         world.getUnitList().stream().filter(u -> (u != activeUnit))
                 .forEach(u -> {
                             Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
+                                    // newBounds will always intersects another bounds if we are absolutelly near another
+                                    // so we give 1 pixel on every direction to handle this situation
                                     activeUnit.getNewBounds().getMinY() + 1,
                                     activeUnit.getNewBounds().getWidth() - 2,
                                     activeUnit.getNewBounds().getHeight() - 2);
