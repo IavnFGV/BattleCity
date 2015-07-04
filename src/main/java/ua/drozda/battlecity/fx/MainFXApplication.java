@@ -109,6 +109,10 @@ public class MainFXApplication extends Application {
 
     }
 
+    private void handleSound(Long now) {
+        SoundManager.handleSoundQueue(now);
+    }
+
     private void firstPlayerMovements() {
         if (keyPressedEventHandler.isKeyDown(KeyCode.W)) {
             firstPlayerTank.setDirection(ActiveUnit.Direction.UP);
@@ -145,29 +149,6 @@ public class MainFXApplication extends Application {
             secondPlayerTank.setDirection(ActiveUnit.Direction.RIGHT);
             secondPlayerTank.setEngineOn(true);
         }
-    }
-
-    private void secondPlayerMovements() {
-        if (keyPressedEventHandler.isKeyDown(KeyCode.UP)) {
-            secondPlayerTank.setDirection(ActiveUnit.Direction.UP);
-            secondPlayerTank.setEngineOn(true);
-        }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.DOWN)) {
-            secondPlayerTank.setDirection(ActiveUnit.Direction.DOWN);
-            secondPlayerTank.setEngineOn(true);
-        }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.LEFT)) {
-            secondPlayerTank.setDirection(ActiveUnit.Direction.LEFT);
-            secondPlayerTank.setEngineOn(true);
-        }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.RIGHT)) {
-            secondPlayerTank.setDirection(ActiveUnit.Direction.RIGHT);
-            secondPlayerTank.setEngineOn(true);
-        }
-    }
-
-    private void handleSound(Long now) {
-        SoundManager.handleSoundQueue(now);
     }
 
     @Override
