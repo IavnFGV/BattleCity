@@ -78,7 +78,9 @@ public class CollisionManager {
                                     activeUnit.getNewBounds().getWidth() - 2,
                                     activeUnit.getNewBounds().getHeight() - 2);
                             if (!canRide(u) && u.getBounds().intersects(newBounds)) {
-                                System.out.println("OtherUnit =" + u + ";activeUnit = [" + activeUnit + "]");
+                                System.out.println("OtherUnit =" + u.getClass() + ";activeUnit = [" + activeUnit
+                                        .getClass() +
+                                        "]");
 
                                 switch (activeUnit.getDirection()) {
                                     case UP: {

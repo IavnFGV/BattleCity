@@ -112,7 +112,6 @@ public abstract class GameUnit extends Observable {
     }
 
     public void setBounds(Bounds bounds) {
-        System.out.println("setBounds for" + this);
         if (checkBounds(bounds)) {
             this.bounds = bounds;
         }

@@ -37,7 +37,6 @@ public abstract class ActiveUnit extends GameUnit {
     }
 
     private void fixPosition() {
-        // System.out.println("fixPosition for" + this);
         Long x = nearest(getBounds().getMinX(), cellSize);
         Long y = nearest(getBounds().getMinY(), cellSize);
         Double newX = getBounds().getMinX();
@@ -60,7 +59,6 @@ public abstract class ActiveUnit extends GameUnit {
     }
 
     public void setDirection(Direction direction) {
-        System.out.println("setDirection for" + this);
         if (direction != getDirection()) {
             fixPosition();
 
