@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public class MainFXApplication extends Application {
 
-    World world = new World(World.WorldType.DoublePlayer, 2);
+    World world = new World(World.WorldType.SinglePlayer, 2);
     FxWorld fxWorld = new FxWorld();
     Boolean sleepKeyPressHandle = true;
     Long toggleCount = 0l;
@@ -40,6 +40,7 @@ public class MainFXApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         LevelLoader.loadlevel("20", world);
+        world.initializeWorld(0l);
         fxWorld.setWorld(world);
         Group playGround = new Group();
         Group root = new Group();
@@ -71,15 +72,15 @@ public class MainFXApplication extends Application {
             public void handle(long now) {
                 if (!init) {
 
-                    world.initializeWorld(now);
-                    FxGameUnit tank = FxGameUnit.createFxGameUnit(world.getFirstPlayer());
+
+                    //   FxGameUnit tank = FxGameUnit.createFxGameUnit(world.getFirstPlayer());
 
                     firstPlayerTank = world.getFirstPlayer();
                     // playGround.getChildren().add(tank.getImageView());
 
-                    FxGameUnit tank2 = FxGameUnit.createFxGameUnit(world.getSecondPlayer());
-                    fxWorld.fxGameUnitsList.add(tank2);
-                    fxWorld.fxGameUnitsList.add(tank);
+                    //    FxGameUnit tank2 = FxGameUnit.createFxGameUnit(world.getSecondPlayer());
+                    //    fxWorld.fxGameUnitsList.add(tank2);
+                    //    fxWorld.fxGameUnitsList.add(tank);
                     secondPlayerTank = world.getSecondPlayer();
                     //playGround.getChildren().add(tank2.getImageView());
                     //fxWorld.ga
@@ -111,6 +112,9 @@ public class MainFXApplication extends Application {
             firstPlayerTank.setEngineOn(false);
         } else {
             firstPlayerMovements();
+        }
+        if (secondPlayerTank == null) {
+            return;
         }
         if (!keyPressedEventHandler.isAnyKeyDown(secondPlayerMovements)) {
             secondPlayerTank.setEngineOn(false);

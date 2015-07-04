@@ -6,8 +6,10 @@ import javafx.geometry.Bounds;
 import ua.drozda.battlecity.core.*;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by GFH on 14.05.2015.
@@ -54,7 +56,12 @@ public class CollisionManager {
         Predicate<GameUnit> onlyTank = gameUnit -> (gameUnit instanceof TankUnit);
         Predicate<GameUnit> notMe = gameUnit -> (gameUnit != activeUnit);
         Predicate<GameUnit> onlyTankAndNotMe = onlyTank.and(notMe);
-        world.getUnitList().stream().filter(onlyTankAndNotMe).forEach(gameUnit -> {
+        List<GameUnit> tanks = world.getUnitList().stream().filter(onlyTankAndNotMe).collect(Collectors.toList());
+        if (tanks.size() == 0) {// no more tanks
+            activeUnit.setBounds(activeUnit.getNewBounds());
+            return;
+        }
+        tanks.forEach(gameUnit -> {
             Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
                     activeUnit.getNewBounds().getMinY() + 1,
                     activeUnit.getNewBounds().getWidth() - 2,
@@ -63,8 +70,6 @@ public class CollisionManager {
                 activeUnit.setBounds(activeUnit.getNewBounds());
             }
         });
-
-
     }
 
 
@@ -72,7 +77,7 @@ public class CollisionManager {
         world.getUnitList().stream().filter(u -> (u != activeUnit))
                 .forEach(u -> {
                             Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
-                                    // newBounds will always intersects another bounds if we are absolutelly near another
+                                    // newBounds will always intersects another bounds if we are absolutely near another
                                     // so we give 1 pixel on every direction to handle this situation
                                     activeUnit.getNewBounds().getMinY() + 1,
                                     activeUnit.getNewBounds().getWidth() - 2,
