@@ -1,5 +1,7 @@
 package ua.drozda.battlecity.core;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.LoadableCells;
 
@@ -32,6 +34,7 @@ public class World implements LoadableCells {
     private TankUnit secondPlayer;
     private List<GameUnit> unitList = new ArrayList<>(); // all units will be here TODO Think about concurrency
     private Map<String, TileUnit> tileMap = new HashMap<>();
+    private IntegerProperty enemiesCount;
 
     public World(WorldType worldType) {
         this(worldType, 1);
@@ -51,6 +54,21 @@ public class World implements LoadableCells {
         tankHeightPixel = tankHeightCells * cellHeight;
         tankWidthPixel = tankWidthCells * cellWidth;
         this.worldType = worldType;
+    }
+
+    public final int getEnemiesCount() {
+        return enemiesCount == null ? 0 : enemiesCount.getValue();
+    }
+
+    public final void setEnemiesCount(int value) {
+        enemiesCountProperty().setValue(value);
+    }
+
+    public final IntegerProperty enemiesCountProperty() {
+        if (enemiesCount == null) {
+            enemiesCount = new SimpleIntegerProperty(this, "enemiesCount", 20);
+        }
+        return enemiesCount;
     }
 
     public TankUnit getSecondPlayer() {

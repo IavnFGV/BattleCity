@@ -1,5 +1,7 @@
 package ua.drozda.battlecity.core;
 
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 
@@ -36,6 +38,7 @@ public abstract class GameUnit extends Observable {
     protected Function<GameUnit, Boolean> registrateAction;
     protected Function<GameUnit, Boolean> unRegistrateAction;
     protected Long deltaHeartBeat;
+    private LongProperty lifesCount;
 
     public GameUnit(double x, double y, double width, double height, Long lifes, Long currentTime, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
         this(x, y, width, height, lifes, currentTime, BasicState.CREATING, registerAction, unRegisterAction);
@@ -132,13 +135,30 @@ public abstract class GameUnit extends Observable {
 
     public void setLifes(Long lifes) {
         this.lifes = lifes;
+        setLifesCount(lifes);
         if (this.lifes <= 0) {
             setCurrentBasicState(BasicState.EXPLODING);
         }
+
+    }
+
+    public final LongProperty lifesCountProperty() {
+        if (lifesCount == null) {
+            lifesCount = new SimpleLongProperty(this, "lifesCount", 2);
+        }
+        return lifesCount;
     }
 
     protected Long getTimeInState(BasicState state) {
         return timeInState.get(state);
+    }
+
+    public final long getLifesCount() {
+        return lifesCount == null ? 0 : lifesCount.getValue();
+    }
+
+    public final void setLifesCount(long value) {
+        lifesCountProperty().setValue(value);
     }
 
     public void heartBeat(Long now) {

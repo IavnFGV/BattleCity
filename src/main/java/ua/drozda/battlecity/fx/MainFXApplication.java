@@ -2,6 +2,7 @@ package ua.drozda.battlecity.fx;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.beans.binding.IntegerBinding;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -23,6 +24,8 @@ public class MainFXApplication extends Application {
 
     World world = new World(World.WorldType.SinglePlayer, 2);
     FxWorld fxWorld = new FxWorld();
+    FxBorder fxBorder = new FxBorder();
+    IntegerBinding integerBinding;
     Boolean sleepKeyPressHandle = true;
     Long toggleCount = 0l;
     KeyPressedEventHandler keyPressedEventHandler = new KeyPressedEventHandler();
@@ -44,7 +47,8 @@ public class MainFXApplication extends Application {
         fxWorld.setWorld(world);
         Group playGround = new Group();
         Group root = new Group();
-        root.getChildren().add(FxBorder.group);
+
+        root.getChildren().add(FxBorder.border);
         root.getChildren().add(playGround);
         Scene scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel() +
                 fxWorld.getWorld().getCellWidth() * 6,//for bounds around playground
@@ -89,6 +93,11 @@ public class MainFXApplication extends Application {
                         playGround.getChildren().add(fxGameUnit.getImageView());
                     }
 
+                    fxBorder.enemiesCountProperty().bind(world.enemiesCountProperty());
+                    fxBorder.firstPlayerLifesProperty().bind(firstPlayerTank.lifesCountProperty());
+                    if (secondPlayerTank != null) {
+                        fxBorder.secondPlayerLifesProperty().bind(secondPlayerTank.lifesCountProperty());
+                    }
                     init = true;
                 }
                 world.handleCollisions();
