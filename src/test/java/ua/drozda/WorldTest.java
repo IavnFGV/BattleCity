@@ -13,7 +13,7 @@ public class WorldTest {
     @Before
     public void prepare() {
         System.out.println(">>>>WorldTest Starting");
-        world = new World();
+        world = new World(World.WorldType.DoublePlayer);
         System.out.println("world created");
     }
 

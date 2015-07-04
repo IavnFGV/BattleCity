@@ -27,17 +27,17 @@ public class World implements LoadableCells {
     private Integer tankHeightPixel;
     private Integer tankHeightCells;
     private CollisionManager collisionManager;
-
+    private WorldType worldType;
     private TankUnit firstPlayer;
     private TankUnit secondPlayer;
     private List<GameUnit> unitList = new ArrayList<>(); // all units will be here TODO Think about concurrency
     private Map<String, TileUnit> tileMap = new HashMap<>();
 
-    public World() {
-        this(1);
+    public World(WorldType worldType) {
+        this(worldType, 1);
     }
 
-    public World(Integer gamePixel) {
+    public World(WorldType worldType, Integer gamePixel) {
         this.gamePixel = gamePixel;
         worldWiddthCells = 26;
         worldHeightCells = 26;
@@ -50,6 +50,7 @@ public class World implements LoadableCells {
         tankWidthCells = 2;
         tankHeightPixel = tankHeightCells * cellHeight;
         tankWidthPixel = tankWidthCells * cellWidth;
+        this.worldType = worldType;
     }
 
     public TankUnit getSecondPlayer() {
@@ -239,17 +240,26 @@ public class World implements LoadableCells {
                 ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
                 .FIRST_PLAYER, collisionManager);
         setFirstPlayer(tank);
-        tank = new TankUnit(16 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
-                1l,
-                0l, GameUnit
-                .BasicState.CREATING,
-                ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
-                .SECOND_PLAYER, collisionManager);
-        setSecondPlayer(tank);
-
+        if (getWorldType() == WorldType.DoublePlayer) {
+            tank = new TankUnit(16 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
+                    1l,
+                    0l, GameUnit
+                    .BasicState.CREATING,
+                    ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
+                    .SECOND_PLAYER, collisionManager);
+            setSecondPlayer(tank);
+        }
         getUnitList().forEach(u -> u.initUnit(now));
 
 
+    }
+
+    public WorldType getWorldType() {
+        return worldType;
+    }
+
+    public void setWorldType(WorldType worldType) {
+        this.worldType = worldType;
     }
 
     public void handleCollisions() {
@@ -272,6 +282,10 @@ public class World implements LoadableCells {
                 tileType, this::registrateUnit, this::unRegistrateUnit);
         tileMap.put(getTileId(tileUnit), tileUnit);
         return true;
+    }
+
+    public enum WorldType {
+        SinglePlayer, DoublePlayer, Construction
     }
 
 

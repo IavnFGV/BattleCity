@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public class MainFXApplication extends Application {
 
-    World world = new World(2);
+    World world = new World(World.WorldType.DoublePlayer, 2);
     FxWorld fxWorld = new FxWorld();
     Boolean sleepKeyPressHandle = true;
     Long toggleCount = 0l;
