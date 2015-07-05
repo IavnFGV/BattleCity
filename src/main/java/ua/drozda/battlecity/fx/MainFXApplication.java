@@ -46,72 +46,19 @@ public class MainFXApplication extends Application {
         launch(args);
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        LevelLoader.loadlevel("20", world);
-        world.prepareWorld();
-        world.setStageNumber(20);
-        fxWorld.setWorld(world);
-
-
-        root.getChildren().add(FxBorder.border);
-        root.getChildren().add(playGround);
-        scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel() +
-                fxWorld.getWorld().getCellWidth() * 6,//for bounds around playground
-                fxWorld.getWorld().getWorldHeightPixel() +
-                        fxWorld.getWorld().getCellWidth() * 4, //for bounds around playground
-                Color.BLACK);
-        playGround.setLayoutX(fxWorld.getWorld().getCellWidth() * 2);
-        playGround.setLayoutY(fxWorld.getWorld().getCellHeight() * 2);
-        scene.setOnKeyReleased(keyPressedEventHandler);
-        scene.setOnKeyPressed(keyPressedEventHandler);
-        AnimationTimer toggleAnimationTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                fxWorld.toggle(now);
-                toggleCount = now;
-            }
-        };
-
-        Group bounds = new Group();
-
-        AnimationTimer mainLoop = new AnimationTimer() {
-            private Boolean init = false;
-
-            @Override
-            public void handle(long now) {
-                if (!init) {
-                    world.initializeWorld(now);
-                    firstPlayerTank = world.getFirstPlayer();
-                    secondPlayerTank = world.getSecondPlayer();
-                    Collections.reverse(fxWorld.fxGameUnitsList);
-                    for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
-                        playGround.getChildren().addAll(fxGameUnit.getImageViews());
-                    }
-                    FxBorder.enemiesCountProperty().bind(world.enemiesCountProperty());
-                    FxBorder.firstPlayerLifesProperty().bind(firstPlayerTank.lifesCountProperty());
-                    if (secondPlayerTank != null) {
-                        FxBorder.secondPlayerLifesProperty().bind(secondPlayerTank.lifesCountProperty());
-                    }
-                    FxBorder.refresh(world);
-                    init = true;
-                }
-                world.handleCollisions();
-                world.heartBeat(now);
-                handleCommands(); // TODO TEST required
-                world.updatePositions(now);
-                world.notifyObservers();
-                handleSound(now);
-            }
-        };
-
-        toggleAnimationTimer.start();
-        mainLoop.start();
-        primaryStage.setTitle("JavaFX Scene Graph Demo");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    public static ArrayList<Node> getAllNodes(Parent root) {
+        ArrayList<Node> nodes = new ArrayList<Node>();
+        addAllDescendents(root, nodes);
+        return nodes;
     }
 
+    private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            nodes.add(node);
+            if (node instanceof Parent)
+                addAllDescendents((Parent) node, nodes);
+        }
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -200,12 +147,6 @@ public class MainFXApplication extends Application {
         SoundManager.handleSoundQueue(now);
     }
 
-    public static ArrayList<Node> getAllNodes(Parent root) {
-        ArrayList<Node> nodes = new ArrayList<Node>();
-        addAllDescendents(root, nodes);
-        return nodes;
-    }
-
     private void firstPlayerMovements() {
         if (keyPressedEventHandler.isKeyDown(KeyCode.W)) {
             firstPlayerTank.setDirection(ActiveUnit.Direction.UP);
@@ -255,14 +196,6 @@ public class MainFXApplication extends Application {
         super.stop();
         SoundManager.shutdown();
 
-    }
-
-    private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
-        for (Node node : parent.getChildrenUnmodifiable()) {
-            nodes.add(node);
-            if (node instanceof Parent)
-                addAllDescendents((Parent) node, nodes);
-        }
     }
 
 }
