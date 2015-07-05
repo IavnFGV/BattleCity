@@ -4,6 +4,8 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.binding.IntegerBinding;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -13,6 +15,7 @@ import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.io.LevelLoader;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
@@ -22,15 +25,18 @@ import java.util.Set;
  */
 public class MainFXApplication extends Application {
 
-    World world = new World(World.WorldType.SinglePlayer, 2);
+    World world = new World(World.WorldType.DoublePlayer, 2);
     FxWorld fxWorld = new FxWorld();
-    FxBorder fxBorder = new FxBorder();
+    //  FxBorder fxBorder = new FxBorder();
     IntegerBinding integerBinding;
     Boolean sleepKeyPressHandle = true;
     Long toggleCount = 0l;
     KeyPressedEventHandler keyPressedEventHandler = new KeyPressedEventHandler();
     TankUnit firstPlayerTank;
     TankUnit secondPlayerTank;
+    Group playGround = new Group();
+    Group root = new Group();
+    Scene scene;
 
     private Set<KeyCode> firstPlayerMovements = EnumSet.of(KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D);
     private Set<KeyCode> secondPlayerMovements = EnumSet.of(KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT);
@@ -44,13 +50,13 @@ public class MainFXApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         LevelLoader.loadlevel("20", world);
         world.initializeWorld(0l);
+        world.setStageNumber(20);
         fxWorld.setWorld(world);
-        Group playGround = new Group();
-        Group root = new Group();
+
 
         root.getChildren().add(FxBorder.border);
         root.getChildren().add(playGround);
-        Scene scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel() +
+        scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel() +
                 fxWorld.getWorld().getCellWidth() * 6,//for bounds around playground
                 fxWorld.getWorld().getWorldHeightPixel() +
                         fxWorld.getWorld().getCellWidth() * 4, //for bounds around playground
@@ -75,29 +81,18 @@ public class MainFXApplication extends Application {
             @Override
             public void handle(long now) {
                 if (!init) {
-
-
-                    //   FxGameUnit tank = FxGameUnit.createFxGameUnit(world.getFirstPlayer());
-
                     firstPlayerTank = world.getFirstPlayer();
-                    // playGround.getChildren().add(tank.getImageView());
-
-                    //    FxGameUnit tank2 = FxGameUnit.createFxGameUnit(world.getSecondPlayer());
-                    //    fxWorld.fxGameUnitsList.add(tank2);
-                    //    fxWorld.fxGameUnitsList.add(tank);
                     secondPlayerTank = world.getSecondPlayer();
-                    //playGround.getChildren().add(tank2.getImageView());
-                    //fxWorld.ga
                     Collections.reverse(fxWorld.fxGameUnitsList);
                     for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
                         playGround.getChildren().add(fxGameUnit.getImageView());
                     }
-
-                    fxBorder.enemiesCountProperty().bind(world.enemiesCountProperty());
-                    fxBorder.firstPlayerLifesProperty().bind(firstPlayerTank.lifesCountProperty());
+                    FxBorder.enemiesCountProperty().bind(world.enemiesCountProperty());
+                    FxBorder.firstPlayerLifesProperty().bind(firstPlayerTank.lifesCountProperty());
                     if (secondPlayerTank != null) {
-                        fxBorder.secondPlayerLifesProperty().bind(secondPlayerTank.lifesCountProperty());
+                        FxBorder.secondPlayerLifesProperty().bind(secondPlayerTank.lifesCountProperty());
                     }
+                    FxBorder.refresh(world);
                     init = true;
                 }
                 world.handleCollisions();
@@ -154,6 +149,36 @@ public class MainFXApplication extends Application {
             firstPlayerTank.setDirection(ActiveUnit.Direction.RIGHT);
             firstPlayerTank.setEngineOn(true);
         }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
+            firstPlayerTank.setLifes(25l);
+            System.out.println(FxBorder.getEnemiesCount());
+        }
+
+    }
+
+
+    private void firstPlayerMovements() {
+        if (keyPressedEventHandler.isKeyDown(KeyCode.W)) {
+            firstPlayerTank.setDirection(ActiveUnit.Direction.UP);
+            firstPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.S)) {
+            firstPlayerTank.setDirection(ActiveUnit.Direction.DOWN);
+            firstPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.A)) {
+            firstPlayerTank.setDirection(ActiveUnit.Direction.LEFT);
+            firstPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.D)) {
+            firstPlayerTank.setDirection(ActiveUnit.Direction.RIGHT);
+            firstPlayerTank.setEngineOn(true);
+        }
+        if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
+            firstPlayerTank.setLifes(25l);
+            System.out.println(FxBorder.getEnemiesCount());
+        }
+
     }
 
     private void secondPlayerMovements() {
@@ -175,10 +200,25 @@ public class MainFXApplication extends Application {
         }
     }
 
+    public static ArrayList<Node> getAllNodes(Parent root) {
+        ArrayList<Node> nodes = new ArrayList<Node>();
+        addAllDescendents(root, nodes);
+        return nodes;
+    }
+
     @Override
     public void stop() throws Exception {
         super.stop();
         SoundManager.shutdown();
 
     }
+
+    private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            nodes.add(node);
+            if (node instanceof Parent)
+                addAllDescendents((Parent) node, nodes);
+        }
+    }
+
 }

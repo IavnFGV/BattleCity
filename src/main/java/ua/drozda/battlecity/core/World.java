@@ -35,6 +35,7 @@ public class World implements LoadableCells {
     private List<GameUnit> unitList = new ArrayList<>(); // all units will be here TODO Think about concurrency
     private Map<String, TileUnit> tileMap = new HashMap<>();
     private IntegerProperty enemiesCount;
+    private Integer stageNumber;
 
     public World(WorldType worldType) {
         this(worldType, 1);
@@ -54,6 +55,14 @@ public class World implements LoadableCells {
         tankHeightPixel = tankHeightCells * cellHeight;
         tankWidthPixel = tankWidthCells * cellWidth;
         this.worldType = worldType;
+    }
+
+    public Integer getStageNumber() {
+        return stageNumber;
+    }
+
+    public void setStageNumber(Integer stageNumber) {
+        this.stageNumber = stageNumber;
     }
 
     public final int getEnemiesCount() {

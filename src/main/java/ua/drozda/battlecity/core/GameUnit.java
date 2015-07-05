@@ -134,6 +134,9 @@ public abstract class GameUnit extends Observable {
     }
 
     public void setLifes(Long lifes) {
+        if (lifes > 9) {
+            lifes = 9l;
+        }
         this.lifes = lifes;
         setLifesCount(lifes);
         if (this.lifes <= 0) {
@@ -153,11 +156,13 @@ public abstract class GameUnit extends Observable {
         return timeInState.get(state);
     }
 
-    public final long getLifesCount() {
+    @Deprecated
+    protected final long getLifesCount() {
         return lifesCount == null ? 0 : lifesCount.getValue();
     }
 
-    public final void setLifesCount(long value) {
+    @Deprecated
+    protected final void setLifesCount(long value) {
         lifesCountProperty().setValue(value);
     }
 
