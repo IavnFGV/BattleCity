@@ -258,7 +258,7 @@ public class World implements LoadableCells {
         this.gamePixel = gamePixel;
     }
 
-    public void initializeWorld(Long now) {
+    public void prepareWorld() {
         setCollisionManager(new CollisionManager(this));
         TankUnit tank = new TankUnit(8 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
                 1l,
@@ -276,8 +276,6 @@ public class World implements LoadableCells {
                     .SECOND_PLAYER, collisionManager);
             setSecondPlayer(tank);
         }
-        getUnitList().forEach(u -> u.initUnit(now));
-
 
     }
 
@@ -287,6 +285,10 @@ public class World implements LoadableCells {
 
     public void setWorldType(WorldType worldType) {
         this.worldType = worldType;
+    }
+
+    public void initializeWorld(Long now) {
+        getUnitList().forEach(u -> u.initUnit(now));
     }
 
     public void handleCollisions() {

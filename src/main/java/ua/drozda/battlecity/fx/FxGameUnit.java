@@ -7,6 +7,8 @@ import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.TileUnit;
 import ua.drozda.battlecity.core.interfaces.Togglable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -18,7 +20,7 @@ public abstract class FxGameUnit implements Observer, Togglable {
     protected Integer maxToggle;
     protected Integer curToggle = 0;
     protected Long toggleTime = 0l;
-    private ImageView imageView = new ImageView(FxWorld.sprites);
+    protected ImageView imageView = new ImageView(FxWorld.sprites);
     private Rectangle2D curSprite;
 
     public FxGameUnit(GameUnit gameUnit) {
@@ -37,8 +39,8 @@ public abstract class FxGameUnit implements Observer, Togglable {
 
     }
 
-    public ImageView getImageView() {
-        return imageView;
+    public List<ImageView> getImageViews() {
+        return Arrays.asList(imageView);
     }
 
     public void setImageView(ImageView imageView) {
@@ -50,12 +52,10 @@ public abstract class FxGameUnit implements Observer, Togglable {
         updateSprite();
     }
 
+
     protected void updateSprite() {
         nextSprite();
-        //   setCurSprite(FxSpriteManager.getNextSprite(this));
         imageView.relocate(gameUnit.getBounds().getMinX(), gameUnit.getBounds().getMinY());
-//                .setX(gameUnit.getBounds().getMinX());
-//        imageView.setY(gameUnit.getBounds().getMinY());
         handleSounds();
     }
 

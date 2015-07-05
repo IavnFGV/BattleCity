@@ -18,11 +18,12 @@ import java.util.function.Function;
  * it has Bounds (in classical game pixels)
  */
 public abstract class GameUnit extends Observable {
+    public static Long ONE_SECOND = 1000000000l;
     private static Boolean pause = false;
     private static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
 
     static {
-        timeInState.put(BasicState.CREATING, 500000000L);
+        timeInState.put(BasicState.CREATING, 10 * 500000000L);
         timeInState.put(BasicState.ACTIVE, 0L);
         timeInState.put(BasicState.EXPLODING, 500000000L);
         timeInState.put(BasicState.DEAD, 0L);
@@ -215,7 +216,6 @@ public abstract class GameUnit extends Observable {
         this.setLeftTimeInBasicState(getTimeInState(currentBasicState));
         if (currentBasicState == BasicState.DEAD) {
             unRegistrateAction.apply(this);
-            //      GameUnit.unitList.remove(this);
         }
     }
 

@@ -49,7 +49,7 @@ public class MainFXApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         LevelLoader.loadlevel("20", world);
-        world.initializeWorld(0l);
+        world.prepareWorld();
         world.setStageNumber(20);
         fxWorld.setWorld(world);
 
@@ -81,11 +81,79 @@ public class MainFXApplication extends Application {
             @Override
             public void handle(long now) {
                 if (!init) {
+                    world.initializeWorld(now);
                     firstPlayerTank = world.getFirstPlayer();
                     secondPlayerTank = world.getSecondPlayer();
                     Collections.reverse(fxWorld.fxGameUnitsList);
                     for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
-                        playGround.getChildren().add(fxGameUnit.getImageView());
+                        playGround.getChildren().addAll(fxGameUnit.getImageViews());
+                    }
+                    FxBorder.enemiesCountProperty().bind(world.enemiesCountProperty());
+                    FxBorder.firstPlayerLifesProperty().bind(firstPlayerTank.lifesCountProperty());
+                    if (secondPlayerTank != null) {
+                        FxBorder.secondPlayerLifesProperty().bind(secondPlayerTank.lifesCountProperty());
+                    }
+                    FxBorder.refresh(world);
+                    init = true;
+                }
+                world.handleCollisions();
+                world.heartBeat(now);
+                handleCommands(); // TODO TEST required
+                world.updatePositions(now);
+                world.notifyObservers();
+                handleSound(now);
+            }
+        };
+
+        toggleAnimationTimer.start();
+        mainLoop.start();
+        primaryStage.setTitle("JavaFX Scene Graph Demo");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        LevelLoader.loadlevel("20", world);
+        world.prepareWorld();
+        world.setStageNumber(20);
+        fxWorld.setWorld(world);
+
+
+        root.getChildren().add(FxBorder.border);
+        root.getChildren().add(playGround);
+        scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel() +
+                fxWorld.getWorld().getCellWidth() * 6,//for bounds around playground
+                fxWorld.getWorld().getWorldHeightPixel() +
+                        fxWorld.getWorld().getCellWidth() * 4, //for bounds around playground
+                Color.BLACK);
+        playGround.setLayoutX(fxWorld.getWorld().getCellWidth() * 2);
+        playGround.setLayoutY(fxWorld.getWorld().getCellHeight() * 2);
+        scene.setOnKeyReleased(keyPressedEventHandler);
+        scene.setOnKeyPressed(keyPressedEventHandler);
+        AnimationTimer toggleAnimationTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                fxWorld.toggle(now);
+                toggleCount = now;
+            }
+        };
+
+        Group bounds = new Group();
+
+        AnimationTimer mainLoop = new AnimationTimer() {
+            private Boolean init = false;
+
+            @Override
+            public void handle(long now) {
+                if (!init) {
+                    world.initializeWorld(now);
+                    firstPlayerTank = world.getFirstPlayer();
+                    secondPlayerTank = world.getSecondPlayer();
+                    Collections.reverse(fxWorld.fxGameUnitsList);
+                    for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
+                        playGround.getChildren().addAll(fxGameUnit.getImageViews());
                     }
                     FxBorder.enemiesCountProperty().bind(world.enemiesCountProperty());
                     FxBorder.firstPlayerLifesProperty().bind(firstPlayerTank.lifesCountProperty());
@@ -132,9 +200,10 @@ public class MainFXApplication extends Application {
         SoundManager.handleSoundQueue(now);
     }
 
-
-    private void handleSound(Long now) {
-        SoundManager.handleSoundQueue(now);
+    public static ArrayList<Node> getAllNodes(Parent root) {
+        ArrayList<Node> nodes = new ArrayList<Node>();
+        addAllDescendents(root, nodes);
+        return nodes;
     }
 
     private void firstPlayerMovements() {
@@ -160,12 +229,6 @@ public class MainFXApplication extends Application {
             System.out.println(FxBorder.getEnemiesCount());
         }
 
-    }
-
-    public static ArrayList<Node> getAllNodes(Parent root) {
-        ArrayList<Node> nodes = new ArrayList<Node>();
-        addAllDescendents(root, nodes);
-        return nodes;
     }
 
     private void secondPlayerMovements() {

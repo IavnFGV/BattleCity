@@ -13,10 +13,12 @@ import java.util.function.Function;
  */
 public class TankUnit extends ActiveUnit {
     public static Set<TankType> playerTanks = EnumSet.of(TankType.FIRST_PLAYER, TankType.SECOND_PLAYER);
+    static private Long timeInShieldOnRespawn = 3 * GameUnit.ONE_SECOND;
     protected TankType tankType;
     protected BonusStrategy bonusStrategy;
     protected Integer starCount = 0;
-
+    protected Boolean shield = false;
+    protected Long leftTimeInShieldState = 0L;//
 
     public TankUnit(double x, double y, double width, double height, Long lives, Long currentTime,
                     BasicState currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
@@ -29,6 +31,27 @@ public class TankUnit extends ActiveUnit {
         } else {
             setBonusStrategy(this.new EnemyBonusStrategy());
         }
+        setHeartBeatStrategy(new TankHeartBeatStrategy());
+    }
+
+    public static Long getTimeInShieldOnRespawn() {
+        return timeInShieldOnRespawn;
+    }
+
+    public Boolean isShield() {
+        return getLeftTimeInShieldState() > 0;
+    }
+
+    protected Long getLeftTimeInShieldState() {
+        return leftTimeInShieldState;
+    }
+
+    protected void setLeftTimeInShieldState(Long leftTimeInShieldState) {
+        this.leftTimeInShieldState = leftTimeInShieldState;
+    }
+
+    public void setShield(Long shieldTime) {
+        setLeftTimeInShieldState(shieldTime);
     }
 
     public TankType getTankType() {
@@ -149,4 +172,26 @@ public class TankUnit extends ActiveUnit {
         }
     }
 
+    protected class TankHeartBeatStrategy extends GameUnit.BasicHeartBeatStrategy {
+        @Override
+        public void perform(Long deltaTime) {
+            BasicState oldState = TankUnit.this.getCurrentBasicState();
+            super.perform(deltaTime);
+            BasicState newState = TankUnit.this.getCurrentBasicState();
+            if (oldState == BasicState.CREATING && newState == BasicState.ACTIVE) {
+                TankUnit.this.setShield(getTimeInShieldOnRespawn());
+            }
+            changeShieldState(deltaTime);
+        }
+
+        public void changeShieldState(Long deltaTime) {
+            if (isShield()) {
+                setLeftTimeInShieldState(getLeftTimeInShieldState() - deltaTime);
+                if ((getLeftTimeInShieldState()) <= 0) {
+                    setChanged();
+                }
+            }
+
+        }
+    }
 }

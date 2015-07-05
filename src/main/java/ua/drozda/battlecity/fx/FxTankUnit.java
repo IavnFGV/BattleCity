@@ -1,11 +1,14 @@
 package ua.drozda.battlecity.fx;
 
 import javafx.geometry.Rectangle2D;
+import javafx.scene.image.ImageView;
 import ua.drozda.battlecity.core.ActiveUnit;
 import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -19,7 +22,9 @@ public class FxTankUnit extends FxGameUnit {
 
     private static Map<TankUnit.TankType, HashMap<ActiveUnit.Direction, Rectangle2D[][]>> tankActiveMap = new
             HashMap<>();
-    private static Long tankTogggleTimer = 50000000l;
+    private static Long tankToggleTimer = 50000000l;
+    private static Rectangle2D[] shieldSprites = {new Rectangle2D(228, 288, FxWorld.tankSize, FxWorld.tankSize),
+            new Rectangle2D(260, 288, FxWorld.tankSize, FxWorld.tankSize)};
 
     static {
         //for players tanks
@@ -38,7 +43,8 @@ public class FxTankUnit extends FxGameUnit {
                     return t;
                 }
             };
-
+    private ImageView shield = new ImageView(FxWorld.sprites);
+    private Rectangle2D curShieldSprite;
     //    private static HashMap<ActiveUnit.Direction, Rectangle2D[][]> loadSprites(Integer offset) {
 //
 //    }
@@ -105,13 +111,44 @@ public class FxTankUnit extends FxGameUnit {
         return hashMap;
     }
 
+    public Rectangle2D getCurShieldSprite() {
+        return curShieldSprite;
+    }
+
+    public void setCurShieldSprite(Rectangle2D curShieldSprite) {
+        this.curShieldSprite = curShieldSprite;
+        shield.setViewport(curShieldSprite);
+    }
+
+    @Override
+    public List<ImageView> getImageViews() {
+        return Arrays.asList(new ImageView[]{imageView, shield});
+    }
+
+    @Override
+    protected void updateSprite() {
+        super.updateSprite();
+        shield.relocate(gameUnit.getBounds().getMinX(), gameUnit.getBounds().getMinY());
+    }
+
     @Override
     protected void nextSprite() {
         if (getGameUnit().getCurrentBasicState() == GameUnit.BasicState.ACTIVE) {
             if (gameUnit instanceof TankUnit) {
                 TankUnit tankUnit = (TankUnit) gameUnit;
-                setCurSprite(tankActiveMap.get(tankUnit.getTankType()).get(tankUnit.getDirection())[tankUnit
-                        .getStarCount()][getCurToggle()]);
+                if (tankUnit.isEngineOn()) {
+                    setCurSprite(tankActiveMap.get(tankUnit.getTankType()).get(tankUnit.getDirection())[tankUnit
+                            .getStarCount()][getCurToggle()]);
+                } else {
+                    if (getCurSprite() == null) {
+                        setCurSprite(tankActiveMap.get(tankUnit.getTankType()).get(tankUnit.getDirection())[tankUnit
+                                .getStarCount()][getCurToggle()]);
+                    }
+                }
+                shield.setVisible(tankUnit.isShield());
+                if (tankUnit.isShield()) {
+                    setCurShieldSprite(shieldSprites[getCurToggle()]);
+                }
             }
         }
     }
@@ -132,11 +169,6 @@ public class FxTankUnit extends FxGameUnit {
 
     @Override
     public Boolean canToggle(Long now) {
-        return (getTank().isEngineOn()) && (now - toggleTime >= tankTogggleTimer);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
+        return (getTank().isEngineOn() || getTank().isShield()) && (now - toggleTime >= tankToggleTimer);
     }
 }
