@@ -21,9 +21,11 @@ public class FxBorder {
     public static Group border = new Group();
     public static Group stageInfo = new Group();
     public static Group stageNumberGroup = new Group();
+    public static Group enemyCounter = new Group();
     public static ImageView firstPlayerLifesImageView = new ImageView(FxWorld.sprites);
     private static Map<Long, Rectangle2D> digitMap = new HashMap<>(10);
     private static Rectangle2D enemyRect = new Rectangle2D(912, 320, FxWorld.tileSize, FxWorld.tileSize);
+    private static Rectangle2D emptyRect = new Rectangle2D(1008, 0, FxWorld.tileSize, FxWorld.tileSize);
     private static ImageView secondPlayerLifesImageView = new ImageView(FxWorld.sprites);
 
     private static ImageView disableSecondPlayerLifesImageView = new ImageView(FxWorld.sprites);
@@ -78,11 +80,8 @@ public class FxBorder {
 
         stageInfo.getChildren().add(firstPlayerLifesImageView);
 
-        firstPlayerLifesProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                firstPlayerLifesImageView.setViewport(digitMap.get(newValue));
-            }
+        firstPlayerLifesProperty().addListener((observable, oldValue, newValue) -> {
+            firstPlayerLifesImageView.setViewport(digitMap.get(newValue));
         });
         firstPlayerLifesImageView.setY(256);
         firstPlayerLifesImageView.setX(32);
@@ -111,7 +110,25 @@ public class FxBorder {
         stageNumberGroup.getChildren().addAll(stageNumberFirstDigitImageView, stageNumberSecondDigitImageView);
         stageNumberSecondDigitImageView.setX(FxWorld.tileSize);
 
+        stageInfo.getChildren().add(enemyCounter);
+        enemyCounter.setTranslateY(FxWorld.tileSize);
+        enemyCounter.setTranslateX(FxWorld.tileSize);
 
+
+        for (int i = 0; i < 20; i++) {
+            imageView = new ImageView(FxWorld.sprites);
+            imageView.setViewport(enemyRect);
+            imageView.setY(i / 2 * FxWorld.tileSize);
+            imageView.setX(i % 2 * FxWorld.tileSize);
+            imageView.setId("E" + i);
+            enemyCounter.getChildren().add(imageView);
+        }
+
+        enemiesCountProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.longValue() < oldValue.longValue()) {
+                ((ImageView) enemyCounter.lookup("#E" + oldValue)).setViewport(emptyRect);
+            }
+        });
     }
 
     public static void refresh(World world) {

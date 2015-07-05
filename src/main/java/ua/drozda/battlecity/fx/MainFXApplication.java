@@ -132,6 +132,11 @@ public class MainFXApplication extends Application {
         SoundManager.handleSoundQueue(now);
     }
 
+
+    private void handleSound(Long now) {
+        SoundManager.handleSoundQueue(now);
+    }
+
     private void firstPlayerMovements() {
         if (keyPressedEventHandler.isKeyDown(KeyCode.W)) {
             firstPlayerTank.setDirection(ActiveUnit.Direction.UP);
@@ -151,34 +156,16 @@ public class MainFXApplication extends Application {
         }
         if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
             firstPlayerTank.setLifes(25l);
+            world.setEnemiesCount(world.getEnemiesCount() - 1);
             System.out.println(FxBorder.getEnemiesCount());
         }
 
     }
 
-
-    private void firstPlayerMovements() {
-        if (keyPressedEventHandler.isKeyDown(KeyCode.W)) {
-            firstPlayerTank.setDirection(ActiveUnit.Direction.UP);
-            firstPlayerTank.setEngineOn(true);
-        }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.S)) {
-            firstPlayerTank.setDirection(ActiveUnit.Direction.DOWN);
-            firstPlayerTank.setEngineOn(true);
-        }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.A)) {
-            firstPlayerTank.setDirection(ActiveUnit.Direction.LEFT);
-            firstPlayerTank.setEngineOn(true);
-        }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.D)) {
-            firstPlayerTank.setDirection(ActiveUnit.Direction.RIGHT);
-            firstPlayerTank.setEngineOn(true);
-        }
-        if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
-            firstPlayerTank.setLifes(25l);
-            System.out.println(FxBorder.getEnemiesCount());
-        }
-
+    public static ArrayList<Node> getAllNodes(Parent root) {
+        ArrayList<Node> nodes = new ArrayList<Node>();
+        addAllDescendents(root, nodes);
+        return nodes;
     }
 
     private void secondPlayerMovements() {
@@ -198,12 +185,6 @@ public class MainFXApplication extends Application {
             secondPlayerTank.setDirection(ActiveUnit.Direction.RIGHT);
             secondPlayerTank.setEngineOn(true);
         }
-    }
-
-    public static ArrayList<Node> getAllNodes(Parent root) {
-        ArrayList<Node> nodes = new ArrayList<Node>();
-        addAllDescendents(root, nodes);
-        return nodes;
     }
 
     @Override
