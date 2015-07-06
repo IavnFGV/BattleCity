@@ -4,8 +4,6 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.binding.IntegerBinding;
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -15,7 +13,6 @@ import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.io.LevelLoader;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
@@ -44,20 +41,6 @@ public class MainFXApplication extends Application {
 
     public static void main(String[] args) throws Exception {
         launch(args);
-    }
-
-    public static ArrayList<Node> getAllNodes(Parent root) {
-        ArrayList<Node> nodes = new ArrayList<Node>();
-        addAllDescendents(root, nodes);
-        return nodes;
-    }
-
-    private static void addAllDescendents(Parent parent, ArrayList<Node> nodes) {
-        for (Node node : parent.getChildrenUnmodifiable()) {
-            nodes.add(node);
-            if (node instanceof Parent)
-                addAllDescendents((Parent) node, nodes);
-        }
     }
 
     @Override

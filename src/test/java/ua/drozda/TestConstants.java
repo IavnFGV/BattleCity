@@ -11,10 +11,13 @@ public class TestConstants {
         System.out.println(TEST_DELIMETER);
     }
 
-    ;
 
     public static void testMethodStarted(String testName) {
         System.out.print(TEST_METHOD_STARTER);
         System.out.println(testName + " Started");
+    }
+
+    public static void showMessage(String message) {
+        System.out.println(message);
     }
 }

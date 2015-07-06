@@ -1,6 +1,8 @@
 package ua.drozda.battlecity.core;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -41,6 +43,9 @@ public abstract class GameUnit extends Observable {
     protected Long deltaHeartBeat;
     private LongProperty lifesCount;
 
+    private DoubleProperty y;
+    private DoubleProperty x;
+
     public GameUnit(double x, double y, double width, double height, Long lifes, Long currentTime, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
         this(x, y, width, height, lifes, currentTime, BasicState.CREATING, registerAction, unRegisterAction);
     }
@@ -59,6 +64,36 @@ public abstract class GameUnit extends Observable {
 
     public static void setPause(Boolean pause) {
         GameUnit.setPause(pause);
+    }
+
+    public final double getY() {
+        return y == null ? 0.0 : y.get();
+    }
+
+    public final void setY(double value) {
+        yProperty().set(value);
+    }
+
+    public final DoubleProperty yProperty() {
+        if (y == null) {
+            y = new SimpleDoubleProperty(0);
+        }
+        return y;
+    }
+
+    public final double getX() {
+        return x == null ? 0.0 : x.get();
+    }
+
+    public final void setX(double value) {
+        xProperty().set(value);
+    }
+
+    public final DoubleProperty xProperty() {
+        if (x == null) {
+            x = new SimpleDoubleProperty(0);
+        }
+        return x;
     }
 
     @Override
