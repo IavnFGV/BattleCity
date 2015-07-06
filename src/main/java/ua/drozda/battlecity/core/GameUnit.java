@@ -41,23 +41,38 @@ public abstract class GameUnit extends Observable {
     protected Function<GameUnit, Boolean> registrateAction;
     protected Function<GameUnit, Boolean> unRegistrateAction;
     protected Long deltaHeartBeat;
+    protected Double width;
+    protected Double height;
+
+
     private LongProperty lifesCount;
-
-    private DoubleProperty y;
     private DoubleProperty x;
+    private DoubleProperty y;
 
-    public GameUnit(double x, double y, double width, double height, Long lifes, Long currentTime, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
-        this(x, y, width, height, lifes, currentTime, BasicState.CREATING, registerAction, unRegisterAction);
+    public GameUnit(double x, double y, double width, double height, Long lifes, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
+        this(x, y, width, height, lifes, BasicState.CREATING, registerAction, unRegisterAction, true);
     }
 
-    public GameUnit(double x, double y, double width, double height, Long lifes, Long currentTime, BasicState
-            currentBasicState, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
-        this.setBounds(new BoundingBox(x, y, width, height));
+    public GameUnit(double x, double y, double width, double height, Long lifes, BasicState
+            currentBasicState, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean>
+                            unRegisterAction, Boolean addListeners) {
+        this.width = width;
+        this.height = height;
         this.setLifes(lifes);
-        this.setLastHeartBeat(currentTime);
         this.setCurrentBasicState(currentBasicState);
         this.setRegistrateAction(registerAction);
         this.setUnRegistrateAction(unRegisterAction);
+        setX(x);
+        if (addListeners) {
+            xProperty().addListener((observable, oldValue, newValue) -> {
+                this.setBounds(new BoundingBox(newValue.doubleValue(), this.getY(), this.width, this.height));
+            });
+            yProperty().addListener((observable, oldValue, newValue) -> {
+                this.setBounds(new BoundingBox(this.getX(), newValue.doubleValue(), this.width, this.height));
+            });
+
+        }
+        setY(y);
         registrateAction.apply(this);
         //   unitList.add(this);
     }
@@ -66,32 +81,32 @@ public abstract class GameUnit extends Observable {
         GameUnit.setPause(pause);
     }
 
-    public final double getY() {
-        return y == null ? 0.0 : y.get();
+    public Double getWidth() {
+        return width;
     }
 
-    public final void setY(double value) {
-        yProperty().set(value);
+    public void setWidth(Double width) {
+        this.width = width;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
     }
 
     public final DoubleProperty yProperty() {
         if (y == null) {
-            y = new SimpleDoubleProperty(0);
+            y = new SimpleDoubleProperty();
         }
         return y;
     }
 
-    public final double getX() {
-        return x == null ? 0.0 : x.get();
-    }
-
-    public final void setX(double value) {
-        xProperty().set(value);
-    }
-
     public final DoubleProperty xProperty() {
         if (x == null) {
-            x = new SimpleDoubleProperty(0);
+            x = new SimpleDoubleProperty();
         }
         return x;
     }
@@ -147,6 +162,9 @@ public abstract class GameUnit extends Observable {
     }
 
     public Bounds getBounds() {
+        if (bounds == null) {
+            bounds = new BoundingBox(getX(), getY(), width, height);
+        }
         return bounds;
     }
 
@@ -158,6 +176,22 @@ public abstract class GameUnit extends Observable {
 
     protected Boolean checkBounds(Bounds bounds) {
         return true;
+    }
+
+    public final double getX() {
+        return x == null ? 0.0 : x.get();
+    }
+
+    public final double getY() {
+        return y == null ? 0.0 : y.get();
+    }
+
+    public final void setY(double value) {
+        yProperty().set(value);
+    }
+
+    public final void setX(double value) {
+        xProperty().set(value);
     }
 
     public void decLifes(Long lifes) {

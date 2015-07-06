@@ -24,26 +24,6 @@ public class CollisionManager {
         this.world = world;
     }
 
-    //    private GameCell[][] gameCellList;
-//
-//    {
-//        rideTiles.add(TileType.ICE);
-//        rideTiles.add(TileType.FOREST);
-//        rideTiles.add(TileType.EMPTY);
-//    }
-//
-//    public CollisionManager(List<Actor> actorList, GameCell[][] gameCellList) {
-//        this.actorList = actorList;
-//        this.gameCellList = gameCellList;
-//    }
-//
-//    public CollisionManager() {
-//    }
-//
-//    private static boolean intersect(CollisionBounds a, CollisionBounds b) {
-//        return (a.getyU() < b.getyF() || a.getyF() > b.getyU() || a.getxF() < b.getxU() || a.getxU() > b.getxF());
-//    }
-//
     public World getWorld() {
         return world;
     }
@@ -52,7 +32,7 @@ public class CollisionManager {
         this.world = world;
     }
 
-    public void fixPosition(ActiveUnit activeUnit) {
+    public void fixPosition(ActiveUnit activeUnit, Double newX, Double newY) {
         Predicate<GameUnit> onlyTank = gameUnit -> (gameUnit instanceof TankUnit);
         Predicate<GameUnit> notMe = gameUnit -> (gameUnit != activeUnit);
         Predicate<GameUnit> onlyTankAndNotMe = onlyTank.and(notMe);

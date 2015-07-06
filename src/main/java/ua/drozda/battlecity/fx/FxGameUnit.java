@@ -55,7 +55,7 @@ public abstract class FxGameUnit implements Observer, Togglable {
 
     protected void updateSprite() {
         nextSprite();
-        imageView.relocate(gameUnit.getBounds().getMinX(), gameUnit.getBounds().getMinY());
+        imageView.relocate(gameUnit.getX(), gameUnit.getY());
         handleSounds();
     }
 

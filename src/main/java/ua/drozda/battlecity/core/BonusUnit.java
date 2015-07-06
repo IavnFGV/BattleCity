@@ -11,7 +11,7 @@ public class BonusUnit extends GameUnit {
     public BonusUnit(double x, double y, double width, double height, Long currentTime, BonusType bonusType,
                      Function<GameUnit, Boolean> registerAction,
                      Function<GameUnit, Boolean> unRegisterAction) {
-        super(x, y, width, height, 0L, currentTime, BasicState.ACTIVE, registerAction, unRegisterAction);
+        super(x, y, width, height, 0L, BasicState.ACTIVE, registerAction, unRegisterAction, true);
         this.setBonusType(bonusType);
     }
 

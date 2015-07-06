@@ -1,7 +1,6 @@
 package ua.drozda.battlecity.core;
 
 import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 
 import java.util.function.Function;
@@ -17,18 +16,31 @@ public abstract class ActiveUnit extends GameUnit {
     protected MoveStrategy moveStrategy;
     protected Long moveAccumulator;
     protected CollisionManager collisionManager;
-    private Bounds newBounds;
+    //  private Bounds newBounds;
     private Direction direction;
     private Long velocity = 8L;
     private Integer cellSize = 16;//bad idea TODO maybe we can use EasyDI lib???
 
-    public ActiveUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState
+    public ActiveUnit(double x, double y, double width, double height, Long lives, BasicState
             currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
                       Function<GameUnit, Boolean> unRegisterAction, CollisionManager collisionManager) {
-        super(x, y, width, height, lives, currentTime, currentBasicState, registerAction, unRegisterAction);
+        super(x, y, width, height, lives, currentBasicState, registerAction, unRegisterAction, false);
         this.setDirection(direction);
         this.setVelocity(velocity);
         this.setNewBounds(getBounds());
+
+        xProperty().addListener((observable, oldValue, newValue) -> {
+            fixPosition(newValue.doubleValue(), getY());
+            this.setBounds(new BoundingBox(newValue.doubleValue(), this.getY(), this.width, this.height));
+        });
+        yProperty().addListener((observable, oldValue, newValue) -> {
+            this.setBounds(new BoundingBox(this.getX(), newValue.doubleValue(), this.width, this.height));
+        });
+
+
+
+
+
         this.collisionManager = collisionManager;
     }
 
@@ -36,7 +48,16 @@ public abstract class ActiveUnit extends GameUnit {
         return direction;
     }
 
-    private void fixPosition() {
+    public void setDirection(Direction direction) {
+        if (direction != getDirection()) {
+            fixPosition();
+
+        }
+        this.direction = direction;
+
+    }
+
+    private void fixPosition(Double newX, Double newY) {
         Long x = nearest(getBounds().getMinX(), cellSize);
         Long y = nearest(getBounds().getMinY(), cellSize);
         Double newX = getBounds().getMinX();
@@ -58,22 +79,12 @@ public abstract class ActiveUnit extends GameUnit {
         return (round(num / (base * 1.)) * base);
     }
 
-    public void setDirection(Direction direction) {
-        if (direction != getDirection()) {
-            fixPosition();
-
-        }
-        this.direction = direction;
-
-    }
-
     @Override
     public String toString() {
         return "ActiveUnit{" +
                 ", engineOn=" + engineOn +
                 ", moveStrategy=" + moveStrategy +
                 ", moveAccumulator=" + moveAccumulator +
-                ", newBounds=" + newBounds +
                 ", direction=" + direction +
                 ", velocity=" + velocity +
                 "} " + super.toString();
@@ -128,14 +139,6 @@ public abstract class ActiveUnit extends GameUnit {
         this.moveStrategy = moveStrategy;
     }
 
-    public Bounds getNewBounds() {
-        return newBounds;
-    }
-
-    public void setNewBounds(Bounds newBounds) {
-        this.newBounds = newBounds;
-    }
-
     public Long getMoveAccumulator() {
         return moveAccumulator;
     }
@@ -158,36 +161,29 @@ public abstract class ActiveUnit extends GameUnit {
             calcNewPosition(deltaTime);
         }
 
-        protected Bounds calcNewPosition(Long deltaTime) { // this method can be override in children
+        protected void calcNewPosition(Long deltaTime) { // this method can be override in children
             if (isEngineOn() && getVelocity() > 0) {
                 setMoveAccumulator(getMoveAccumulator() + deltaTime);
                 if (getMoveAccumulator() < 1000000000 / 64) {
-                    setNewBounds(getBounds());
-                    return getBounds();
-
+                    return;
                 }
                 setMoveAccumulator(0l);
                 Double deltaPosition = (Double.valueOf(getVelocity())); // TODO MAY FROZE???
                 switch (getDirection()) {
                     case UP:
-                        newBounds = new BoundingBox(getBounds().getMinX(), getBounds().getMinY() - deltaPosition,
-                                getBounds().getWidth(), getBounds().getHeight());
+                        setY(getY() - deltaPosition);
                         break;
                     case LEFT:
-                        newBounds = new BoundingBox(getBounds().getMinX() - deltaPosition, getBounds().getMinY(),
-                                getBounds().getWidth(), getBounds().getHeight());
+                        setX(getX() - deltaPosition);
                         break;
                     case DOWN:
-                        newBounds = new BoundingBox(getBounds().getMinX(), getBounds().getMinY() + deltaPosition,
-                                getBounds().getWidth(), getBounds().getHeight());
+                        setY(getY() + deltaPosition);
                         break;
                     case RIGHT:
-                        newBounds = new BoundingBox(getBounds().getMinX() + deltaPosition, getBounds().getMinY(),
-                                getBounds().getWidth(), getBounds().getHeight());
+                        setX(getX() + deltaPosition);
                         break;
                 }
             }
-            return newBounds;
         }
     }
 }

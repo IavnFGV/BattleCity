@@ -23,7 +23,7 @@ public class TankUnit extends ActiveUnit {
     public TankUnit(double x, double y, double width, double height, Long lives, Long currentTime,
                     BasicState currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
                     Function<GameUnit, Boolean> unRegisterAction, TankType tankType, CollisionManager collisionManager) {
-        super(x, y, width, height, lives, currentTime, currentBasicState, direction, velocity, registerAction,
+        super(x, y, width, height, lives, currentBasicState, direction, velocity, registerAction,
                 unRegisterAction, collisionManager);
         setTankType(tankType);
         if (playerTanks.contains(tankType)) {

@@ -6,11 +6,7 @@ import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.LoadableCells;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static java.lang.Math.round;
 
 /**
  * Created by GFH on 11.05.2015.
@@ -33,7 +29,6 @@ public class World implements LoadableCells {
     private TankUnit firstPlayer;
     private TankUnit secondPlayer;
     private List<GameUnit> unitList = new ArrayList<>(); // all units will be here TODO Think about concurrency
-    private Map<String, TileUnit> tileMap = new HashMap<>();
     private IntegerProperty enemiesCount;
     private Integer stageNumber;
 
@@ -88,14 +83,6 @@ public class World implements LoadableCells {
         this.secondPlayer = secondPlayer;
     }
 
-    public Map<String, TileUnit> getTileMap() {
-        return tileMap;
-    }
-
-    public void setTileMap(Map<String, TileUnit> tileMap) {
-        this.tileMap = tileMap;
-    }
-
     public TankUnit getFirstPlayer() {
         return firstPlayer;
     }
@@ -120,34 +107,10 @@ public class World implements LoadableCells {
     public Boolean unRegistrateUnit(GameUnit gameUnit) {
         if (unitList.contains(gameUnit)) {
             unitList.remove(gameUnit);
-            if (gameUnit instanceof TileUnit) {
-                tileMap.remove(getTileId((TileUnit) gameUnit));
-            }
             return true;
         } else {
             return false;
         }
-    }
-
-    public String getTileId(TileUnit tileUnit) {
-        return round(tileUnit.getBounds().getMinX() / getCellWidth()) + "-" + round(tileUnit.getBounds().getMinY()
-                / getCellHeight());
-    }
-
-    public Integer getCellWidth() {
-        return cellWidth;
-    }
-
-    public Integer getCellHeight() {
-        return cellHeight;
-    }
-
-    public void setCellHeight(Integer cellHeight) {
-        this.cellHeight = cellHeight;
-    }
-
-    public void setCellWidth(Integer cellWidth) {
-        this.cellWidth = cellWidth;
     }
 
     public void scale(Integer x, Integer y) {
@@ -279,12 +242,28 @@ public class World implements LoadableCells {
 
     }
 
+    public Integer getCellWidth() {
+        return cellWidth;
+    }
+
+    public Integer getCellHeight() {
+        return cellHeight;
+    }
+
+    public void setCellHeight(Integer cellHeight) {
+        this.cellHeight = cellHeight;
+    }
+
     public WorldType getWorldType() {
         return worldType;
     }
 
     public void setWorldType(WorldType worldType) {
         this.worldType = worldType;
+    }
+
+    public void setCellWidth(Integer cellWidth) {
+        this.cellWidth = cellWidth;
     }
 
     public void initializeWorld(Long now) {
@@ -309,7 +288,6 @@ public class World implements LoadableCells {
     public Boolean addCell(Integer x, Integer y, TileUnit.TileType tileType) {
         TileUnit tileUnit = new TileUnit(x * cellWidth, y * cellHeight, cellWidth, cellHeight, 1l, 0l,
                 tileType, this::registrateUnit, this::unRegistrateUnit);
-        tileMap.put(getTileId(tileUnit), tileUnit);
         return true;
     }
 

@@ -13,7 +13,7 @@ public class BulletUnit extends ActiveUnit {
     public BulletUnit(double x, double y, double width, double height, Long lives, Long currentTime, BasicState
             currentBasicState, Direction direction, Long velocity, TankUnit owner, Function<GameUnit, Boolean> registerAction,
                       Function<GameUnit, Boolean> unRegisterAction, CollisionManager collisionManager) {
-        super(x, y, width, height, lives, currentTime, currentBasicState, direction, velocity, registerAction,
+        super(x, y, width, height, lives, currentBasicState, direction, velocity, registerAction,
                 unRegisterAction, collisionManager);
         setOwner(owner);
     }
