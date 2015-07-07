@@ -279,7 +279,7 @@ public class World implements LoadableCells {
                 {
                     ((ActiveUnit) u).move(now);
                     //       ((ActiveUnit) u).setBounds(((ActiveUnit) u).getNewBounds());
-                    collisionManager.newPosition((ActiveUnit) u);
+                    //   collisionManager.newPosition((ActiveUnit) u);
                 }
         );
 

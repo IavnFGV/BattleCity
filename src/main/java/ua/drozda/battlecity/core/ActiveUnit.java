@@ -1,6 +1,5 @@
 package ua.drozda.battlecity.core;
 
-import javafx.geometry.BoundingBox;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 
 import java.util.function.Function;
@@ -24,21 +23,18 @@ public abstract class ActiveUnit extends GameUnit {
     public ActiveUnit(double x, double y, double width, double height, Long lives, BasicState
             currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
                       Function<GameUnit, Boolean> unRegisterAction, CollisionManager collisionManager) {
-        super(x, y, width, height, lives, currentBasicState, registerAction, unRegisterAction, false);
+        super(x, y, width, height, lives, currentBasicState, registerAction, unRegisterAction, true);
         this.setDirection(direction);
         this.setVelocity(velocity);
-        this.setNewBounds(getBounds());
+        // this.setNewBounds(getBounds());
 
-        xProperty().addListener((observable, oldValue, newValue) -> {
-            fixPosition(newValue.doubleValue(), getY());
-            this.setBounds(new BoundingBox(newValue.doubleValue(), this.getY(), this.width, this.height));
-        });
-        yProperty().addListener((observable, oldValue, newValue) -> {
-            this.setBounds(new BoundingBox(this.getX(), newValue.doubleValue(), this.width, this.height));
-        });
-
-
-
+//        xProperty().addListener((observable, oldValue, newValue) -> {
+//            this.setBounds(new BoundingBox(newValue.doubleValue(), this.getY(), this.width, this.height));
+//
+//        });
+//        yProperty().addListener((observable, oldValue, newValue) -> {
+//            this.setBounds(new BoundingBox(this.getX(), newValue.doubleValue(), this.width, this.height));
+//        });
 
 
         this.collisionManager = collisionManager;
@@ -51,17 +47,16 @@ public abstract class ActiveUnit extends GameUnit {
     public void setDirection(Direction direction) {
         if (direction != getDirection()) {
             fixPosition();
-
         }
         this.direction = direction;
 
     }
 
-    private void fixPosition(Double newX, Double newY) {
-        Long x = nearest(getBounds().getMinX(), cellSize);
-        Long y = nearest(getBounds().getMinY(), cellSize);
-        Double newX = getBounds().getMinX();
-        Double newY = getBounds().getMinY();
+    private void fixPosition() {
+        Long x = nearest(getX(), cellSize);
+        Long y = nearest(getY(), cellSize);
+        Double newX = getX();
+        Double newY = getY();
 
         if (abs(newX - x) < (cellSize / 2 + 1)) {
             newX = Double.valueOf(x);
@@ -69,10 +64,12 @@ public abstract class ActiveUnit extends GameUnit {
         if (abs(newY - y) < (cellSize / 2 + 1)) {
             newY = Double.valueOf(y);
         }
-        setNewBounds(new BoundingBox(newX, newY, cellSize * 2, cellSize * 2));
-        if (collisionManager != null) {
-            collisionManager.fixPosition(this);
-        }
+        setX(newX);
+        setY(newY);
+//        setNewBounds(new BoundingBox(newX, newY, cellSize * 2, cellSize * 2));
+//        if (collisionManager != null) {
+//            collisionManager.fixPosition(this);
+//        }
     }
 
     private long nearest(double num, Integer base) {
@@ -157,33 +154,45 @@ public abstract class ActiveUnit extends GameUnit {
 
     protected class MoveStrategy {
 
+
+        protected double newX;
+        protected double newY;
+
         public void perform(Long deltaTime) {
-            calcNewPosition(deltaTime);
+            if (calcNewPosition(deltaTime)) {
+                confirmNewPosition();
+            }
         }
 
-        protected void calcNewPosition(Long deltaTime) { // this method can be override in children
-            if (isEngineOn() && getVelocity() > 0) {
-                setMoveAccumulator(getMoveAccumulator() + deltaTime);
-                if (getMoveAccumulator() < 1000000000 / 64) {
-                    return;
-                }
+        protected boolean calcNewPosition(Long deltaTime) { // this method can be override in children
+            setMoveAccumulator(getMoveAccumulator() + deltaTime);
+            if (isEngineOn() && (getMoveAccumulator() >= 1000000000 / 64)) {
+                newX = ActiveUnit.this.getX();
+                newY = ActiveUnit.this.getY();
+                double deltaPosition = (Double.valueOf(getVelocity()));
                 setMoveAccumulator(0l);
-                Double deltaPosition = (Double.valueOf(getVelocity())); // TODO MAY FROZE???
                 switch (getDirection()) {
                     case UP:
-                        setY(getY() - deltaPosition);
+                        newY = (getY() - deltaPosition);
                         break;
                     case LEFT:
-                        setX(getX() - deltaPosition);
+                        newX = (getX() - deltaPosition);
                         break;
                     case DOWN:
-                        setY(getY() + deltaPosition);
+                        newY = (getY() + deltaPosition);
                         break;
                     case RIGHT:
-                        setX(getX() + deltaPosition);
+                        newX = (getX() + deltaPosition);
                         break;
                 }
+                return true;
             }
+            return false;
+        }
+
+        protected void confirmNewPosition() {
+            collisionManager.newPosition(ActiveUnit.this, newX, newY);
         }
     }
 }
+

@@ -1,6 +1,5 @@
 package ua.drozda.battlecity.core;
 
-import javafx.geometry.Bounds;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.fx.FxWorld;
 
@@ -101,16 +100,18 @@ public class TankUnit extends ActiveUnit {
     }
 
     @Override
-    protected Boolean checkBounds(Bounds bounds) {
-        if (bounds.getMinX() < 0 ||
-                bounds.getMinX() > 24 * FxWorld.tileSize ||
-                bounds.getMinY() < 0 ||
-                bounds.getMinY() > 24 * FxWorld.tileSize
+    protected Boolean checkBounds(double newX, double newY) {
+        if (newX < 0 ||
+                newX > 24 * FxWorld.tileSize ||
+                newY < 0 ||
+                newY > 24 * FxWorld.tileSize
                 ) {
             return false;
         }
-        return super.checkBounds(bounds);
+
+        return super.checkBounds(newX, newY);
     }
+
 
     public enum TankType {
         FIRST_PLAYER, SECOND_PLAYER, SIMPLE_ENEMY, FAST_ENEMY, POWER_ENEMY, ARMOR_ENEMY, SIMPLE_ENEMY_X, FAST_ENEMY_X, POWER_ENEMY_X, ARMOR_ENEMY_X

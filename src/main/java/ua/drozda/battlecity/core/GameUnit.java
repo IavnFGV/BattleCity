@@ -62,6 +62,7 @@ public abstract class GameUnit extends Observable {
         this.setCurrentBasicState(currentBasicState);
         this.setRegistrateAction(registerAction);
         this.setUnRegistrateAction(unRegisterAction);
+        this.setBounds(new BoundingBox(x, y, width, height));
         setX(x);
         if (addListeners) {
             xProperty().addListener((observable, oldValue, newValue) -> {
@@ -169,13 +170,9 @@ public abstract class GameUnit extends Observable {
     }
 
     public void setBounds(Bounds bounds) {
-        if (checkBounds(bounds)) {
-            this.bounds = bounds;
-        }
-    }
-
-    protected Boolean checkBounds(Bounds bounds) {
-        return true;
+        //      if (checkBounds(bounds)) {
+        this.bounds = bounds;
+        //     }
     }
 
     public final double getX() {
@@ -187,11 +184,19 @@ public abstract class GameUnit extends Observable {
     }
 
     public final void setY(double value) {
-        yProperty().set(value);
+        if (checkBounds(getX(), value)) {
+            yProperty().set(value);
+        }
     }
 
     public final void setX(double value) {
-        xProperty().set(value);
+        if (checkBounds(value, getY())) {
+            xProperty().set(value);
+        }
+    }
+
+    protected Boolean checkBounds(double newX, double newY) {
+        return true;
     }
 
     public void decLifes(Long lifes) {

@@ -3,18 +3,20 @@ package ua.drozda.battlecity.core.collisions;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import ua.drozda.battlecity.core.*;
+import ua.drozda.battlecity.core.ActiveUnit;
+import ua.drozda.battlecity.core.GameUnit;
+import ua.drozda.battlecity.core.TileUnit;
+import ua.drozda.battlecity.core.World;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Created by GFH on 14.05.2015.
  */
 public class CollisionManager {
+    double localNewX;
+    double localNewY;
     private World world;
     //    private List<Actor> actorList;
     private Set<TileUnit.TileType> rideTiles = EnumSet.of(TileUnit.TileType.EMPTY, TileUnit.TileType.FOREST, TileUnit
@@ -33,113 +35,77 @@ public class CollisionManager {
     }
 
     public void fixPosition(ActiveUnit activeUnit, Double newX, Double newY) {
-        Predicate<GameUnit> onlyTank = gameUnit -> (gameUnit instanceof TankUnit);
-        Predicate<GameUnit> notMe = gameUnit -> (gameUnit != activeUnit);
-        Predicate<GameUnit> onlyTankAndNotMe = onlyTank.and(notMe);
-        List<GameUnit> tanks = world.getUnitList().stream().filter(onlyTankAndNotMe).collect(Collectors.toList());
-        if (tanks.size() == 0) {// no more tanks
-            activeUnit.setBounds(activeUnit.getNewBounds());
-            return;
-        }
-        tanks.forEach(gameUnit -> {
-            Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
-                    activeUnit.getNewBounds().getMinY() + 1,
-                    activeUnit.getNewBounds().getWidth() - 2,
-                    activeUnit.getNewBounds().getHeight() - 2);
-            if (!newBounds.intersects(gameUnit.getBounds())) {
-                activeUnit.setBounds(activeUnit.getNewBounds());
-            }
-        });
+//        Predicate<GameUnit> onlyTank = gameUnit -> (gameUnit instanceof TankUnit);
+//        Predicate<GameUnit> notMe = gameUnit -> (gameUnit != activeUnit);
+//        Predicate<GameUnit> onlyTankAndNotMe = onlyTank.and(notMe);
+//        List<GameUnit> tanks = world.getUnitList().stream().filter(onlyTankAndNotMe).collect(Collectors.toList());
+//        if (tanks.size() == 0) {// no more tanks
+//            activeUnit.setBounds(activeUnit.getNewBounds());
+//            return;
+//        }
+//        tanks.forEach(gameUnit -> {
+//            Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
+//                    activeUnit.getNewBounds().getMinY() + 1,
+//                    activeUnit.getNewBounds().getWidth() - 2,
+//                    activeUnit.getNewBounds().getHeight() - 2);
+//            if (!newBounds.intersects(gameUnit.getBounds())) {
+//                activeUnit.setBounds(activeUnit.getNewBounds());
+//            }
+//        });
     }
 
-
-    public void newPosition(ActiveUnit activeUnit) {
+    public void newPosition(ActiveUnit activeUnit, Number newValueX, Number newValueY) {
+        Bounds newFixedBounds = new BoundingBox(newValueX.intValue() + 1,
+                // newBounds will always intersects another bounds if we are absolutely near another
+                // so we give 1 pixel on every direction to handle this situation
+                newValueY.intValue() + 1,
+                activeUnit.getWidth() - 2,
+                activeUnit.getHeight() - 2);
+        Bounds newBounds = new BoundingBox(newValueX.intValue(),
+                newValueY.intValue(),
+                activeUnit.getWidth(),
+                activeUnit.getHeight());
+        localNewX = newValueX.doubleValue();
+        localNewY = newValueY.doubleValue();
         world.getUnitList().stream().filter(u -> (u != activeUnit))
                 .forEach(u -> {
-                            Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
-                                    // newBounds will always intersects another bounds if we are absolutely near another
-                                    // so we give 1 pixel on every direction to handle this situation
-                                    activeUnit.getNewBounds().getMinY() + 1,
-                                    activeUnit.getNewBounds().getWidth() - 2,
-                                    activeUnit.getNewBounds().getHeight() - 2);
-                            if (!canRide(u) && u.getBounds().intersects(newBounds)) {
-//                                System.out.println("OtherUnit =" + u.getClass() + ";activeUnit = [" + activeUnit
-//                                        .getClass() +
-//                                        "]");
-
+                            if (!canRide(u) && u.getBounds().intersects(newFixedBounds)) {
+                                System.out.println("OtherUnit =" + u.getClass() + ";activeUnit = [" + activeUnit
+                                        .getClass() +
+                                        "]");
                                 switch (activeUnit.getDirection()) {
                                     case UP: {
-                                        double deltaY = u.getBounds().getMaxY() - activeUnit.getNewBounds().getMinY();
-                                        activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX(),
-                                                activeUnit.getNewBounds().getMinY() + (deltaY),
-                                                activeUnit.getNewBounds().getWidth(),
-                                                activeUnit.getNewBounds().getHeight()));
+                                        double deltaY = u.getBounds().getMaxY() - newBounds.getMinY();
+                                        localNewY = newValueY.intValue() + deltaY;
                                     }
                                     break;
                                     case LEFT: {
-                                        double deltaX = u.getBounds().getMaxX() - activeUnit.getNewBounds().getMinX();
-                                        activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX() + deltaX,
-                                                activeUnit.getNewBounds().getMinY(),
-                                                activeUnit.getNewBounds().getWidth(),
-                                                activeUnit.getNewBounds().getHeight()));
+                                        double deltaX = u.getBounds().getMaxX() - newBounds.getMinX();
+                                        localNewX = newValueX.intValue() + deltaX;
                                     }
                                     break;
                                     case DOWN: {
-                                        double deltaY = activeUnit.getNewBounds().getMaxY() - u.getBounds().getMinY();
-                                        activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX(),
-                                                activeUnit.getNewBounds().getMinY() - (deltaY),
-                                                activeUnit.getNewBounds().getWidth(),
-                                                activeUnit.getNewBounds().getHeight()));
+                                        double deltaY = newBounds.getMaxY() - u.getBounds().getMinY();
+                                        localNewY = newValueY.intValue() - deltaY;
+
                                     }
                                     break;
                                     case RIGHT: {
-                                        double deltaX = activeUnit.getNewBounds().getMaxX() - u.getBounds().getMinX();
-                                        activeUnit.setNewBounds(new BoundingBox(activeUnit.getNewBounds().getMinX() - deltaX,
-                                                activeUnit.getNewBounds().getMinY(),
-                                                activeUnit.getNewBounds().getWidth(),
-                                                activeUnit.getNewBounds().getHeight()));
+                                        double deltaX = newBounds.getMaxX() - u.getBounds().getMinX();
+                                        localNewX = newValueX.intValue() - deltaX;
                                     }
                                     break;
                                 }
                                 return;
-                            } else {
-                                return;
                             }
                         }
                 );
-        if (activeUnit.isEngineOn()) {
-            activeUnit.setBounds(activeUnit.getNewBounds());
-        }
+        activeUnit.setX(localNewX);
+        activeUnit.setY(localNewY);
+        return;
 
     }
 
-    //
-//    public List<Actor> getActorList() {
-//        return actorList;
-//    }
-//
-//    public void setActorList(List<Actor> actorList) {
-//        this.actorList = actorList;
-//    }
-//
-//    public GameCell[][] getGameCellList() {
-//        return gameCellList;
-//    }
-//
-//    public void setGameCellList(GameCell[][] gameCellList) {
-//        this.gameCellList = gameCellList;
-//    }
-//
-////    var intersects = function ( a, b ) {
-////        return ( a.y < b.y1 || a.y1 > b.y || a.x1 < b.x || a.x > b.x1 );
-////    }
-//
-//    //    public static Tile handleCollision(Tile curTile,Bullet bullet){
-////        if(curTile instanceof Brick){
-////
-////        }
-////    }
-    //  private Bounds correctPosition
     private Boolean canRide(GameUnit unit) {
         Boolean result = false;
         if (unit instanceof TileUnit) {
