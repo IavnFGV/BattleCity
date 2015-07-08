@@ -64,12 +64,10 @@ public abstract class ActiveUnit extends GameUnit {
         if (abs(newY - y) < (cellSize / 2 + 1)) {
             newY = Double.valueOf(y);
         }
-        setX(newX);
-        setY(newY);
 //        setNewBounds(new BoundingBox(newX, newY, cellSize * 2, cellSize * 2));
-//        if (collisionManager != null) {
-//            collisionManager.fixPosition(this);
-//        }
+        if (collisionManager != null) {
+            collisionManager.fixPosition(this, newX, newY);
+        }
     }
 
     private long nearest(double num, Integer base) {

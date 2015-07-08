@@ -3,20 +3,19 @@ package ua.drozda.battlecity.core.collisions;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import ua.drozda.battlecity.core.ActiveUnit;
-import ua.drozda.battlecity.core.GameUnit;
-import ua.drozda.battlecity.core.TileUnit;
-import ua.drozda.battlecity.core.World;
+import javafx.geometry.Point2D;
+import ua.drozda.battlecity.core.*;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by GFH on 14.05.2015.
  */
 public class CollisionManager {
-    double localNewX;
-    double localNewY;
     private World world;
     //    private List<Actor> actorList;
     private Set<TileUnit.TileType> rideTiles = EnumSet.of(TileUnit.TileType.EMPTY, TileUnit.TileType.FOREST, TileUnit
@@ -35,23 +34,25 @@ public class CollisionManager {
     }
 
     public void fixPosition(ActiveUnit activeUnit, Double newX, Double newY) {
-//        Predicate<GameUnit> onlyTank = gameUnit -> (gameUnit instanceof TankUnit);
-//        Predicate<GameUnit> notMe = gameUnit -> (gameUnit != activeUnit);
-//        Predicate<GameUnit> onlyTankAndNotMe = onlyTank.and(notMe);
-//        List<GameUnit> tanks = world.getUnitList().stream().filter(onlyTankAndNotMe).collect(Collectors.toList());
-//        if (tanks.size() == 0) {// no more tanks
-//            activeUnit.setBounds(activeUnit.getNewBounds());
-//            return;
-//        }
-//        tanks.forEach(gameUnit -> {
-//            Bounds newBounds = new BoundingBox(activeUnit.getNewBounds().getMinX() + 1,
-//                    activeUnit.getNewBounds().getMinY() + 1,
-//                    activeUnit.getNewBounds().getWidth() - 2,
-//                    activeUnit.getNewBounds().getHeight() - 2);
-//            if (!newBounds.intersects(gameUnit.getBounds())) {
-//                activeUnit.setBounds(activeUnit.getNewBounds());
-//            }
-//        });
+        Predicate<GameUnit> onlyTank = gameUnit -> (gameUnit instanceof TankUnit);
+        Predicate<GameUnit> notMe = gameUnit -> (gameUnit != activeUnit);
+        Predicate<GameUnit> onlyTankAndNotMe = onlyTank.and(notMe);
+        List<GameUnit> tanks = world.getUnitList().stream().filter(onlyTankAndNotMe).collect(Collectors.toList());
+        if (tanks.size() == 0) {// no more tanks
+            activeUnit.setX(newX);
+            activeUnit.setY(newY);
+            return;
+        }
+        if (!tanks.stream().map(gameUnit -> {
+            Bounds newBounds = new BoundingBox(newX,
+                    newY,
+                    activeUnit.getWidth(),
+                    activeUnit.getHeight());
+            return newBounds.intersects(gameUnit.getBounds());
+        }).anyMatch(b -> (b == true))) {
+            activeUnit.setX(newX);
+            activeUnit.setY(newY);
+        }
     }
 
     public void newPosition(ActiveUnit activeUnit, Number newValueX, Number newValueY) {
@@ -65,46 +66,39 @@ public class CollisionManager {
                 newValueY.intValue(),
                 activeUnit.getWidth(),
                 activeUnit.getHeight());
-        localNewX = newValueX.doubleValue();
-        localNewY = newValueY.doubleValue();
-        world.getUnitList().stream().filter(u -> (u != activeUnit))
-                .forEach(u -> {
-                            if (!canRide(u) && u.getBounds().intersects(newFixedBounds)) {
-                                System.out.println("OtherUnit =" + u.getClass() + ";activeUnit = [" + activeUnit
-                                        .getClass() +
-                                        "]");
-                                switch (activeUnit.getDirection()) {
-                                    case UP: {
-                                        double deltaY = u.getBounds().getMaxY() - newBounds.getMinY();
-                                        localNewY = newValueY.intValue() + deltaY;
-                                    }
-                                    break;
-                                    case LEFT: {
-                                        double deltaX = u.getBounds().getMaxX() - newBounds.getMinX();
-                                        localNewX = newValueX.intValue() + deltaX;
-                                    }
-                                    break;
-                                    case DOWN: {
-                                        double deltaY = newBounds.getMaxY() - u.getBounds().getMinY();
-                                        localNewY = newValueY.intValue() - deltaY;
+        Point2D result = new Point2D(newValueX.doubleValue(), newValueY.doubleValue());
+        Point2D newPosition = world.getUnitList().stream().filter(u -> (u != activeUnit)).map(u -> {
+                    if (!canRide(u) && u.getBounds().intersects(newFixedBounds)) {
+//                        System.out.println("OtherUnit =" + u.getClass() + ";activeUnit = [" + activeUnit
+//                                .getClass() +
+//                                "]");
+                        switch (activeUnit.getDirection()) {
+                            case UP: {
+                                double deltaY = u.getBounds().getMaxY() - newBounds.getMinY();
+                                return result.add(0, deltaY);
+                            }
+                            case LEFT: {
+                                double deltaX = u.getBounds().getMaxX() - newBounds.getMinX();
+                                return result.add(deltaX, 0);
+                            }
+                            case DOWN: {
+                                double deltaY = newBounds.getMaxY() - u.getBounds().getMinY();
+                                return result.add(0, -deltaY);
 
-                                    }
-                                    break;
-                                    case RIGHT: {
-                                        double deltaX = newBounds.getMaxX() - u.getBounds().getMinX();
-                                        localNewX = newValueX.intValue() - deltaX;
-                                    }
-                                    break;
-                                }
-                                return;
+                            }
+                            case RIGHT: {
+                                double deltaX = newBounds.getMaxX() - u.getBounds().getMinX();
+                                return result.add(-deltaX, 0);
                             }
                         }
-                );
-        activeUnit.setX(localNewX);
-        activeUnit.setY(localNewY);
-        return;
-
+                    }
+                    return result;
+                }
+        ).filter(point2D -> (!point2D.equals(result))).findFirst().orElse(result);
+        activeUnit.setX(newPosition.getX());
+        activeUnit.setY(newPosition.getY());
     }
+
 
     private Boolean canRide(GameUnit unit) {
         Boolean result = false;
