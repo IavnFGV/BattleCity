@@ -44,10 +44,10 @@ public class CollisionManager {
             return;
         }
         if (!tanks.stream().map(gameUnit -> {
-            Bounds newBounds = new BoundingBox(newX,
-                    newY,
-                    activeUnit.getWidth(),
-                    activeUnit.getHeight());
+            Bounds newBounds = new BoundingBox(newX + 1,
+                    newY + 1,
+                    activeUnit.getWidth() - 2,
+                    activeUnit.getHeight() - 2);
             return newBounds.intersects(gameUnit.getBounds());
         }).anyMatch(b -> (b == true))) {
             activeUnit.setX(newX);
