@@ -49,6 +49,7 @@ public class FxTankUnit extends FxGameUnit {
 //
 //    }
     private ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(threadFactory);
+
     public FxTankUnit(TankUnit gameUnit) {
         super(gameUnit);
         service.scheduleWithFixedDelay(new Runnable() {
@@ -134,17 +135,12 @@ public class FxTankUnit extends FxGameUnit {
     @Override
     protected void nextSprite() {
         if (getGameUnit().getCurrentBasicState() == GameUnit.BasicState.ACTIVE) {
-            if (gameUnit instanceof TankUnit) {
+            if ((gameUnit instanceof TankUnit) && // must be current value!!!
+                    (((TankUnit) gameUnit).isEngineOn())
+                    ) {
                 TankUnit tankUnit = (TankUnit) gameUnit;
-                if (tankUnit.isEngineOn()) {
-                    setCurSprite(tankActiveMap.get(tankUnit.getTankType()).get(tankUnit.getDirection())[tankUnit
-                            .getStarCount()][getCurToggle()]);
-                } else {
-                    if (getCurSprite() == null) {
-                        setCurSprite(tankActiveMap.get(tankUnit.getTankType()).get(tankUnit.getDirection())[tankUnit
-                                .getStarCount()][getCurToggle()]);
-                    }
-                }
+                setCurSprite(tankActiveMap.get(tankUnit.getTankType()).get(tankUnit.getDirection())[tankUnit
+                        .getStarCount()][getCurToggle()]);
                 shield.setVisible(tankUnit.isShield());
                 if (tankUnit.isShield()) {
                     setCurShieldSprite(shieldSprites[getCurToggle()]);

@@ -20,11 +20,12 @@ public class TestingBorderClass extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         root.getChildren().addAll
-                (FxBorder.border//,FxBorder.stageInfo
+                (FxBorderX.group//,FxBorder.stageInfo
                 );
-        scene = new Scene(root, 640, 480,
+        scene = new Scene(root, 500, 470,
                 Color.BLACK);
         primaryStage.setScene(scene);
+        // primaryStage.setResizable(false);
         primaryStage.show();
 
     }

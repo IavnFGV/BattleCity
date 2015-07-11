@@ -106,6 +106,7 @@ public class MainFXApplication extends Application {
         mainLoop.start();
         primaryStage.setTitle("JavaFX Scene Graph Demo");
         primaryStage.setScene(scene);
+        //    primaryStage.setResizable(false);
         primaryStage.show();
     }
 
