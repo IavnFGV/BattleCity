@@ -1,7 +1,8 @@
-package ua.drozda.battlecity.fx;
+package ua.drozda.battlecity.fx.sprites;
 
 import javafx.geometry.Rectangle2D;
 import ua.drozda.battlecity.core.TileUnit;
+import ua.drozda.battlecity.fx.FxWorld;
 
 /**
  * Created by GFH on 12.07.2015.

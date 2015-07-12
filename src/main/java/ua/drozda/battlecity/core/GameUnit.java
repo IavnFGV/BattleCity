@@ -25,7 +25,7 @@ public abstract class GameUnit extends Observable {
     private static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
 
     static {
-        timeInState.put(BasicState.CREATING, 10 * 500000000L);
+        timeInState.put(BasicState.CREATING, 4 * ONE_SECOND);
         timeInState.put(BasicState.ACTIVE, 0L);
         timeInState.put(BasicState.EXPLODING, 500000000L);
         timeInState.put(BasicState.DEAD, 0L);

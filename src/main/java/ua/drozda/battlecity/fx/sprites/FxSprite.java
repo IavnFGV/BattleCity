@@ -1,10 +1,12 @@
-package ua.drozda.battlecity.fx;
+package ua.drozda.battlecity.fx.sprites;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.ImageView;
 import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.interfaces.Togglable;
+import ua.drozda.battlecity.fx.FxWorld;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -40,6 +42,10 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
         return imageView.yProperty();
     }
 
+    public final BooleanProperty visibleProperty() {
+        return imageView.visibleProperty();
+    }
+
     public T getGameUnit() {
         return gameUnit;
     }
@@ -63,6 +69,7 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
     public final void setViewPort(Rectangle2D value) {
         imageView.setViewport(value);
     }
+
 
     @Override
     public void update(Observable o, Object arg) {

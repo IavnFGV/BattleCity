@@ -1,6 +1,9 @@
 package ua.drozda.battlecity.fx;
 
 import ua.drozda.battlecity.core.TankUnit;
+import ua.drozda.battlecity.fx.sprites.FxSpriteCreation;
+import ua.drozda.battlecity.fx.sprites.FxSpriteShield;
+import ua.drozda.battlecity.fx.sprites.FxSpriteTank;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,6 +29,12 @@ public class FxTankUnit extends FxGameUnit {
     public FxTankUnit(TankUnit gameUnit) {
         super(gameUnit);
         addSprite(new FxSpriteTank(gameUnit));
+        if (TankUnit.playerTanks.contains(gameUnit.getTankType())) {
+            FxSpriteShield fxSpriteShield = new FxSpriteShield(gameUnit);
+            addSprite(fxSpriteShield);
+            fxSpriteShield.visibleProperty().bind(gameUnit.shildProperty());
+        }
+        addSprite(new FxSpriteCreation(gameUnit));
         service.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
@@ -35,6 +44,7 @@ public class FxTankUnit extends FxGameUnit {
             }
         }, 0, 154, TimeUnit.MILLISECONDS);
     }
+
     public TankUnit getTank() {
         return (TankUnit) getGameUnit();
     }

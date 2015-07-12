@@ -13,38 +13,38 @@ import java.util.List;
  */
 public class FxWorld implements Togglable {
 
-    static public final Integer tileSize = 16;
-    static public final Integer tankSize = 32;
+    public static final Integer tileSize = 16;
+    public static final Integer tankSize = 32;
 
-    static final Integer bulletExplosion = 32;
-    static final Integer tankExplosion = 64;
-    static final Integer baseExplosion = 64;
+    public static final Integer bulletExplosion = 32;
+    public static final Integer tankExplosion = 64;
+    public static final Integer baseExplosion = 64;
 
 
-    static final Integer tileZoneX = 28 * 32;
-    static final Integer firstPlayerZoneX = 20 * tankSize;
-    static final Integer firstPlayerZoneY = 0 * tankSize;
-    static final Integer secondPlayerZoneX = 24 * tankSize;
-    static final Integer secondPlayerZoneY = 0 * tankSize;
+    public static final Integer tileZoneX = 28 * 32;
+    public static final Integer firstPlayerZoneX = 20 * tankSize;
+    public static final Integer firstPlayerZoneY = 0 * tankSize;
+    public static final Integer secondPlayerZoneX = 24 * tankSize;
+    public static final Integer secondPlayerZoneY = 0 * tankSize;
 
-    static final Integer borderZoneX = 15 * tankSize;
-    static final Integer borderZoneY = 8 * tankSize;
+    public static final Integer borderZoneX = 15 * tankSize;
+    public static final Integer borderZoneY = 8 * tankSize;
 
-    static final Integer brickZoneY = 0 * tileSize;
-    static final Integer steelZoneY = 1 * tileSize;
-    static final Integer waterZoneY = 2 * tileSize;
-    static final Integer forestZoneY = 3 * tileSize;
-    static final Integer iceZoneY = 4 * tileSize;
+    public static final Integer brickZoneY = 0 * tileSize;
+    public static final Integer steelZoneY = 1 * tileSize;
+    public static final Integer waterZoneY = 2 * tileSize;
+    public static final Integer forestZoneY = 3 * tileSize;
+    public static final Integer iceZoneY = 4 * tileSize;
 
-    static final Integer emptyZoneY = 11 * tileSize;
-    static final Integer explozionZoneY = 17 * tileSize;
+    public static final Integer emptyZoneY = 11 * tileSize;
+    public static final Integer explozionZoneY = 17 * tileSize;
 
 
     //     private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/sprites.png");
-    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics_debug.png");
+//    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics_debug.png");
 
-    //    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics.png");
-    static volatile Image sprites = new Image(spritesStream);
+    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics.png");
+    public static volatile Image sprites = new Image(spritesStream);
     List<FxGameUnit> fxGameUnitsList = new ArrayList<>();
     // private FxTank firstPlayerTank;
     private World world;

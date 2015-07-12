@@ -1,5 +1,7 @@
 package ua.drozda.battlecity.core;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.fx.FxWorld;
 
@@ -18,6 +20,8 @@ public class TankUnit extends ActiveUnit {
     protected Integer starCount = 0;
     protected Boolean shield = false;
     protected Long leftTimeInShieldState = 0L;//
+
+    private BooleanProperty shildProperty;
 
     public TankUnit(double x, double y, double width, double height, Integer lives, Long currentTime,
                     BasicState currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
@@ -47,10 +51,22 @@ public class TankUnit extends ActiveUnit {
 
     protected void setLeftTimeInShieldState(Long leftTimeInShieldState) {
         this.leftTimeInShieldState = leftTimeInShieldState;
+        if (leftTimeInShieldState <= 0l) {
+            shildProperty().setValue(false);
+        } else {
+            shildProperty().setValue(true);
+        }
     }
 
     public void setShield(Long shieldTime) {
         setLeftTimeInShieldState(shieldTime);
+    }
+
+    public final BooleanProperty shildProperty() {
+        if (shildProperty == null) {
+            shildProperty = new SimpleBooleanProperty();
+        }
+        return shildProperty;
     }
 
     public TankType getTankType() {

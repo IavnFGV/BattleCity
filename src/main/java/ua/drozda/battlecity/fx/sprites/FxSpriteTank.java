@@ -1,9 +1,10 @@
-package ua.drozda.battlecity.fx;
+package ua.drozda.battlecity.fx.sprites;
 
 import javafx.geometry.Rectangle2D;
 import ua.drozda.battlecity.core.ActiveUnit;
 import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
+import ua.drozda.battlecity.fx.FxWorld;
 
 import java.util.HashMap;
 import java.util.Map;

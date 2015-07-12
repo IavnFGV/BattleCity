@@ -4,6 +4,7 @@ import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.TileUnit;
 import ua.drozda.battlecity.core.interfaces.Togglable;
+import ua.drozda.battlecity.fx.sprites.FxSprite;
 
 import java.util.ArrayList;
 import java.util.List;

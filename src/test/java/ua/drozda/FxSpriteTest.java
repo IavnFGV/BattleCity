@@ -1,7 +1,7 @@
 package ua.drozda;
 
 import org.junit.Test;
-import ua.drozda.battlecity.fx.FxSpriteWater;
+import ua.drozda.battlecity.fx.sprites.FxSpriteWater;
 
 import static ua.drozda.TestConstants.*;
 
