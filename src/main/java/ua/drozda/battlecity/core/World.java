@@ -224,7 +224,7 @@ public class World implements LoadableCells {
     public void prepareWorld() {
         setCollisionManager(new CollisionManager(this));
         TankUnit tank = new TankUnit(8 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
-                1l,
+                1,
                 0l, GameUnit
                 .BasicState.CREATING,
                 ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
@@ -232,7 +232,7 @@ public class World implements LoadableCells {
         setFirstPlayer(tank);
         if (getWorldType() == WorldType.DoublePlayer) {
             tank = new TankUnit(16 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
-                    1l,
+                    1,
                     0l, GameUnit
                     .BasicState.CREATING,
                     ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
@@ -286,7 +286,7 @@ public class World implements LoadableCells {
     }
 
     public Boolean addCell(Integer x, Integer y, TileUnit.TileType tileType) {
-        TileUnit tileUnit = new TileUnit(x * cellWidth, y * cellHeight, cellWidth, cellHeight, 1l, 0l,
+        TileUnit tileUnit = new TileUnit(x * cellWidth, y * cellHeight, cellWidth, cellHeight, 1, 0l,
                 tileType, this::registrateUnit, this::unRegistrateUnit);
         return true;
     }

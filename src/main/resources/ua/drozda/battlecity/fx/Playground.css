@@ -1,4 +1,4 @@
-.playground-border-left, .playground-border-top, .playground-border-bottom, .playground-border-right {
+.playground-border-left, .playground-border-top, .playground-border-bottom, .playground-border-right, #disable-second_player {
     -fx-background-color: #636363;
 }
 
@@ -62,4 +62,14 @@
 #first-player-counter {
     -fx-translate-x: 20;
     -fx-translate-y: 272;
+}
+
+#test {
+    -fx-background-image: url("../images/graphics_debug.png");
+    -fx-background-position: 102 323, center;
+
+}
+
+#disable-second_player {
+
 }

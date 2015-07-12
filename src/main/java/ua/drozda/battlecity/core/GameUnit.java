@@ -1,9 +1,9 @@
 package ua.drozda.battlecity.core;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.LongProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 
@@ -36,7 +36,7 @@ public abstract class GameUnit extends Observable {
     protected BasicState currentBasicState;
     protected Boolean blockCurrentState = false;
     protected Long lastHeartBeat;
-    protected Long lifes = 0L;
+    protected Integer lifes = 0;
     protected BasicHeartBeatStrategy heartBeatStrategy;
     protected Function<GameUnit, Boolean> registrateAction;
     protected Function<GameUnit, Boolean> unRegistrateAction;
@@ -45,15 +45,15 @@ public abstract class GameUnit extends Observable {
     protected Double height;
 
 
-    private LongProperty lifesCount;
+    private IntegerProperty lifesCount;
     private DoubleProperty x;
     private DoubleProperty y;
 
-    public GameUnit(double x, double y, double width, double height, Long lifes, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
+    public GameUnit(double x, double y, double width, double height, Integer lifes, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
         this(x, y, width, height, lifes, BasicState.CREATING, registerAction, unRegisterAction, true);
     }
 
-    public GameUnit(double x, double y, double width, double height, Long lifes, BasicState
+    public GameUnit(double x, double y, double width, double height, Integer lifes, BasicState
             currentBasicState, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean>
                             unRegisterAction, Boolean addListeners) {
         this.width = width;
@@ -199,18 +199,18 @@ public abstract class GameUnit extends Observable {
         return true;
     }
 
-    public void decLifes(Long lifes) {
-        Long newLifes = this.getLifes() - lifes;
+    public void decLifes(Integer lifes) {
+        Integer newLifes = this.getLifes() - lifes;
         this.setLifes(newLifes);
     }
 
-    public Long getLifes() {
+    public Integer getLifes() {
         return lifes;
     }
 
-    public void setLifes(Long lifes) {
+    public void setLifes(Integer lifes) {
         if (lifes > 9) {
-            lifes = 9l;
+            lifes = 9;
         }
         this.lifes = lifes;
         setLifesCount(lifes);
@@ -220,9 +220,9 @@ public abstract class GameUnit extends Observable {
 
     }
 
-    public final LongProperty lifesCountProperty() {
+    public final IntegerProperty lifesCountProperty() {
         if (lifesCount == null) {
-            lifesCount = new SimpleLongProperty(this, "lifesCount", 2);
+            lifesCount = new SimpleIntegerProperty(this, "lifesCount", 2);
         }
         return lifesCount;
     }

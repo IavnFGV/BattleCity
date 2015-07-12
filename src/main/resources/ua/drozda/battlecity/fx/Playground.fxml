@@ -6,7 +6,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="playground-back"
             stylesheets="@Playground.css" xmlns="http://javafx.com/javafx/8"
-            fx:controller="ua.drozda.battlecity.fx.FxBorderX">
+            fx:controller="ua.drozda.battlecity.fx.FxBorder">
     <top>
         <Pane prefHeight="200.0" prefWidth="200.0" styleClass="playground-border-top" BorderPane.alignment="CENTER"/>
     </top>
@@ -21,10 +21,11 @@
         <Pane prefHeight="200.0" prefWidth="200.0" styleClass="playground-border-right" BorderPane.alignment="CENTER">
             <children>
                 <TilePane id="enemy-counter" fx:id="enemyCounter" prefHeight="200.0" prefWidth="200.0"/>
-                <Pane layoutX="17.0" layoutY="272.0" prefHeight="200.0" prefWidth="32.0" scaleZ="0.0">
+                <Pane layoutX="17.0" layoutY="272.0" prefHeight="200.0" prefWidth="32.0" scaleZ="0.0"/>
+                <Pane id="test" layoutX="16.0" layoutY="272.0" prefHeight="200.0" prefWidth="32.0">
                     <children>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true"
-                                   scaleZ="0.0">
+                        <ImageView fx:id="firstPlayerLifes" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                   preserveRatio="true" x="16.0" y="16.0">
                             <viewport>
                                 <Rectangle2D height="32.0" minX="1024.0" minY="240.0" width="32.0"/>
                             </viewport>
@@ -32,8 +33,8 @@
                                 <Image url="@../images/graphics_debug.png"/>
                             </image>
                         </ImageView>
-                        <ImageView fx:id="secondPlayerImage" fitHeight="32.0" fitWidth="32.0" layoutY="48.0"
-                                   pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="secondPlayerLifes" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                   preserveRatio="true" x="16.0" y="64.0">
                             <viewport>
                                 <Rectangle2D height="32.0" minX="1024.0" minY="288.0" width="32.0"/>
                             </viewport>
@@ -41,15 +42,26 @@
                                 <Image url="@../images/graphics_debug.png"/>
                             </image>
                         </ImageView>
-                        <ImageView fitHeight="48.0" fitWidth="32.0" layoutY="96.0" pickOnBounds="true"
-                                   preserveRatio="true">
+                        <ImageView fx:id="stageNumberFirstDigit" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                   preserveRatio="true" y="128.0">
                             <viewport>
-                                <Rectangle2D height="48.0" minX="1024.0" minY="336.0" width="32.0"/>
+                                <Rectangle2D height="16.0" minX="1024.0" minY="336.0" width="16.0"/>
                             </viewport>
                             <image>
                                 <Image url="@../images/graphics_debug.png"/>
                             </image>
                         </ImageView>
+                        <ImageView fx:id="stageNumberSecondDigit" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                   preserveRatio="true" x="16.0" y="128.0">
+                            <image>
+                                <Image url="@../images/graphics_debug.png"/>
+                            </image>
+                            <viewport>
+                                <Rectangle2D height="16.0" minX="1024.0" minY="336.0" width="16.0"/>
+                            </viewport>
+                        </ImageView>
+                        <Pane id="disable-second_player" fx:id="secondPlayerHider" layoutY="48.0" prefHeight="32.0"
+                              prefWidth="32.0" visible="false"/>
                     </children>
                 </Pane>
             </children>

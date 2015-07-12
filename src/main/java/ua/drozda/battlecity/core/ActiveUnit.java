@@ -20,7 +20,7 @@ public abstract class ActiveUnit extends GameUnit {
     private Long velocity = 8L;
     private Integer cellSize = 16;//bad idea TODO maybe we can use EasyDI lib???
 
-    public ActiveUnit(double x, double y, double width, double height, Long lives, BasicState
+    public ActiveUnit(double x, double y, double width, double height, Integer lives, BasicState
             currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
                       Function<GameUnit, Boolean> unRegisterAction, CollisionManager collisionManager) {
         super(x, y, width, height, lives, currentBasicState, registerAction, unRegisterAction, true);

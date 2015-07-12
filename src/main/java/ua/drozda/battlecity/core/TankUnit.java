@@ -19,7 +19,7 @@ public class TankUnit extends ActiveUnit {
     protected Boolean shield = false;
     protected Long leftTimeInShieldState = 0L;//
 
-    public TankUnit(double x, double y, double width, double height, Long lives, Long currentTime,
+    public TankUnit(double x, double y, double width, double height, Integer lives, Long currentTime,
                     BasicState currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
                     Function<GameUnit, Boolean> unRegisterAction, TankType tankType, CollisionManager collisionManager) {
         super(x, y, width, height, lives, currentBasicState, direction, velocity, registerAction,

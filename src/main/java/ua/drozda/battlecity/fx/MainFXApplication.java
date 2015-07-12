@@ -22,7 +22,7 @@ import java.util.Set;
  */
 public class MainFXApplication extends Application {
 
-    World world = new World(World.WorldType.DoublePlayer, 2);
+    World world = new World(World.WorldType.SinglePlayer, 2);
     FxWorld fxWorld = new FxWorld();
     //  FxBorder fxBorder = new FxBorder();
     IntegerBinding integerBinding;
@@ -51,7 +51,7 @@ public class MainFXApplication extends Application {
         fxWorld.setWorld(world);
 
 
-        root.getChildren().add(FxBorder.border);
+        root.getChildren().add(FxBorder.group);
         root.getChildren().add(playGround);
         scene = new Scene(root, fxWorld.getWorld().getWorldWiddthPixel() +
                 fxWorld.getWorld().getCellWidth() * 6,//for bounds around playground
@@ -90,7 +90,7 @@ public class MainFXApplication extends Application {
                     if (secondPlayerTank != null) {
                         FxBorder.secondPlayerLifesProperty().bind(secondPlayerTank.lifesCountProperty());
                     }
-                    FxBorder.refresh(world);
+                    FxBorder.refresh(world.getWorldType(), world.getStageNumber());
                     init = true;
                 }
                 world.handleCollisions();
@@ -149,9 +149,9 @@ public class MainFXApplication extends Application {
             firstPlayerTank.setEngineOn(true);
         }
         if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
-            firstPlayerTank.setLifes(25l);
+            firstPlayerTank.setLifes(25);
             world.setEnemiesCount(world.getEnemiesCount() - 1);
-            System.out.println(FxBorder.getEnemiesCount());
+            System.out.println(FxBorder.enemiesCountProperty());
         }
 
     }

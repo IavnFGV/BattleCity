@@ -20,7 +20,7 @@ public class TestingBorderClass extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         root.getChildren().addAll
-                (FxBorderX.group//,FxBorder.stageInfo
+                (FxBorder.group//,FxBorder.stageInfo
                 );
         scene = new Scene(root, 500, 470,
                 Color.BLACK);
