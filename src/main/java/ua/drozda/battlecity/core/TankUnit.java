@@ -27,10 +27,10 @@ public class TankUnit extends ActiveUnit {
         setTankType(tankType);
         if (playerTanks.contains(tankType)) {
             setBonusStrategy(this.new PlayerBonusStrategy());
+            setHeartBeatStrategy(new TankHeartBeatStrategy());
         } else {
             setBonusStrategy(this.new EnemyBonusStrategy());
         }
-        setHeartBeatStrategy(new TankHeartBeatStrategy());
     }
 
     public static Long getTimeInShieldOnRespawn() {

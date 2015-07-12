@@ -63,9 +63,7 @@ public class FxWorld implements Togglable {
 
     @Override
     public void doToggle(Long now) {
-        for (FxGameUnit fxGameUnit : fxGameUnitsList) {
-            fxGameUnit.toggle(now);
-        }
+        fxGameUnitsList.forEach(u -> u.toggle(now));
     }
 
     public World getWorld() {

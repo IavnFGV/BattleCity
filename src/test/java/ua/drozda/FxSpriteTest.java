@@ -1,7 +1,7 @@
 package ua.drozda;
 
 import org.junit.Test;
-import ua.drozda.battlecity.fx.FxSprite;
+import ua.drozda.battlecity.fx.FxSpriteWater;
 
 import static ua.drozda.TestConstants.*;
 
@@ -14,7 +14,7 @@ public class FxSpriteTest {
     public void testConstructor() {
         testMethodStarted("FxSprite testConstructor");
         try {
-            new FxSprite(null);
+            new FxSpriteWater(null);
         } catch (Throwable t) {
             showMessage(t.getMessage());
             testComplete();

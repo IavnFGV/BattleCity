@@ -20,7 +20,7 @@ import java.util.function.Function;
  * it has Bounds (in classical game pixels)
  */
 public abstract class GameUnit extends Observable {
-    public static Long ONE_SECOND = 1000000000l;
+    public static Long ONE_SECOND = 1000_000_000l;
     private static Boolean pause = false;
     private static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
 

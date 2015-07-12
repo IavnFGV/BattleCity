@@ -16,6 +16,7 @@ import ua.drozda.battlecity.io.LevelLoader;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by GFH on 17.05.2015.
@@ -83,7 +84,8 @@ public class MainFXApplication extends Application {
                     secondPlayerTank = world.getSecondPlayer();
                     Collections.reverse(fxWorld.fxGameUnitsList);
                     for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
-                        playGround.getChildren().addAll(fxGameUnit.getImageViews());
+                        playGround.getChildren().addAll(fxGameUnit.getSprites().stream().map(s -> s.getImageView())
+                                .collect(Collectors.toList()));
                     }
                     FxBorder.enemiesCountProperty().bind(world.enemiesCountProperty());
                     FxBorder.firstPlayerLifesProperty().bind(firstPlayerTank.lifesCountProperty());
