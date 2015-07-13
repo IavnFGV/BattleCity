@@ -2,7 +2,6 @@ package ua.drozda.battlecity.fx.sprites;
 
 import javafx.geometry.Rectangle2D;
 import ua.drozda.battlecity.core.ActiveUnit;
-import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.fx.FxWorld;
 
@@ -29,6 +28,7 @@ public class FxSpriteTank extends FxSprite<TankUnit> {
     public FxSpriteTank(TankUnit gameUnit) {
         super(gameUnit);
         maxToggle = 2;
+
     }
 
     private static HashMap<ActiveUnit.Direction, Rectangle2D[][]> getPlayerDirectionHashMap(Integer offsetX) {
@@ -87,13 +87,8 @@ public class FxSpriteTank extends FxSprite<TankUnit> {
 
     @Override
     protected void updateSprite() {
-        if (getGameUnit().getBasicState() == GameUnit.BasicState.ACTIVE) {
-            getImageView().setVisible(true);// TODO MAKE PROPERTY
             setViewPort(tankActiveMap.get(getGameUnit().getTankType()).get(getGameUnit().getDirection())[getGameUnit()
                     .getStarCount()][curToggle]);
-        } else {
-            getImageView().setVisible(false);
-        }
     }
 
     @Override

@@ -34,12 +34,7 @@ public class FxSpriteCreation extends FxSprite<TankUnit> {
 
     @Override
     protected void updateSprite() {
-        if (getGameUnit().getBasicState() == GameUnit.BasicState.CREATING) {
-            getImageView().setVisible(true);// TODO MAKE PROPERTY
             setViewPort(creationTiles[curToggle]);
-        } else {
-            getImageView().setVisible(false);
-        }
     }
 
     @Override

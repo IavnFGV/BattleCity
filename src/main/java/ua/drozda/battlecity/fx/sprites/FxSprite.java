@@ -45,12 +45,12 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
         return imageView.visibleProperty();
     }
 
-    public T getGameUnit() {
-        return gameUnit;
+    public final boolean isVisible() {
+        return getImageView().isVisible();
     }
 
-    public void setGameUnit(T gameUnit) {
-        this.gameUnit = gameUnit;
+    public final void setVisible(boolean visible) {
+        getImageView().setVisible(visible);
     }
 
     public ImageView getImageView() {
@@ -59,6 +59,14 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
 
     public void setImageView(ImageView imageView) {
         this.imageView = imageView;
+    }
+
+    public T getGameUnit() {
+        return gameUnit;
+    }
+
+    public void setGameUnit(T gameUnit) {
+        this.gameUnit = gameUnit;
     }
 
     public final Rectangle2D getViewPort() {

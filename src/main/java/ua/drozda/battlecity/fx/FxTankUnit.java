@@ -1,5 +1,6 @@
 package ua.drozda.battlecity.fx;
 
+import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.fx.sprites.FxSpriteCreation;
 import ua.drozda.battlecity.fx.sprites.FxSpriteShield;
@@ -28,13 +29,25 @@ public class FxTankUnit extends FxGameUnit {
 
     public FxTankUnit(TankUnit gameUnit) {
         super(gameUnit);
-        addSprite(new FxSpriteTank(gameUnit));
+        FxSpriteTank baseSprite = new FxSpriteTank(gameUnit);
+        addSprite(baseSprite);
         if (TankUnit.playerTanks.contains(gameUnit.getTankType())) {
             FxSpriteShield fxSpriteShield = new FxSpriteShield(gameUnit);
             addSprite(fxSpriteShield);
             fxSpriteShield.visibleProperty().bind(gameUnit.shildProperty());
         }
-        addSprite(new FxSpriteCreation(gameUnit));
+        FxSpriteCreation creationSprite = new FxSpriteCreation(gameUnit);
+        addSprite(creationSprite);
+        creationSprite.setVisible(true);
+        baseSprite.setVisible(false);
+        gameUnit.basicStateProperty().addListener((observable, oldValue, newValue) -> {
+            if ((oldValue == GameUnit.BasicState.CREATING) &&
+                    (newValue == GameUnit.BasicState.ACTIVE)) {
+                creationSprite.setVisible(false);
+                baseSprite.setVisible(true);
+            }
+        });
+
         service.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
