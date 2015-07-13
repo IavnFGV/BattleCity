@@ -17,9 +17,9 @@ import static ua.drozda.battlecity.core.StaticServices.MESSAGES;
  * Created by GFH on 06.07.2015.
  */
 public abstract class FxSprite<T extends GameUnit> implements Togglable, Observer {
-    protected Integer maxToggle = 1;
     protected Integer curToggle = 0;
     protected Long toggleTime = 0l;
+    protected int maxToggle = 1;
     private ImageView imageView = new ImageView(FxWorld.sprites);
     private T gameUnit;
 
@@ -31,7 +31,6 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
         yProperty().bind(gameUnit.yProperty());
         gameUnit.addObserver(this);
         this.gameUnit = gameUnit;
-        //    this.setViewPort(viewPort);
     }
 
     public final DoubleProperty xProperty() {
@@ -70,6 +69,7 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
         imageView.setViewport(value);
     }
 
+    protected abstract int getMaxToggle();
 
     @Override
     public void update(Observable o, Object arg) {

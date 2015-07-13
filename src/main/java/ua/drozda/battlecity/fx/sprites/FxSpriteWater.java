@@ -30,15 +30,19 @@ public class FxSpriteWater extends FxSprite<TileUnit> {
     }
 
     @Override
-    public void doToggle(Long now) {
-        curToggle = ++curToggle % maxToggle;
-        updateSprite();
-        toggleTime = now;
+    protected int getMaxToggle() {
+        return maxToggle;
     }
-
 
     @Override
     protected void updateSprite() {
         setViewPort(waterTiles[this.curToggle]);
+    }
+
+    @Override
+    public void doToggle(Long now) {
+        curToggle = ++curToggle % maxToggle;
+        updateSprite();
+        toggleTime = now;
     }
 }

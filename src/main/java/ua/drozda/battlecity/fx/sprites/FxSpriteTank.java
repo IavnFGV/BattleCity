@@ -81,8 +81,13 @@ public class FxSpriteTank extends FxSprite<TankUnit> {
     }
 
     @Override
+    protected int getMaxToggle() {
+        return maxToggle;
+    }
+
+    @Override
     protected void updateSprite() {
-        if (getGameUnit().getCurrentBasicState() == GameUnit.BasicState.ACTIVE) {
+        if (getGameUnit().getBasicState() == GameUnit.BasicState.ACTIVE) {
             getImageView().setVisible(true);// TODO MAKE PROPERTY
             setViewPort(tankActiveMap.get(getGameUnit().getTankType()).get(getGameUnit().getDirection())[getGameUnit()
                     .getStarCount()][curToggle]);

@@ -17,6 +17,11 @@ public class FxSpriteForest extends FxSprite<TileUnit> {
     }
 
     @Override
+    protected int getMaxToggle() {
+        return 1;
+    }
+
+    @Override
     protected void updateSprite() {
         setViewPort(forestTile);
     }

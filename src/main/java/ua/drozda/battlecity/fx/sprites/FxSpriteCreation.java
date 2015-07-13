@@ -34,7 +34,7 @@ public class FxSpriteCreation extends FxSprite<TankUnit> {
 
     @Override
     protected void updateSprite() {
-        if (getGameUnit().getCurrentBasicState() == GameUnit.BasicState.CREATING) {
+        if (getGameUnit().getBasicState() == GameUnit.BasicState.CREATING) {
             getImageView().setVisible(true);// TODO MAKE PROPERTY
             setViewPort(creationTiles[curToggle]);
         } else {
@@ -43,15 +43,20 @@ public class FxSpriteCreation extends FxSprite<TankUnit> {
     }
 
     @Override
+    protected int getMaxToggle() {
+        return maxToggle;
+    }
+
+    @Override
     public void doToggle(Long now) {
         if (curToggle == 0) {
             d = true;
         }
-        if (curToggle == maxToggle - 1) {
+        if (curToggle == getMaxToggle() - 1) {
             d = false;
         }
         if (d) {
-            curToggle = ++curToggle % maxToggle;
+            curToggle = ++curToggle % getMaxToggle();
         } else {
             curToggle--;
         }

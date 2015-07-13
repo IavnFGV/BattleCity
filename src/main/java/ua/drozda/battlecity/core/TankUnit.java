@@ -192,9 +192,9 @@ public class TankUnit extends ActiveUnit {
     protected class TankHeartBeatStrategy extends GameUnit.BasicHeartBeatStrategy {
         @Override
         public void perform(Long deltaTime) {
-            BasicState oldState = TankUnit.this.getCurrentBasicState();
+            BasicState oldState = TankUnit.this.getBasicState();
             super.perform(deltaTime);
-            BasicState newState = TankUnit.this.getCurrentBasicState();
+            BasicState newState = TankUnit.this.getBasicState();
             if (oldState == BasicState.CREATING && newState == BasicState.ACTIVE) {
                 TankUnit.this.setShield(getTimeInShieldOnRespawn());
             }

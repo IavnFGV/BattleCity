@@ -1,9 +1,6 @@
 package ua.drozda.battlecity.core;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 
@@ -25,7 +22,7 @@ public abstract class GameUnit extends Observable {
     private static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
 
     static {
-        timeInState.put(BasicState.CREATING, 4 * ONE_SECOND);
+        timeInState.put(BasicState.CREATING, 2 * ONE_SECOND);
         timeInState.put(BasicState.ACTIVE, 0L);
         timeInState.put(BasicState.EXPLODING, 500000000L);
         timeInState.put(BasicState.DEAD, 0L);
@@ -33,7 +30,7 @@ public abstract class GameUnit extends Observable {
 
     protected Bounds bounds;
     protected Long leftTimeInBasicState = 0L;//
-    protected BasicState currentBasicState;
+    //protected BasicState currentBasicState;
     protected Boolean blockCurrentState = false;
     protected Long lastHeartBeat;
     protected Integer lifes = 0;
@@ -44,7 +41,7 @@ public abstract class GameUnit extends Observable {
     protected Double width;
     protected Double height;
 
-
+    private ObjectProperty<BasicState> basicStateProperty;
     private IntegerProperty lifesCount;
     private DoubleProperty x;
     private DoubleProperty y;
@@ -59,7 +56,7 @@ public abstract class GameUnit extends Observable {
         this.width = width;
         this.height = height;
         this.setLifes(lifes);
-        this.setCurrentBasicState(currentBasicState);
+        this.setBasicState(currentBasicState);
         this.setRegistrateAction(registerAction);
         this.setUnRegistrateAction(unRegisterAction);
         this.setBounds(new BoundingBox(x, y, width, height));
@@ -75,7 +72,6 @@ public abstract class GameUnit extends Observable {
         }
         setY(y);
         registrateAction.apply(this);
-        //   unitList.add(this);
     }
 
     public static void setPause(Boolean pause) {
@@ -117,7 +113,6 @@ public abstract class GameUnit extends Observable {
         return "GameUnit{" +
                 "bounds=" + bounds +
                 ", leftTimeInBasicState=" + leftTimeInBasicState +
-                ", currentBasicState=" + currentBasicState +
                 ", blockCurrentState=" + blockCurrentState +
                 ", lastHeartBeat=" + lastHeartBeat +
                 ", lifes=" + lifes +
@@ -125,7 +120,13 @@ public abstract class GameUnit extends Observable {
                 ", registrateAction=" + registrateAction +
                 ", unRegistrateAction=" + unRegistrateAction +
                 ", deltaHeartBeat=" + deltaHeartBeat +
-                "} ";
+                ", width=" + width +
+                ", height=" + height +
+                ", basicStateProperty=" + basicStateProperty +
+                ", lifesCount=" + lifesCount +
+                ", x=" + x +
+                ", y=" + y +
+                "} " + super.toString();
     }
 
     public Function<GameUnit, Boolean> getRegistrateAction() {
@@ -170,9 +171,7 @@ public abstract class GameUnit extends Observable {
     }
 
     public void setBounds(Bounds bounds) {
-        //      if (checkBounds(bounds)) {
         this.bounds = bounds;
-        //     }
     }
 
     public final double getX() {
@@ -215,7 +214,7 @@ public abstract class GameUnit extends Observable {
         this.lifes = lifes;
         setLifesCount(lifes);
         if (this.lifes <= 0) {
-            setCurrentBasicState(BasicState.EXPLODING);
+            setBasicState(BasicState.EXPLODING);
         }
 
     }
@@ -225,6 +224,13 @@ public abstract class GameUnit extends Observable {
             lifesCount = new SimpleIntegerProperty(this, "lifesCount", 2);
         }
         return lifesCount;
+    }
+
+    public final ObjectProperty<BasicState> basicStateProperty() {
+        if (basicStateProperty == null) {
+            basicStateProperty = new SimpleObjectProperty<>();
+        }
+        return basicStateProperty;
     }
 
     protected Long getTimeInState(BasicState state) {
@@ -281,15 +287,15 @@ public abstract class GameUnit extends Observable {
         this.leftTimeInBasicState = leftTimeInBasicState;
     }
 
-    public BasicState getCurrentBasicState() {
-        return currentBasicState;
+    public BasicState getBasicState() {
+        return basicStateProperty().getValue();
     }
 
-    public void setCurrentBasicState(BasicState currentBasicState) {
-        this.currentBasicState = currentBasicState;
-        this.setLeftTimeInBasicState(getTimeInState(currentBasicState));
-        if (currentBasicState == BasicState.DEAD) {
-            unRegistrateAction.apply(this);
+    public void setBasicState(BasicState basicState) {
+        basicStateProperty().setValue(basicState);
+        this.setLeftTimeInBasicState(getTimeInState(basicState));
+        if (basicState == BasicState.DEAD) {
+            unRegistrateAction.apply(this);  //TODO MAYBE IT IS UNNECESSARY??
         }
     }
 
@@ -315,13 +321,13 @@ public abstract class GameUnit extends Observable {
         }
 
         public void changeBasicState(Long deltaTime) {
-            if (!isBlockCurrentState() && getTimeInState(currentBasicState) > 0) { // so we can tick time
+            if (!isBlockCurrentState() && getTimeInState(getBasicState()) > 0) { // so we can tick time
                 setLeftTimeInBasicState(getLeftTimeInBasicState() - deltaTime);
                 if ((getLeftTimeInBasicState()) <= 0) {
-                    if (getCurrentBasicState() == BasicState.CREATING) {
-                        setCurrentBasicState(BasicState.ACTIVE);
+                    if (getBasicState() == BasicState.CREATING) {
+                        setBasicState(BasicState.ACTIVE);
                     } else {
-                        setCurrentBasicState(BasicState.DEAD);
+                        setBasicState(BasicState.DEAD);
                     }
                     setChanged();
                 }

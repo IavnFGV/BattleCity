@@ -24,6 +24,11 @@ public class FxSpriteBrick extends FxSprite<TileUnit> {
     }
 
     @Override
+    protected int getMaxToggle() {
+        return 1;
+    }
+
+    @Override
     protected void updateSprite() {
         setViewPort(brickTiles[0]); //TODO MAKE RIGHT !)))
     }
