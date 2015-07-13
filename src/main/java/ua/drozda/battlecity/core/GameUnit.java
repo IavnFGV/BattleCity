@@ -24,7 +24,7 @@ public abstract class GameUnit extends Observable {
     static {
         timeInState.put(BasicState.CREATING, 2 * ONE_SECOND);
         timeInState.put(BasicState.ACTIVE, 0L);
-        timeInState.put(BasicState.EXPLODING, 500000000L);
+        timeInState.put(BasicState.EXPLODING, ONE_SECOND / 2);
         timeInState.put(BasicState.DEAD, 0L);
     }
 

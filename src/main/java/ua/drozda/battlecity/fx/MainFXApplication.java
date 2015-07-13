@@ -9,8 +9,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import ua.drozda.battlecity.core.ActiveUnit;
+import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.World;
+import ua.drozda.battlecity.fx.sprites.FxSpriteBigExplosion;
 import ua.drozda.battlecity.io.LevelLoader;
 
 import java.util.Collections;
@@ -87,6 +89,10 @@ public class MainFXApplication extends Application {
                         playGround.getChildren().addAll(fxGameUnit.getSprites().stream().map(s -> s.getImageView())
                                 .collect(Collectors.toList()));
                     }
+                    for (FxGameUnit fxGameUnit : fxWorld.fxGameUnitsList) {
+                        fxGameUnit.getSprites().stream().filter(fxSprite -> fxSprite instanceof FxSpriteBigExplosion)
+                                .map(fxSprite -> fxSprite.getImageView()).forEach(imageView -> imageView.toFront());
+                    }
                     FxBorder.enemiesCountProperty().bind(world.enemiesCountProperty());
                     FxBorder.firstPlayerLifesProperty().bind(firstPlayerTank.lifesCountProperty());
                     if (secondPlayerTank != null) {
@@ -151,9 +157,7 @@ public class MainFXApplication extends Application {
             firstPlayerTank.setEngineOn(true);
         }
         if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
-            firstPlayerTank.setLifes(25);
-            world.setEnemiesCount(world.getEnemiesCount() - 1);
-            System.out.println(FxBorder.enemiesCountProperty());
+            firstPlayerTank.setBasicState(GameUnit.BasicState.EXPLODING);
         }
 
     }

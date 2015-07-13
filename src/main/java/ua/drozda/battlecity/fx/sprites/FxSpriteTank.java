@@ -93,7 +93,7 @@ public class FxSpriteTank extends FxSprite<TankUnit> {
 
     @Override
     public void doToggle(Long now) {
-        curToggle = ++curToggle % maxToggle;
+        curToggle = ++curToggle % getMaxToggle();
         updateSprite();
         toggleTime = now;
     }

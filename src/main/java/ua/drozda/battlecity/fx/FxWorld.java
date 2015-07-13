@@ -41,9 +41,9 @@ public class FxWorld implements Togglable {
 
 
     //     private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/sprites.png");
-//    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics_debug.png");
+    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics_debug.png");
 
-    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics.png");
+    //    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics.png");
     public static volatile Image sprites = new Image(spritesStream);
     List<FxGameUnit> fxGameUnitsList = new ArrayList<>();
     // private FxTank firstPlayerTank;

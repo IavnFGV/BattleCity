@@ -45,7 +45,7 @@ public abstract class ActiveUnit extends GameUnit {
     }
 
     public void setDirection(Direction direction) {
-        if (direction != getDirection()) {
+        if ((direction != getDirection()) && (getBasicState() == BasicState.ACTIVE)) {
             fixPosition();
         }
         this.direction = direction;
@@ -164,7 +164,7 @@ public abstract class ActiveUnit extends GameUnit {
 
         protected boolean calcNewPosition(Long deltaTime) { // this method can be override in children
             setMoveAccumulator(getMoveAccumulator() + deltaTime);
-            if (isEngineOn() && (getMoveAccumulator() >= 1000000000 / 64)) {
+            if (isEngineOn() && (getMoveAccumulator() >= 1000000000 / 64) && (getBasicState() == BasicState.ACTIVE)) {
                 newX = ActiveUnit.this.getX();
                 newY = ActiveUnit.this.getY();
                 double deltaPosition = (Double.valueOf(getVelocity()));
