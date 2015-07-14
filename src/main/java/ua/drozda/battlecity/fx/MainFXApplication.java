@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  */
 public class MainFXApplication extends Application {
 
-    World world = new World(World.WorldType.DoublePlayer, 2);
+    World world = new World(World.WorldType.DOUBLE_PLAYER, 2);
     FxWorld fxWorld = new FxWorld();
     //  FxBorder fxBorder = new FxBorder();
     IntegerBinding integerBinding;

@@ -2,10 +2,12 @@ package ua.drozda.battlecity.core;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Point2D;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.LoadableCells;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,9 +34,15 @@ public class World implements LoadableCells {
     private IntegerProperty enemiesCount;
     private Integer stageNumber;
 
+    private List<Point2D> enemiesRespawns = Arrays.asList(new Point2D[]{
+            new Point2D(0, 0), new Point2D(12 * getCellWidth(), 0), new Point2D(25 * getCellWidth(), 0)});
+    private int curRespawn = -1;
+    private int tanksCount;
+
     public World(WorldType worldType) {
         this(worldType, 1);
     }
+
 
     public World(WorldType worldType, Integer gamePixel) {
         this.gamePixel = gamePixel;
@@ -50,6 +58,11 @@ public class World implements LoadableCells {
         tankHeightPixel = tankHeightCells * cellHeight;
         tankWidthPixel = tankWidthCells * cellWidth;
         this.worldType = worldType;
+    }
+
+    private int nextRespawn() {
+        curRespawn = ++curRespawn % 3;
+        return curRespawn;
     }
 
     public Integer getStageNumber() {
@@ -230,7 +243,7 @@ public class World implements LoadableCells {
                 ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
                 .FIRST_PLAYER, collisionManager);
         setFirstPlayer(tank);
-        if (getWorldType() == WorldType.DoublePlayer) {
+        if (getWorldType() == WorldType.DOUBLE_PLAYER) {
             tank = new TankUnit(16 * getCellWidth(), 24 * getCellHeight(), tankWidthPixel, tankHeightPixel,
                     1,
                     0l, GameUnit
@@ -275,14 +288,9 @@ public class World implements LoadableCells {
     }
 
     public void updatePositions(Long now) { //TODE proofOfConcept
-        unitList.stream().filter(u -> (u instanceof ActiveUnit)).forEach(u ->
-                {
-                    ((ActiveUnit) u).move(now);
-                    //       ((ActiveUnit) u).setBounds(((ActiveUnit) u).getNewBounds());
-                    //   collisionManager.newPosition((ActiveUnit) u);
-                }
-        );
-
+        unitList.stream()
+                .filter(u -> (u instanceof ActiveUnit))
+                .forEach(u -> ((ActiveUnit) u).move(now));
     }
 
     public Boolean addCell(Integer x, Integer y, TileUnit.TileType tileType) {
@@ -292,7 +300,7 @@ public class World implements LoadableCells {
     }
 
     public enum WorldType {
-        SinglePlayer, DoublePlayer, Construction
+        SINGLE_PLAYER, DOUBLE_PLAYER, CONSTRUCTION
     }
 
 

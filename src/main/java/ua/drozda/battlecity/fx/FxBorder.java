@@ -133,7 +133,7 @@ public class FxBorder {
     }
 
     public static void refresh(World.WorldType worldType, int stageNumber) {
-        getInstance().secondPlayerHider.setVisible(worldType != World.WorldType.DoublePlayer);
+        getInstance().secondPlayerHider.setVisible(worldType != World.WorldType.DOUBLE_PLAYER);
         int firstDigit = stageNumber / 10;
         int secondDigit = stageNumber % 10;
         getInstance().stageNumberFirstDigit.setViewport(digitMap.get(firstDigit));
