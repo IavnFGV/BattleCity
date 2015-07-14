@@ -34,8 +34,7 @@ public class World implements LoadableCells {
     private IntegerProperty enemiesCount;
     private Integer stageNumber;
 
-    private List<Point2D> enemiesRespawns = Arrays.asList(new Point2D[]{
-            new Point2D(0, 0), new Point2D(12 * getCellWidth(), 0), new Point2D(25 * getCellWidth(), 0)});
+    private List<Point2D> enemiesRespawns;
     private int curRespawn = -1;
     private int tanksCount;
 
@@ -57,7 +56,17 @@ public class World implements LoadableCells {
         tankWidthCells = 2;
         tankHeightPixel = tankHeightCells * cellHeight;
         tankWidthPixel = tankWidthCells * cellWidth;
+        enemiesRespawns = Arrays.asList(new Point2D[]{
+                new Point2D(0, 0), new Point2D(12 * getCellWidth(), 0), new Point2D(25 * getCellWidth(), 0)});
         this.worldType = worldType;
+    }
+
+    public Integer getCellWidth() {
+        return cellWidth;
+    }
+
+    public void setCellWidth(Integer cellWidth) {
+        this.cellWidth = cellWidth;
     }
 
     private int nextRespawn() {
@@ -255,10 +264,6 @@ public class World implements LoadableCells {
 
     }
 
-    public Integer getCellWidth() {
-        return cellWidth;
-    }
-
     public Integer getCellHeight() {
         return cellHeight;
     }
@@ -273,10 +278,6 @@ public class World implements LoadableCells {
 
     public void setWorldType(WorldType worldType) {
         this.worldType = worldType;
-    }
-
-    public void setCellWidth(Integer cellWidth) {
-        this.cellWidth = cellWidth;
     }
 
     public void initializeWorld(Long now) {
