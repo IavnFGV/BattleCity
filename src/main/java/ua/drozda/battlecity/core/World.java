@@ -5,6 +5,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.LoadableCells;
+import ua.drozda.battlecity.core.modificators.PauseWorldModificator;
+import ua.drozda.battlecity.core.modificators.WorldModificator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,11 +39,11 @@ public class World implements LoadableCells {
     private List<Point2D> enemiesRespawns;
     private int curRespawn = -1;
     private int tanksCount;
+    private WorldModificator.WorldModificators modificators = new WorldModificator.WorldModificators();
 
     public World(WorldType worldType) {
         this(worldType, 1);
     }
-
 
     public World(WorldType worldType, Integer gamePixel) {
         this.gamePixel = gamePixel;
@@ -67,6 +69,14 @@ public class World implements LoadableCells {
 
     public void setCellWidth(Integer cellWidth) {
         this.cellWidth = cellWidth;
+    }
+
+    public WorldModificator.WorldModificators getModificators() {
+        return modificators;
+    }
+
+    public void setModificators(WorldModificator.WorldModificators modificators) {
+        this.modificators = modificators;
     }
 
     private int nextRespawn() {
@@ -261,7 +271,7 @@ public class World implements LoadableCells {
                     .SECOND_PLAYER, collisionManager);
             setSecondPlayer(tank);
         }
-
+        modificators.addModificator(new PauseWorldModificator(this, WorldModificator.State.SUSPEND));
     }
 
     public Integer getCellHeight() {
@@ -298,6 +308,10 @@ public class World implements LoadableCells {
         TileUnit tileUnit = new TileUnit(x * cellWidth, y * cellHeight, cellWidth, cellHeight, 1, 0l,
                 tileType, this::registrateUnit, this::unRegistrateUnit);
         return true;
+    }
+
+    public void handleModificators(long now) {
+        modificators.handle(now);
     }
 
     public enum WorldType {

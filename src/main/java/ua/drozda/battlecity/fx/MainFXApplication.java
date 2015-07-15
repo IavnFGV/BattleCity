@@ -9,9 +9,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import ua.drozda.battlecity.core.ActiveUnit;
-import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.World;
+import ua.drozda.battlecity.core.modificators.WorldModificator;
 import ua.drozda.battlecity.fx.sprites.FxSpriteBigExplosion;
 import ua.drozda.battlecity.io.LevelLoader;
 
@@ -99,9 +99,17 @@ public class MainFXApplication extends Application {
                         FxBorder.secondPlayerLifesProperty().bind(secondPlayerTank.lifesCountProperty());
                     }
                     FxBorder.refresh(world.getWorldType(), world.getStageNumber());
+                    world.getModificators().getPauseModificator().stateProperty().addListener((observable, oldValue, newValue) -> {
+                        if (newValue == WorldModificator.State.ACTIVE) {
+                            FxBorder.showPause();
+                        } else {
+                            FxBorder.hidePause();
+                        }
+                    });
                     init = true;
                 }
                 world.handleCollisions();
+                world.handleModificators(now);
                 world.heartBeat(now);
                 handleCommands(); // TODO TEST required
                 world.updatePositions(now);
@@ -157,7 +165,8 @@ public class MainFXApplication extends Application {
             firstPlayerTank.setEngineOn(true);
         }
         if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
-            firstPlayerTank.setBasicState(GameUnit.BasicState.EXPLODING);
+//            firstPlayerTank.setBasicState(GameUnit.BasicState.EXPLODING);
+            world.getModificators().getPauseModificator().setState(WorldModificator.State.ACTIVE);
         }
 
     }

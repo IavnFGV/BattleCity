@@ -1,5 +1,7 @@
 package ua.drozda.battlecity.fx;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.Transition;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
@@ -10,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import javafx.util.Duration;
 import ua.drozda.battlecity.core.World;
 
 import java.io.IOException;
@@ -59,6 +62,7 @@ public class FxBorder {
 
     }
 
+    private FadeTransition pauseTransition;
     @FXML
     private TilePane enemyCounter;
     @FXML
@@ -71,6 +75,8 @@ public class FxBorder {
     private ImageView stageNumberFirstDigit;
     @FXML
     private ImageView stageNumberSecondDigit;
+    @FXML
+    private ImageView pauseImage;
 
     public static final int getEnemiesCount() {
         return enemiesCountProperty == null ? 0 : enemiesCountProperty.getValue();
@@ -145,6 +151,14 @@ public class FxBorder {
         return instance;
     }
 
+    public static void showPause() {
+        getInstance().pauseTransition.play();
+    }
+
+    public static void hidePause() {
+        getInstance().pauseTransition.stop();
+    }
+
     @FXML
     private void initialize() {
         for (int i = 0; i < 20; i++) {
@@ -164,6 +178,13 @@ public class FxBorder {
         secondPlayerLifesProperty().addListener((observable, oldValue, newValue) -> {
             secondPlayerLifes.setViewport(digitMap.get(newValue));
         });
+
+        pauseTransition = new FadeTransition(Duration.millis(100), pauseImage);
+        pauseTransition.setFromValue(1.0);
+        pauseTransition.setToValue(0.0);
+        pauseTransition.setCycleCount(Transition.INDEFINITE);
+        pauseTransition.setAutoReverse(true);
+
     }
 
 

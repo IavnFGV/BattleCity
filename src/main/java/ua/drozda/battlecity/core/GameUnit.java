@@ -18,7 +18,6 @@ import java.util.function.Function;
  */
 public abstract class GameUnit extends Observable {
     public static Long ONE_SECOND = 1000_000_000l;
-    private static Boolean pause = false;
     private static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
 
     static {
@@ -40,7 +39,7 @@ public abstract class GameUnit extends Observable {
     protected Long deltaHeartBeat;
     protected Double width;
     protected Double height;
-
+    private Boolean pause = false;
     private ObjectProperty<BasicState> basicStateProperty;
     private IntegerProperty lifesCount;
     private DoubleProperty x;
@@ -74,8 +73,8 @@ public abstract class GameUnit extends Observable {
         registrateAction.apply(this);
     }
 
-    public static void setPause(Boolean pause) {
-        GameUnit.setPause(pause);
+    public void setPause(Boolean pause) {
+        this.pause = pause;
     }
 
     public Double getWidth() {
@@ -256,7 +255,7 @@ public abstract class GameUnit extends Observable {
         notifyObservers();
     }
 
-    public static Boolean isPause() {
+    public Boolean isPause() {
         return pause;
     }
 
