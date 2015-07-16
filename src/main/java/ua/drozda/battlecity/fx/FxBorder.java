@@ -59,7 +59,9 @@ public class FxBorder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        instance.pauseImage.setViewport(new Rectangle2D(850, 288, 78, 14));
+        instance.pauseImage.setX(13 * 16 - 39);
+        instance.pauseImage.setY(13 * 16 - 7);
     }
 
     private FadeTransition pauseTransition;
@@ -75,8 +77,8 @@ public class FxBorder {
     private ImageView stageNumberFirstDigit;
     @FXML
     private ImageView stageNumberSecondDigit;
-    @FXML
-    private ImageView pauseImage;
+
+    private ImageView pauseImage = new ImageView(FxWorld.sprites);
 
     public static final int getEnemiesCount() {
         return enemiesCountProperty == null ? 0 : enemiesCountProperty.getValue();
@@ -153,6 +155,10 @@ public class FxBorder {
 
     public static void showPause() {
         getInstance().pauseTransition.play();
+    }
+
+    public static Node getPause() {
+        return getInstance().pauseImage;
     }
 
     public static void hidePause() {

@@ -1,5 +1,5 @@
 .playground-border-left, .playground-border-top, .playground-border-bottom,
-.playground-border-right, #disable-second_player {
+.playground-border-right, #disable-second-player {
     -fx-background-color: #636363;
 }
 
@@ -65,20 +65,11 @@
     -fx-translate-y: 272;
 }
 
-#test {
-    -fx-background-image: url("../images/graphics_debug.png");
+#stats-back {
+    -fx-background-image: url("../images/graphics.png");
     -fx-background-position: 102 323, center;
 }
 
-#disable-second_player {
+#disable-second-player {
 
-}
-
-#pause-image {
-    -fx-pref-width: 78;
-    -fx-max-width: 78;
-    -fx-min-width: 78;
-    -fx-pref-height: 14;
-    -fx-max-height: 14;
-    -fx-min-height: 14;
 }

@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import ua.drozda.battlecity.core.ActiveUnit;
 import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.World;
+import ua.drozda.battlecity.core.modificators.PauseWorldModificator;
 import ua.drozda.battlecity.core.modificators.WorldModificator;
 import ua.drozda.battlecity.fx.sprites.FxSpriteBigExplosion;
 import ua.drozda.battlecity.io.LevelLoader;
@@ -27,7 +28,6 @@ public class MainFXApplication extends Application {
 
     World world = new World(World.WorldType.DOUBLE_PLAYER, 2);
     FxWorld fxWorld = new FxWorld();
-    //  FxBorder fxBorder = new FxBorder();
     IntegerBinding integerBinding;
     Boolean sleepKeyPressHandle = true;
     Long toggleCount = 0l;
@@ -73,8 +73,6 @@ public class MainFXApplication extends Application {
             }
         };
 
-        Group bounds = new Group();
-
         AnimationTimer mainLoop = new AnimationTimer() {
             private Boolean init = false;
 
@@ -99,13 +97,16 @@ public class MainFXApplication extends Application {
                         FxBorder.secondPlayerLifesProperty().bind(secondPlayerTank.lifesCountProperty());
                     }
                     FxBorder.refresh(world.getWorldType(), world.getStageNumber());
-                    world.getModificators().getPauseModificator().stateProperty().addListener((observable, oldValue, newValue) -> {
+                    world.getModificators().getModificator(PauseWorldModificator.class)
+                            .stateProperty().addListener((observable, oldValue, newValue) -> {
                         if (newValue == WorldModificator.State.ACTIVE) {
                             FxBorder.showPause();
                         } else {
                             FxBorder.hidePause();
                         }
                     });
+                    playGround.getChildren().add(FxBorder.getPause());
+                    FxBorder.getPause().toFront();
                     init = true;
                 }
                 world.handleCollisions();
@@ -166,7 +167,7 @@ public class MainFXApplication extends Application {
         }
         if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
 //            firstPlayerTank.setBasicState(GameUnit.BasicState.EXPLODING);
-            world.getModificators().getPauseModificator().setState(WorldModificator.State.ACTIVE);
+            world.getModificators().getModificator(PauseWorldModificator.class).setState(WorldModificator.State.ACTIVE);
         }
 
     }

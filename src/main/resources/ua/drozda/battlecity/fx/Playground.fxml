@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
@@ -21,8 +21,7 @@
       <Pane prefHeight="200.0" prefWidth="200.0" styleClass="playground-border-right" BorderPane.alignment="CENTER">
          <children>
             <TilePane id="enemy-counter" fx:id="enemyCounter" prefHeight="200.0" prefWidth="200.0"/>
-            <Pane layoutX="17.0" layoutY="272.0" prefHeight="200.0" prefWidth="32.0" scaleZ="0.0"/>
-            <Pane id="test" layoutX="16.0" layoutY="272.0" prefHeight="200.0" prefWidth="32.0">
+            <Pane id="stats-back" layoutX="16.0" layoutY="272.0" prefHeight="200.0" prefWidth="32.0">
                <children>
                   <ImageView fx:id="firstPlayerLifes" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
                              preserveRatio="true" x="16.0" y="16.0">
@@ -30,7 +29,7 @@
                         <Rectangle2D height="32.0" minX="1024.0" minY="240.0" width="32.0"/>
                      </viewport>
                      <image>
-                        <Image url="@../images/graphics_debug.png"/>
+                        <Image url="@../images/graphics.png"/>
                      </image>
                   </ImageView>
                   <ImageView fx:id="secondPlayerLifes" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
@@ -39,7 +38,7 @@
                         <Rectangle2D height="32.0" minX="1024.0" minY="288.0" width="32.0"/>
                      </viewport>
                      <image>
-                        <Image url="@../images/graphics_debug.png"/>
+                        <Image url="@../images/graphics.png"/>
                      </image>
                   </ImageView>
                   <ImageView fx:id="stageNumberFirstDigit" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
@@ -48,34 +47,23 @@
                         <Rectangle2D height="16.0" minX="1024.0" minY="336.0" width="16.0"/>
                      </viewport>
                      <image>
-                        <Image url="@../images/graphics_debug.png"/>
+                        <Image url="@../images/graphics.png"/>
                      </image>
                   </ImageView>
                   <ImageView fx:id="stageNumberSecondDigit" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
                              preserveRatio="true" x="16.0" y="128.0">
                      <image>
-                        <Image url="@../images/graphics_debug.png"/>
+                        <Image url="@../images/graphics.png"/>
                      </image>
                      <viewport>
                         <Rectangle2D height="16.0" minX="1024.0" minY="336.0" width="16.0"/>
                      </viewport>
                   </ImageView>
-                  <Pane id="disable-second_player" fx:id="secondPlayerHider" layoutY="48.0" prefHeight="32.0"
+                  <Pane id="disable-second-player" fx:id="secondPlayerHider" layoutY="48.0" prefHeight="32.0"
                         prefWidth="32.0" visible="false"/>
                </children>
             </Pane>
          </children>
       </Pane>
    </right>
-   <center>
-      <ImageView fx:id="pauseImage" fitHeight="14.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true"
-                 BorderPane.alignment="CENTER">
-         <image>
-            <Image url="@../images/graphics_debug.png"/>
-         </image>
-         <viewport>
-            <Rectangle2D height="14.0" minX="850.0" minY="288.0" width="78.0"/>
-         </viewport>
-      </ImageView>
-   </center>
 </BorderPane>

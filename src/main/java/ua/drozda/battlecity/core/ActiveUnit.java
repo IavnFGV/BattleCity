@@ -45,11 +45,12 @@ public abstract class ActiveUnit extends GameUnit {
     }
 
     public void setDirection(Direction direction) {
-        if ((direction != getDirection()) && (getBasicState() == BasicState.ACTIVE)) {
-            fixPosition();
+        if (!isPause()) {
+            if ((direction != getDirection()) && (getBasicState() == BasicState.ACTIVE)) {
+                fixPosition();
+            }
+            this.direction = direction;
         }
-        this.direction = direction;
-
     }
 
     private void fixPosition() {
@@ -93,9 +94,11 @@ public abstract class ActiveUnit extends GameUnit {
     }
 
     public void setEngineOn(Boolean engineOn) {
-        this.engineOn = engineOn;
-        if (!engineOn) {
-            setMoveAccumulator(0l);
+        if (!isPause()) {
+            this.engineOn = engineOn;
+            if (!engineOn) {
+                setMoveAccumulator(0l);
+            }
         }
     }
 

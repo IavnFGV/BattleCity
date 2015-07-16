@@ -7,6 +7,7 @@ import ua.drozda.battlecity.core.World;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by GFH on 15.07.2015.
@@ -51,10 +52,18 @@ public abstract class WorldModificator {
     public static final class WorldModificators {
         private List<WorldModificator> modificators = new LinkedList<>();
 
-        public WorldModificator getPauseModificator() {
-            return modificators.stream().filter(worldModificator -> worldModificator instanceof PauseWorldModificator)
+        public WorldModificator getModificator(Class<? extends WorldModificator> aClass) {
+            return modificators.stream()
+                    .filter(worldModificator -> worldModificator.getClass() == aClass)
                     .findFirst().get();
         }
+
+        public List<WorldModificator> getMultiplyModificator(Class<? extends WorldModificator> aClass) {
+            return modificators.stream()
+                    .filter(worldModificator -> worldModificator.getClass() == aClass)
+                    .collect(Collectors.toList());
+        }
+
 
         public void addModificator(WorldModificator modificator) {
             modificators.add(modificator);
