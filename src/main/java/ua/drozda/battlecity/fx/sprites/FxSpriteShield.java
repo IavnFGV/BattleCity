@@ -21,7 +21,7 @@ public class FxSpriteShield extends FxSprite<TankUnit> {
 
     @Override
     public Boolean canToggle(Long now) {
-        return (getGameUnit().getBasicState() == GameUnit.BasicState.ACTIVE) && (now - toggleTime >= shieldTimer);
+        return (super.canToggle(now)) && (getGameUnit().getBasicState() == GameUnit.BasicState.ACTIVE) && (now - toggleTime >= shieldTimer);
     }
 
     @Override

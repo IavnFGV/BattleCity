@@ -77,7 +77,7 @@ public class FxSpriteTank extends FxSprite<TankUnit> {
 
     @Override
     public Boolean canToggle(Long now) {
-        return (getGameUnit().isEngineOn()) && (now - toggleTime >= tankToggleTimer);
+        return (super.canToggle(now)) && (getGameUnit().isEngineOn()) && (now - toggleTime >= tankToggleTimer);
     }
 
     @Override
@@ -87,8 +87,8 @@ public class FxSpriteTank extends FxSprite<TankUnit> {
 
     @Override
     protected void updateSprite() {
-            setViewPort(tankActiveMap.get(getGameUnit().getTankType()).get(getGameUnit().getDirection())[getGameUnit()
-                    .getStarCount()][curToggle]);
+        setViewPort(tankActiveMap.get(getGameUnit().getTankType()).get(getGameUnit().getDirection())[getGameUnit()
+                .getStarCount()][curToggle]);
     }
 
     @Override

@@ -44,7 +44,9 @@ public class FxSpriteBigExplosion extends FxSprite<TankUnit> {
 
     @Override
     public Boolean canToggle(Long now) {
-        return (getGameUnit().getBasicState() == GameUnit.BasicState.EXPLODING) && (now - toggleTime >= explosionTimer);
+        return (super.canToggle(now)) && (getGameUnit().getBasicState() == GameUnit.BasicState.EXPLODING) && (now -
+                toggleTime >=
+                explosionTimer);
     }
 
     @Override

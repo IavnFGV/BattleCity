@@ -2,6 +2,7 @@ package ua.drozda.battlecity.fx.sprites;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.ImageView;
 import ua.drozda.battlecity.core.GameUnit;
@@ -22,6 +23,7 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
     protected int maxToggle = 1;
     private ImageView imageView = new ImageView(FxWorld.sprites);
     private T gameUnit;
+    private BooleanProperty pauseProperty;
 
     public FxSprite(T gameUnit) {
         if (gameUnit == null) {
@@ -29,6 +31,7 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
         }
         xProperty().bind(gameUnit.xProperty());
         yProperty().bind(gameUnit.yProperty());
+        this.pauseProperty().bind(gameUnit.pauseProperty());
         gameUnit.addObserver(this);
         this.gameUnit = gameUnit;
     }
@@ -39,6 +42,17 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
 
     public final DoubleProperty yProperty() {
         return imageView.yProperty();
+    }
+
+    public void setPause(Boolean pause) {
+        pauseProperty().setValue(pause);
+    }
+
+    public BooleanProperty pauseProperty() {
+        if (pauseProperty == null) {
+            pauseProperty = new SimpleBooleanProperty(false);
+        }
+        return pauseProperty;
     }
 
     public final BooleanProperty visibleProperty() {
@@ -85,6 +99,15 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
     }
 
     protected abstract void updateSprite();
+
+    @Override
+    public Boolean canToggle(Long now) {
+        return !isPause();
+    }
+
+    public Boolean isPause() {
+        return pauseProperty().getValue();
+    }
 
     @Override
     public void doToggle(Long now) {

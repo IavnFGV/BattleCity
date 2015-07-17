@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import ua.drozda.battlecity.core.ActiveUnit;
+import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.core.modificators.PauseWorldModificator;
@@ -166,7 +167,7 @@ public class MainFXApplication extends Application {
             firstPlayerTank.setEngineOn(true);
         }
         if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
-//            firstPlayerTank.setBasicState(GameUnit.BasicState.EXPLODING);
+            firstPlayerTank.setBasicState(GameUnit.BasicState.EXPLODING);
             world.getModificators().getModificator(PauseWorldModificator.class).setState(WorldModificator.State.ACTIVE);
         }
 

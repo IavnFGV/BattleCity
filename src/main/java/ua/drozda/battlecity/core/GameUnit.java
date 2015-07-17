@@ -39,7 +39,8 @@ public abstract class GameUnit extends Observable {
     protected Long deltaHeartBeat;
     protected Double width;
     protected Double height;
-    private Boolean pause = false;
+    //private Boolean pause = false;
+    private BooleanProperty pauseProperty;
     private ObjectProperty<BasicState> basicStateProperty;
     private IntegerProperty lifesCount;
     private DoubleProperty x;
@@ -74,7 +75,14 @@ public abstract class GameUnit extends Observable {
     }
 
     public void setPause(Boolean pause) {
-        this.pause = pause;
+        pauseProperty().setValue(pause);
+    }
+
+    public BooleanProperty pauseProperty() {
+        if (pauseProperty == null) {
+            pauseProperty = new SimpleBooleanProperty(false);
+        }
+        return pauseProperty;
     }
 
     public Double getWidth() {
@@ -220,7 +228,7 @@ public abstract class GameUnit extends Observable {
 
     public final IntegerProperty lifesCountProperty() {
         if (lifesCount == null) {
-            lifesCount = new SimpleIntegerProperty(this, "lifesCount", 2);
+            lifesCount = new SimpleIntegerProperty(2);
         }
         return lifesCount;
     }
@@ -256,7 +264,7 @@ public abstract class GameUnit extends Observable {
     }
 
     public Boolean isPause() {
-        return pause;
+        return pauseProperty().getValue();
     }
 
     public Long getLastHeartBeat() {

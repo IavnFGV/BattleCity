@@ -25,11 +25,6 @@ public class FxSpriteWater extends FxSprite<TileUnit> {
     }
 
     @Override
-    public Boolean canToggle(Long now) {
-        return now - toggleTime >= waterTimer;
-    }
-
-    @Override
     protected int getMaxToggle() {
         return maxToggle;
     }
@@ -37,6 +32,11 @@ public class FxSpriteWater extends FxSprite<TileUnit> {
     @Override
     protected void updateSprite() {
         setViewPort(waterTiles[this.curToggle]);
+    }
+
+    @Override
+    public Boolean canToggle(Long now) {
+        return (super.canToggle(now)) && (now - toggleTime >= waterTimer);
     }
 
     @Override

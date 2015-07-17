@@ -29,12 +29,12 @@ public class FxSpriteCreation extends FxSprite<TankUnit> {
 
     @Override
     public Boolean canToggle(Long now) {
-        return (now - toggleTime >= tankToggleTimer);
+        return (super.canToggle(now)) && (now - toggleTime >= tankToggleTimer);
     }
 
     @Override
     protected void updateSprite() {
-            setViewPort(creationTiles[curToggle]);
+        setViewPort(creationTiles[curToggle]);
     }
 
     @Override
