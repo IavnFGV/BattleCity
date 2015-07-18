@@ -41,7 +41,7 @@ public class SoundManager {
         loadSoundEffects("life", "life.wav");
         loadSoundEffects("moving", "moving.wav");
         loadSoundEffects("nmoving", "nmoving.wav");
-        soundEventsQueue.add("levelstarting");
+        //    soundEventsQueue.add("levelstarting"); // TODO UNCOMMENT OR REPLACE
     }
 
     public static void handleSoundQueue(Long now) {

@@ -67,34 +67,40 @@ public class CollisionManager {
                 activeUnit.getWidth(),
                 activeUnit.getHeight());
         Point2D result = new Point2D(newValueX.doubleValue(), newValueY.doubleValue());
-        Point2D newPosition = world.getUnitList().stream().filter(u -> (u != activeUnit)).map(u -> {
-                    if (!canRide(u) && u.getBounds().intersects(newFixedBounds)) {
+        Predicate<GameUnit> notMe = u -> (u != activeUnit);
+        Predicate<GameUnit> notBullet = u -> (!(u instanceof BulletUnit));
+
+        Point2D newPosition = world.getUnitList().stream()
+                .filter(notMe)
+                .filter(notBullet)
+                .map(u -> {
+                            if (!canRide(u) && u.getBounds().intersects(newFixedBounds)) {
 //                        System.out.println("OtherUnit =" + u.getClass() + ";activeUnit = [" + activeUnit
 //                                .getClass() +
 //                                "]");
-                        switch (activeUnit.getDirection()) {
-                            case UP: {
-                                double deltaY = u.getBounds().getMaxY() - newBounds.getMinY();
-                                return result.add(0, deltaY);
-                            }
-                            case LEFT: {
-                                double deltaX = u.getBounds().getMaxX() - newBounds.getMinX();
-                                return result.add(deltaX, 0);
-                            }
-                            case DOWN: {
-                                double deltaY = newBounds.getMaxY() - u.getBounds().getMinY();
-                                return result.add(0, -deltaY);
+                                switch (activeUnit.getDirection()) {
+                                    case UP: {
+                                        double deltaY = u.getBounds().getMaxY() - newBounds.getMinY();
+                                        return result.add(0, deltaY);
+                                    }
+                                    case LEFT: {
+                                        double deltaX = u.getBounds().getMaxX() - newBounds.getMinX();
+                                        return result.add(deltaX, 0);
+                                    }
+                                    case DOWN: {
+                                        double deltaY = newBounds.getMaxY() - u.getBounds().getMinY();
+                                        return result.add(0, -deltaY);
 
+                                    }
+                                    case RIGHT: {
+                                        double deltaX = newBounds.getMaxX() - u.getBounds().getMinX();
+                                        return result.add(-deltaX, 0);
+                                    }
+                                }
                             }
-                            case RIGHT: {
-                                double deltaX = newBounds.getMaxX() - u.getBounds().getMinX();
-                                return result.add(-deltaX, 0);
-                            }
+                            return result;
                         }
-                    }
-                    return result;
-                }
-        ).filter(point2D -> (!point2D.equals(result))).findFirst().orElse(result);
+                ).filter(point2D -> (!point2D.equals(result))).findFirst().orElse(result);
         activeUnit.setX(newPosition.getX());
         activeUnit.setY(newPosition.getY());
     }

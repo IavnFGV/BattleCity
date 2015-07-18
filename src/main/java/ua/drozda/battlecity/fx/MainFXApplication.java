@@ -3,6 +3,7 @@ package ua.drozda.battlecity.fx;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.binding.IntegerBinding;
+import javafx.collections.ListChangeListener;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -19,6 +20,7 @@ import ua.drozda.battlecity.io.LevelLoader;
 
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,8 @@ public class MainFXApplication extends Application {
 
     private Set<KeyCode> firstPlayerMovements = EnumSet.of(KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D);
     private Set<KeyCode> secondPlayerMovements = EnumSet.of(KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT);
+    private Set<KeyCode> firstPlayerFire = EnumSet.of(KeyCode.SPACE);
+    private Set<KeyCode> secondPlayerFire = EnumSet.of(KeyCode.NUMPAD0);
 
 
     public static void main(String[] args) throws Exception {
@@ -108,6 +112,24 @@ public class MainFXApplication extends Application {
                     });
                     playGround.getChildren().add(FxBorder.getPause());
                     FxBorder.getPause().toFront();
+                    fxWorld.fxGameUnitsList.addListener(new ListChangeListener<FxGameUnit>() {
+                        @Override
+                        public void onChanged(Change<? extends FxGameUnit> c) {
+                            while (c.next()) {
+                                if (c.wasAdded()) {
+                                    List<FxBulletUnit> addedBullets = c.getAddedSubList().stream()
+                                            .filter(fxGameUnit -> fxGameUnit instanceof FxBulletUnit)
+                                            .map(gameUnit -> (FxBulletUnit) gameUnit)
+                                            .collect(Collectors.toList());
+                                    System.out.print(addedBullets);
+                                    for (FxBulletUnit fxBulletUnit : addedBullets) {
+                                        playGround.getChildren().addAll(fxBulletUnit.getSprites().stream().map(s -> s.getImageView())
+                                                .collect(Collectors.toList()));
+                                    }
+                                }
+                            }
+                        }
+                    });
                     init = true;
                 }
                 world.handleCollisions();
@@ -134,6 +156,9 @@ public class MainFXApplication extends Application {
         } else {
             firstPlayerMovements();
         }
+        if (keyPressedEventHandler.isAnyKeyDown(firstPlayerFire)) {
+            firstPlayerTank.fire();
+        }
         if (secondPlayerTank == null) {
             return;
         }
@@ -141,6 +166,9 @@ public class MainFXApplication extends Application {
             secondPlayerTank.setEngineOn(false);
         } else {
             secondPlayerMovements();
+        }
+        if (keyPressedEventHandler.isAnyKeyDown(secondPlayerFire)) {
+            secondPlayerTank.fire();
         }
 
     }

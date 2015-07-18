@@ -2,12 +2,16 @@ package ua.drozda.battlecity.core;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.geometry.Point2D;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.fx.FxWorld;
 
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Function;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
 
 /**
  * Created by GFH on 14.06.2015.
@@ -65,7 +69,7 @@ public class TankUnit extends ActiveUnit {
         }
     }
 
-    protected void fire() {
+    public void fire() {
         if (!isPause()) {
             getFireStrategy().perform();
         }
@@ -121,6 +125,29 @@ public class TankUnit extends ActiveUnit {
     }
 
     @Override
+    protected Boolean checkBounds(double newX, double newY) {
+        if (newX < 0 ||
+                newX > 24 * FxWorld.tileSize ||
+                newY < 0 ||
+                newY > 24 * FxWorld.tileSize
+                ) {
+            return false;
+        }
+
+        return super.checkBounds(newX, newY);
+    }
+
+    @Override
+    public void setDirection(Direction direction) {
+        if (!isPause()) {
+            if ((direction != getDirection()) && (getBasicState() == BasicState.ACTIVE)) {
+                fixPosition();
+            }
+            this.direction = direction;
+        }
+    }
+
+    @Override
     public String toString() {
         return "TankUnit{" +
                 "tankType=" + tankType +
@@ -138,19 +165,28 @@ public class TankUnit extends ActiveUnit {
         return moveStrategy;
     }
 
-    @Override
-    protected Boolean checkBounds(double newX, double newY) {
-        if (newX < 0 ||
-                newX > 24 * FxWorld.tileSize ||
-                newY < 0 ||
-                newY > 24 * FxWorld.tileSize
-                ) {
-            return false;
-        }
+    private void fixPosition() {
+        long cellSize = round(this.getWidth() / 2);
+        Long x = nearest(getX(), cellSize);
+        Long y = nearest(getY(), cellSize);
+        Double newX = getX();
+        Double newY = getY();
 
-        return super.checkBounds(newX, newY);
+        if (abs(newX - x) < (cellSize / 2 + 1)) {
+            newX = Double.valueOf(x);
+        }
+        if (abs(newY - y) < (cellSize / 2 + 1)) {
+            newY = Double.valueOf(y);
+        }
+//        setNewBounds(new BoundingBox(newX, newY, cellSize * 2, cellSize * 2));
+        if (collisionManager != null) {
+            collisionManager.fixPosition(this, newX, newY);
+        }
     }
 
+    private long nearest(double num, long base) {
+        return (round(num / (base * 1.)) * base);
+    }
 
     public enum TankType {
         FIRST_PLAYER, SECOND_PLAYER, SIMPLE_ENEMY, FAST_ENEMY, POWER_ENEMY, ARMOR_ENEMY, SIMPLE_ENEMY_X, FAST_ENEMY_X, POWER_ENEMY_X, ARMOR_ENEMY_X
@@ -242,11 +278,43 @@ public class TankUnit extends ActiveUnit {
             return activeBullets;
         }
 
-        public abstract void perform();
+        public void perform() {
+            Point2D startPosition = getStartPosition();
+            if (canFire()) {
+                BulletUnit bulletUnit = new BulletUnit(startPosition.getX(), startPosition.getY(), 8, 8, getBulletLifes(),
+                        BasicState.ACTIVE,
+                        getDirection(),
+                        getBulletSpeed(),
+                        TankUnit.this,
+                        this::onActiveAction,
+                        this::onDeadAction, collisionManager); // TODO WRONG MAGIC NUMBERS
+                bulletUnit.initUnit(TankUnit.this.getLastHeartBeat());
+                bulletUnit.setEngineOn(true);
+            }
+        }
+
+        protected Point2D getStartPosition() {
+            Point2D result = new Point2D(getX(), getY());
+            switch (getDirection()) {
+                case UP:
+                    return result.add(16 - 4, -8); //size of image
+                case LEFT:
+                    return result.add(-8, 16 - 4); // size of image
+                case DOWN:
+                    return result.add(16 - 4, 32);
+                case RIGHT:
+                    return result.add(32, 16 - 4);
+            }
+            return result;
+        }
 
         protected boolean canFire() {
             return true;
         }
+
+        protected abstract int getBulletLifes();
+
+        protected abstract long getBulletSpeed();
 
         public Boolean onDeadAction(GameUnit gameUnit) {
             decActiveBullets();
@@ -265,21 +333,25 @@ public class TankUnit extends ActiveUnit {
         public void incActiveBullets() {
             this.activeBullets += 1;
         }
+
     }
 
+
     protected class SlowFireStrategy extends FireStrategy {
-        @Override
-        public void perform() {
-            if (canFire()) {
-                new BulletUnit(getX(), getY(), 8, 8, 1, BasicState.ACTIVE, getDirection(), 4l, TankUnit.this,
-                        this::onActiveAction,
-                        this::onDeadAction, collisionManager); // TODO WRONG MAGIC NUMBERS
-            }
-        }
 
         @Override
         protected boolean canFire() {
-            return getActiveBullets() > 0;
+            return getActiveBullets() == 0;
+        }
+
+        @Override
+        protected int getBulletLifes() {
+            return 1;
+        }
+
+        @Override
+        protected long getBulletSpeed() {
+            return 4;
         }
     }
 }

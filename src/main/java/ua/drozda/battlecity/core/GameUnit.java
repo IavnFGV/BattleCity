@@ -28,18 +28,16 @@ public abstract class GameUnit extends Observable {
     }
 
     protected Bounds bounds;
-    protected Long leftTimeInBasicState = 0L;//
-    //protected BasicState currentBasicState;
+    protected Long leftTimeInBasicState = 0L;
     protected Boolean blockCurrentState = false;
     protected Long lastHeartBeat;
     protected Integer lifes = 0;
     protected BasicHeartBeatStrategy heartBeatStrategy;
     protected Function<GameUnit, Boolean> registrateAction;
     protected Function<GameUnit, Boolean> unRegistrateAction;
-    protected Long deltaHeartBeat;
+    protected Long deltaHeartBeat = 0l;
     protected Double width;
     protected Double height;
-    //private Boolean pause = false;
     private BooleanProperty pauseProperty;
     private ObjectProperty<BasicState> basicStateProperty;
     private IntegerProperty lifesCount;
@@ -146,7 +144,6 @@ public abstract class GameUnit extends Observable {
 
     public void initUnit(Long now) {
         lastHeartBeat = now;
-        deltaHeartBeat = 0l;
     }
 
     public Long getDeltaHeartBeat() {
@@ -260,7 +257,7 @@ public abstract class GameUnit extends Observable {
             getHeartBeatStrategy().perform(deltaHeartBeat);
         }
         setLastHeartBeat(now);
-        notifyObservers();
+        //    notifyObservers();
     }
 
     public Boolean isPause() {
@@ -294,6 +291,20 @@ public abstract class GameUnit extends Observable {
         this.leftTimeInBasicState = leftTimeInBasicState;
     }
 
+    public Boolean isBlockCurrentState() {
+        return blockCurrentState;
+    }
+
+    public void setBlockCurrentState(Boolean blockCurrentState) {
+        this.blockCurrentState = blockCurrentState;
+    }
+
+    protected void suicide() {
+        if (getBasicState() == BasicState.DEAD) {
+            unRegistrateAction.apply(this);  //TODO MAYBE IT IS UNNECESSARY??
+        }
+    }
+
     public BasicState getBasicState() {
         return basicStateProperty().getValue();
     }
@@ -301,17 +312,6 @@ public abstract class GameUnit extends Observable {
     public void setBasicState(BasicState basicState) {
         basicStateProperty().setValue(basicState);
         this.setLeftTimeInBasicState(getTimeInState(basicState));
-        if (basicState == BasicState.DEAD) {
-            unRegistrateAction.apply(this);  //TODO MAYBE IT IS UNNECESSARY??
-        }
-    }
-
-    public Boolean isBlockCurrentState() {
-        return blockCurrentState;
-    }
-
-    public void setBlockCurrentState(Boolean blockCurrentState) {
-        this.blockCurrentState = blockCurrentState;
     }
 
     public enum BasicState {

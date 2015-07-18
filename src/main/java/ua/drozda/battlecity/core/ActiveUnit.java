@@ -4,21 +4,17 @@ import ua.drozda.battlecity.core.collisions.CollisionManager;
 
 import java.util.function.Function;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.round;
-
 /**
  * Created by GFH on 10.06.2015.
  */
 public abstract class ActiveUnit extends GameUnit {
     protected Boolean engineOn = false;
     protected MoveStrategy moveStrategy;
-    protected Long moveAccumulator;
+    protected Long moveAccumulator = 0l;
     protected CollisionManager collisionManager;
     //  private Bounds newBounds;
-    private Direction direction;
+    protected Direction direction;
     private Long velocity = 8L;
-    private Integer cellSize = 16;//bad idea TODO maybe we can use EasyDI lib???
 
     public ActiveUnit(double x, double y, double width, double height, Integer lives, BasicState
             currentBasicState, Direction direction, Long velocity, Function<GameUnit, Boolean> registerAction,
@@ -35,33 +31,8 @@ public abstract class ActiveUnit extends GameUnit {
 
     public void setDirection(Direction direction) {
         if (!isPause()) {
-            if ((direction != getDirection()) && (getBasicState() == BasicState.ACTIVE)) {
-                fixPosition();
-            }
             this.direction = direction;
         }
-    }
-
-    private void fixPosition() {
-        Long x = nearest(getX(), cellSize);
-        Long y = nearest(getY(), cellSize);
-        Double newX = getX();
-        Double newY = getY();
-
-        if (abs(newX - x) < (cellSize / 2 + 1)) {
-            newX = Double.valueOf(x);
-        }
-        if (abs(newY - y) < (cellSize / 2 + 1)) {
-            newY = Double.valueOf(y);
-        }
-//        setNewBounds(new BoundingBox(newX, newY, cellSize * 2, cellSize * 2));
-        if (collisionManager != null) {
-            collisionManager.fixPosition(this, newX, newY);
-        }
-    }
-
-    private long nearest(double num, Integer base) {
-        return (round(num / (base * 1.)) * base);
     }
 
     @Override
@@ -78,7 +49,6 @@ public abstract class ActiveUnit extends GameUnit {
     @Override
     public void initUnit(Long now) {
         super.initUnit(now);
-        setMoveAccumulator(0l);
         setEngineOn(false);
     }
 

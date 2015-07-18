@@ -1,6 +1,8 @@
 package ua.drozda.battlecity.fx;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import ua.drozda.battlecity.core.BulletUnit;
 import ua.drozda.battlecity.core.GameUnit;
@@ -49,7 +51,7 @@ public class FxWorld implements Togglable {
 
     //    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics.png");
     public static volatile Image sprites = new Image(spritesStream);
-    List<FxGameUnit> fxGameUnitsList = new ArrayList<>();
+    ObservableList<FxGameUnit> fxGameUnitsList = FXCollections.observableArrayList(new ArrayList<>());
     // private FxTank firstPlayerTank;
     private World world;
 
@@ -95,10 +97,6 @@ public class FxWorld implements Togglable {
                                             addedBullets.forEach(bulletUnit -> fxGameUnitsList.add(FxGameUnit
                                                     .createFxGameUnit(bulletUnit)));
                                         }
-                                        System.out.println("Was added? " + c.wasAdded());
-                                        System.out.println("Was removed? " + c.wasRemoved());
-                                        System.out.println("Was replaced? " + c.wasReplaced());
-                                        System.out.println("Was permutated? " + c.wasPermutated());
                                     }
                                 }
                             }

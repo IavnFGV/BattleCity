@@ -9,6 +9,30 @@ import ua.drozda.battlecity.fx.sprites.FxSpriteBullet;
 public class FxBulletUnit extends FxGameUnit {
     public FxBulletUnit(BulletUnit gameUnit) {
         super(gameUnit);
-        this.addSprite(new FxSpriteBullet(gameUnit));
+
+        FxSpriteBullet baseSprite = new FxSpriteBullet(gameUnit);
+        addSprite(baseSprite);
+
+        FxSpriteBigExplosion explosionSprite = new FxSpriteBigExplosion(gameUnit);
+        addSprite(explosionSprite);
+        baseSprite.setVisible(false);
+        explosionSprite.setVisible(false);
+
+        gameUnit.basicStateProperty().addListener((observable, oldValue, newValue) -> {
+            if ((oldValue == GameUnit.BasicState.CREATING) &&
+                    (newValue == GameUnit.BasicState.ACTIVE)) {
+                creationSprite.setVisible(false);
+                baseSprite.setVisible(true);
+            }
+            if (newValue == GameUnit.BasicState.EXPLODING) {
+                baseSprite.setVisible(false);
+                explosionSprite.setVisible(true);
+            }
+            if (newValue == GameUnit.BasicState.DEAD) {
+                explosionSprite.setVisible(false);
+            }
+        });
+
+
     }
 }

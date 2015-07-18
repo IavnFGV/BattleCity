@@ -10,9 +10,9 @@ import ua.drozda.battlecity.core.interfaces.LoadableCells;
 import ua.drozda.battlecity.core.modificators.PauseWorldModificator;
 import ua.drozda.battlecity.core.modificators.WorldModificator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by GFH on 11.05.2015.
@@ -34,9 +34,8 @@ public class World implements LoadableCells {
     private WorldType worldType;
     private TankUnit firstPlayer;
     private TankUnit secondPlayer;
-    private List<GameUnit> unitList = new ArrayList<>(); // all units will be here TODO Think about concurrency
-    private ObservableList<GameUnit> oUnitList = FXCollections.observableArrayList(unitList);
-
+    //  private List<GameUnit> unitList = ; // all units will be here TODO Think about concurrency
+    private ObservableList<GameUnit> unitList = FXCollections.observableArrayList();
     private IntegerProperty enemiesCount;
     private Integer stageNumber;
 
@@ -76,7 +75,7 @@ public class World implements LoadableCells {
     }
 
     public ObservableList<GameUnit> getObservableUnitList() {
-        return oUnitList;
+        return unitList;
     }
 
     public WorldModificator.WorldModificators getModificators() {
@@ -177,9 +176,6 @@ public class World implements LoadableCells {
         return unitList;
     }
 
-    public void setUnitList(List<GameUnit> unitList) {
-        this.unitList = unitList;
-    }
 
     public Integer getWorldHeightCells() {
         return worldHeightCells;
@@ -303,7 +299,10 @@ public class World implements LoadableCells {
     }
 
     public void handleCollisions() {
-
+        List<GameUnit> deadList = getUnitList().stream()
+                .filter(gameUnit -> gameUnit.getBasicState() == GameUnit.BasicState.DEAD)
+                .collect(Collectors.toList());
+        deadList.forEach(gameUnit -> gameUnit.suicide());
     }
 
     public void updatePositions(Long now) { //TODE proofOfConcept

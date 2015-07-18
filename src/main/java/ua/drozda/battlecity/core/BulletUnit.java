@@ -1,6 +1,7 @@
 package ua.drozda.battlecity.core;
 
 import ua.drozda.battlecity.core.collisions.CollisionManager;
+import ua.drozda.battlecity.fx.FxWorld;
 
 import java.util.function.Function;
 
@@ -18,6 +19,20 @@ public class BulletUnit extends ActiveUnit {
         setOwner(owner);
     }
 
+    @Override
+    protected Boolean checkBounds(double newX, double newY) {
+        if (newX < 0 ||
+                newX > 24 * FxWorld.tileSize + 32 - 8 ||
+                newY < 0 ||
+                newY > 24 * FxWorld.tileSize + 32 - 8
+                ) {
+            this.decLifes(3);
+            return false;
+        }
+
+        return super.checkBounds(newX, newY);
+    }
+
     public TankUnit getOwner() {
         return owner;
     }
@@ -25,4 +40,25 @@ public class BulletUnit extends ActiveUnit {
     public void setOwner(TankUnit owner) {
         this.owner = owner;
     }
+
+    @Override
+    public MoveStrategy getMoveStrategy() {
+        if (this.moveStrategy == null) {
+            //ActiveUnit.class.getDeclaredClasses()
+            this.setMoveStrategy(this.new BulletMoveStrategy());
+        }
+        return moveStrategy;
+    }
+
+    protected class BulletMoveStrategy extends MoveStrategy {
+        @Override
+        public void perform(Long deltaTime) {
+            if (calcNewPosition(deltaTime)) {
+                //do not need to check on Bullet
+                setX(newX);
+                setY(newY);
+            }
+        }
+    }
+
 }

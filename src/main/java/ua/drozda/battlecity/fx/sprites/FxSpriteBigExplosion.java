@@ -29,14 +29,9 @@ public class FxSpriteBigExplosion extends FxSprite<TankUnit> {
         yProperty().setValue(gameUnit.getY() - 16);
         gameUnit.xProperty().addListener((observable, oldValue, newValue) -> {
             this.xProperty().setValue(newValue.doubleValue() - 16);
-            System.out.println("TanknewX = " + newValue.doubleValue());
-            System.out.println("TilenewX = " + xProperty().getValue());
-
         });
         gameUnit.yProperty().addListener((observable, oldValue, newValue) -> {
             this.yProperty().setValue(newValue.doubleValue() - 16);
-            System.out.println("TanknewY = " + newValue.doubleValue());
-            System.out.println("TilenewY = " + yProperty().getValue());
         });
         maxToggle = 5;
         setViewPort(explosionTiles[this.curToggle]);
