@@ -1,12 +1,16 @@
 package ua.drozda.battlecity.fx;
 
+import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
+import ua.drozda.battlecity.core.BulletUnit;
+import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.core.interfaces.Togglable;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by GFH on 18.05.2015.
@@ -77,6 +81,29 @@ public class FxWorld implements Togglable {
         getWorld().getUnitList().forEach(u -> {
             fxGameUnitsList.add(FxGameUnit.createFxGameUnit(u));
         });
+        getWorld().getObservableUnitList().
+                addListener(new ListChangeListener<GameUnit>() {
+                                @Override
+                                public void onChanged(Change<? extends GameUnit> c) {
+                                    System.out.println("Detected a change! ");
+                                    while (c.next()) {
+                                        if (c.wasAdded()) {
+                                            List<BulletUnit> addedBullets = c.getAddedSubList().stream()
+                                                    .filter(gameUnit -> gameUnit instanceof BulletUnit)
+                                                    .map(gameUnit -> (BulletUnit) gameUnit)
+                                                    .collect(Collectors.toList());
+                                            addedBullets.forEach(bulletUnit -> fxGameUnitsList.add(FxGameUnit
+                                                    .createFxGameUnit(bulletUnit)));
+                                        }
+                                        System.out.println("Was added? " + c.wasAdded());
+                                        System.out.println("Was removed? " + c.wasRemoved());
+                                        System.out.println("Was replaced? " + c.wasReplaced());
+                                        System.out.println("Was permutated? " + c.wasPermutated());
+                                    }
+                                }
+                            }
+
+                );
     }
 
 

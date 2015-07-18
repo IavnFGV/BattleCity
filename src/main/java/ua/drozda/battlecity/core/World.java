@@ -2,6 +2,8 @@ package ua.drozda.battlecity.core;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import ua.drozda.battlecity.core.collisions.CollisionManager;
 import ua.drozda.battlecity.core.interfaces.LoadableCells;
@@ -33,6 +35,8 @@ public class World implements LoadableCells {
     private TankUnit firstPlayer;
     private TankUnit secondPlayer;
     private List<GameUnit> unitList = new ArrayList<>(); // all units will be here TODO Think about concurrency
+    private ObservableList<GameUnit> oUnitList = FXCollections.observableArrayList(unitList);
+
     private IntegerProperty enemiesCount;
     private Integer stageNumber;
 
@@ -69,6 +73,10 @@ public class World implements LoadableCells {
 
     public void setCellWidth(Integer cellWidth) {
         this.cellWidth = cellWidth;
+    }
+
+    public ObservableList<GameUnit> getObservableUnitList() {
+        return oUnitList;
     }
 
     public WorldModificator.WorldModificators getModificators() {

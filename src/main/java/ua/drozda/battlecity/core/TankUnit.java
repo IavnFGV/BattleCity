@@ -21,6 +21,7 @@ public class TankUnit extends ActiveUnit {
     protected Boolean shield = false;
     protected Long leftTimeInShieldState = 0L;//
 
+    protected FireStrategy[] fireStrategy;
     private BooleanProperty shildProperty;
 
     public TankUnit(double x, double y, double width, double height, Integer lives, Long currentTime,
@@ -32,9 +33,15 @@ public class TankUnit extends ActiveUnit {
         if (playerTanks.contains(tankType)) {
             setBonusStrategy(this.new PlayerBonusStrategy());
             setHeartBeatStrategy(new TankHeartBeatStrategy());
+            fireStrategy = new FireStrategy[4];
+            fireStrategy[0] = new SlowFireStrategy();//TODO  ADD CLASSES
         } else {
             setBonusStrategy(this.new EnemyBonusStrategy());
+            fireStrategy = new FireStrategy[2];
+            fireStrategy[0] = new SlowFireStrategy();
+            fireStrategy[1] = new SlowFireStrategy(); //TODO ADD CLASSES
         }
+
     }
 
     public static Long getTimeInShieldOnRespawn() {
@@ -58,15 +65,20 @@ public class TankUnit extends ActiveUnit {
         }
     }
 
-    public void setShield(Long shieldTime) {
-        setLeftTimeInShieldState(shieldTime);
+    protected void fire() {
+        if (!isPause()) {
+            getFireStrategy().perform();
+        }
     }
 
-    public final BooleanProperty shildProperty() {
-        if (shildProperty == null) {
-            shildProperty = new SimpleBooleanProperty();
+    public FireStrategy getFireStrategy() {
+        if (playerTanks.contains(getTankType()))
+            return fireStrategy[getStarCount()];
+        if ((getTankType() == TankType.POWER_ENEMY)
+                || (getTankType() == TankType.POWER_ENEMY_X)) {
+            return fireStrategy[1];
         }
-        return shildProperty;
+        return fireStrategy[0];
     }
 
     public TankType getTankType() {
@@ -83,6 +95,17 @@ public class TankUnit extends ActiveUnit {
 
     public void setStarCount(Integer starCount) {
         this.starCount = starCount;
+    }
+
+    public void setShield(Long shieldTime) {
+        setLeftTimeInShieldState(shieldTime);
+    }
+
+    public final BooleanProperty shildProperty() {
+        if (shildProperty == null) {
+            shildProperty = new SimpleBooleanProperty();
+        }
+        return shildProperty;
     }
 
     protected void addBonus(BonusUnit.BonusType bonusType) {
@@ -209,6 +232,54 @@ public class TankUnit extends ActiveUnit {
                 }
             }
 
+        }
+    }
+
+    protected abstract class FireStrategy {
+        private int activeBullets;
+
+        public int getActiveBullets() {
+            return activeBullets;
+        }
+
+        public abstract void perform();
+
+        protected boolean canFire() {
+            return true;
+        }
+
+        public Boolean onDeadAction(GameUnit gameUnit) {
+            decActiveBullets();
+            return getUnRegistrateAction().apply(gameUnit);
+        }
+
+        public void decActiveBullets() {
+            this.activeBullets -= 1;
+        }
+
+        public Boolean onActiveAction(GameUnit gameUnit) {
+            incActiveBullets();
+            return getRegistrateAction().apply(gameUnit);
+        }
+
+        public void incActiveBullets() {
+            this.activeBullets += 1;
+        }
+    }
+
+    protected class SlowFireStrategy extends FireStrategy {
+        @Override
+        public void perform() {
+            if (canFire()) {
+                new BulletUnit(getX(), getY(), 8, 8, 1, BasicState.ACTIVE, getDirection(), 4l, TankUnit.this,
+                        this::onActiveAction,
+                        this::onDeadAction, collisionManager); // TODO WRONG MAGIC NUMBERS
+            }
+        }
+
+        @Override
+        protected boolean canFire() {
+            return getActiveBullets() > 0;
         }
     }
 }

@@ -10,7 +10,7 @@ import java.util.function.Function;
 public class BulletUnit extends ActiveUnit {
     protected TankUnit owner;
 
-    public BulletUnit(double x, double y, double width, double height, Integer lives, Long currentTime, BasicState
+    public BulletUnit(double x, double y, double width, double height, Integer lives, BasicState
             currentBasicState, Direction direction, Long velocity, TankUnit owner, Function<GameUnit, Boolean> registerAction,
                       Function<GameUnit, Boolean> unRegisterAction, CollisionManager collisionManager) {
         super(x, y, width, height, lives, currentBasicState, direction, velocity, registerAction,

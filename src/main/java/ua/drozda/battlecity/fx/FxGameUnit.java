@@ -1,5 +1,6 @@
 package ua.drozda.battlecity.fx;
 
+import ua.drozda.battlecity.core.BulletUnit;
 import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.core.TileUnit;
@@ -27,6 +28,9 @@ public abstract class FxGameUnit implements Togglable {
         }
         if (gameUnit instanceof TankUnit) {
             return new FxTankUnit((TankUnit) gameUnit);
+        }
+        if (gameUnit instanceof BulletUnit) {
+            return new FxBulletUnit((BulletUnit) gameUnit);
         }
         throw new Error("Unknown gameUnit subClass = " + gameUnit.getClass().getName());
 

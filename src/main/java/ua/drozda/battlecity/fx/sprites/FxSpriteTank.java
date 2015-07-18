@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class FxSpriteTank extends FxSprite<TankUnit> {
     private static Long tankToggleTimer = 50_000_000l;
-    private static Map<TankUnit.TankType, HashMap<ActiveUnit.Direction, Rectangle2D[][]>> tankActiveMap = new
+    private static Map<TankUnit.TankType, Map<ActiveUnit.Direction, Rectangle2D[][]>> tankActiveMap = new
             HashMap<>();
 
     static {

@@ -26,17 +26,6 @@ public abstract class ActiveUnit extends GameUnit {
         super(x, y, width, height, lives, currentBasicState, registerAction, unRegisterAction, true);
         this.setDirection(direction);
         this.setVelocity(velocity);
-        // this.setNewBounds(getBounds());
-
-//        xProperty().addListener((observable, oldValue, newValue) -> {
-//            this.setBounds(new BoundingBox(newValue.doubleValue(), this.getY(), this.width, this.height));
-//
-//        });
-//        yProperty().addListener((observable, oldValue, newValue) -> {
-//            this.setBounds(new BoundingBox(this.getX(), newValue.doubleValue(), this.width, this.height));
-//        });
-
-
         this.collisionManager = collisionManager;
     }
 

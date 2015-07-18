@@ -154,6 +154,7 @@ public class FxBorder {
     }
 
     public static void showPause() {
+        getInstance().pauseImage.setVisible(true);
         getInstance().pauseTransition.play();
     }
 
@@ -163,6 +164,7 @@ public class FxBorder {
 
     public static void hidePause() {
         getInstance().pauseTransition.stop();
+        getInstance().pauseImage.setVisible(false);
     }
 
     @FXML
@@ -190,6 +192,7 @@ public class FxBorder {
         pauseTransition.setToValue(0.0);
         pauseTransition.setCycleCount(Transition.INDEFINITE);
         pauseTransition.setAutoReverse(true);
+        pauseImage.setVisible(false);
 
     }
 
