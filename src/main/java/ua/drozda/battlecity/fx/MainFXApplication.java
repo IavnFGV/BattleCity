@@ -196,7 +196,8 @@ public class MainFXApplication extends Application {
         }
         if (keyPressedEventHandler.isKeyDown(KeyCode.Z)) {
             firstPlayerTank.setBasicState(GameUnit.BasicState.EXPLODING);
-            world.getModificators().getModificator(PauseWorldModificator.class).setState(WorldModificator.State.ACTIVE);
+            //      world.getModificators().getModificator(PauseWorldModificator.class).setState(WorldModificator.State
+            //              .ACTIVE);
         }
 
     }

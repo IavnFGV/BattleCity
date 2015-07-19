@@ -15,12 +15,13 @@ import java.util.Observer;
 import static ua.drozda.battlecity.core.StaticServices.MESSAGES;
 
 /**
- * Created by GFH on 06.07.2015.
+ * MAYBE ITS A ONE BIG MISTAKE  try to use fx animation instead!!!
  */
 public abstract class FxSprite<T extends GameUnit> implements Togglable, Observer {
     protected Integer curToggle = 0;
     protected Long toggleTime = 0l;
     protected int maxToggle = 1;
+    protected boolean initFlag = false;
     private ImageView imageView = new ImageView(FxWorld.sprites);
     private T gameUnit;
     private BooleanProperty pauseProperty;
@@ -44,15 +45,19 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
         return imageView.yProperty();
     }
 
-    public void setPause(Boolean pause) {
-        pauseProperty().setValue(pause);
-    }
-
     public BooleanProperty pauseProperty() {
         if (pauseProperty == null) {
             pauseProperty = new SimpleBooleanProperty(false);
         }
         return pauseProperty;
+    }
+
+    public void initToggle() {
+        initFlag = true;
+    }
+
+    public void setPause(Boolean pause) {
+        pauseProperty().setValue(pause);
     }
 
     public final BooleanProperty visibleProperty() {
@@ -102,6 +107,10 @@ public abstract class FxSprite<T extends GameUnit> implements Togglable, Observe
 
     @Override
     public Boolean canToggle(Long now) {
+        if (initFlag) {
+            toggleTime = now;
+            initFlag = false;
+        }
         return !isPause();
     }
 

@@ -1,15 +1,15 @@
 package ua.drozda.battlecity.fx.sprites;
 
 import javafx.geometry.Rectangle2D;
-import ua.drozda.battlecity.core.ActiveUnit;
 import ua.drozda.battlecity.core.BulletUnit;
+import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.fx.FxWorld;
 
 /**
  * Created by GFH on 19.07.2015.
  */
 public class FxSpriteSmallExplosion extends FxSprite<BulletUnit> {
-    static private Long explosionTimer = ActiveUnit.ONE_SECOND / 10;
+    static private Long explosionTimer = GameUnit.getTimeInState().get(GameUnit.BasicState.EXPLODING) / 3;
     private static Rectangle2D[] explosionTiles;
 
     static {
@@ -18,6 +18,11 @@ public class FxSpriteSmallExplosion extends FxSprite<BulletUnit> {
             explosionTiles[i] = new Rectangle2D(228 + FxWorld.tankSize * i,
                     256, FxWorld.tankSize, FxWorld.tankSize);
         }
+    }
+
+    public FxSpriteSmallExplosion(BulletUnit gameUnit) {
+        super(gameUnit);
+        setViewPort(explosionTiles[this.curToggle]);
     }
 
     @Override
@@ -35,5 +40,12 @@ public class FxSpriteSmallExplosion extends FxSprite<BulletUnit> {
         curToggle = ++curToggle % getMaxToggle();
         updateSprite();
         toggleTime = now;
+    }
+
+    @Override
+    public Boolean canToggle(Long now) {
+        return (super.canToggle(now)) &&
+                (getGameUnit().getBasicState() == GameUnit.BasicState.EXPLODING) &&
+                (now - toggleTime >= explosionTimer);
     }
 }

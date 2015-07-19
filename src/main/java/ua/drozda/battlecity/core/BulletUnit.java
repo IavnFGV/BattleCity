@@ -33,6 +33,14 @@ public class BulletUnit extends ActiveUnit {
         return super.checkBounds(newX, newY);
     }
 
+    @Override
+    protected Long getTimeInState(BasicState state) {
+//        if (state == BasicState.EXPLODING) {
+//            return 3*ONE_SECOND ;
+//        }
+        return super.getTimeInState(state);
+    }
+
     public TankUnit getOwner() {
         return owner;
     }

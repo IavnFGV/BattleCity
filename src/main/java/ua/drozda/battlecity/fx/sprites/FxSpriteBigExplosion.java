@@ -1,7 +1,6 @@
 package ua.drozda.battlecity.fx.sprites;
 
 import javafx.geometry.Rectangle2D;
-import ua.drozda.battlecity.core.ActiveUnit;
 import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.TankUnit;
 import ua.drozda.battlecity.fx.FxWorld;
@@ -10,7 +9,7 @@ import ua.drozda.battlecity.fx.FxWorld;
  * Created by GFH on 13.07.2015.
  */
 public class FxSpriteBigExplosion extends FxSprite<TankUnit> {
-    static private Long explosionTimer = ActiveUnit.ONE_SECOND / 10;
+    static private Long explosionTimer = GameUnit.getTimeInState().get(GameUnit.BasicState.EXPLODING) / 5;
     private static Rectangle2D[] explosionTiles;
 
     static {
@@ -52,6 +51,9 @@ public class FxSpriteBigExplosion extends FxSprite<TankUnit> {
     @Override
     protected void updateSprite() {
         setViewPort(explosionTiles[this.curToggle]);
+        if (getGameUnit().getTankType() == TankUnit.TankType.FIRST_PLAYER) {
+            System.out.println(getGameUnit().getBasicState() + " curToggle=" + curToggle + "toggletime = " + toggleTime);
+        }
     }
 
     @Override

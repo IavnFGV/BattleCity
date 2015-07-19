@@ -48,10 +48,13 @@ public class FxTankUnit extends FxGameUnit {
             if ((oldValue == GameUnit.BasicState.CREATING) &&
                     (newValue == GameUnit.BasicState.ACTIVE)) {
                 creationSprite.setVisible(false);
+                baseSprite.initToggle();
                 baseSprite.setVisible(true);
+
             }
             if (newValue == GameUnit.BasicState.EXPLODING) {
                 baseSprite.setVisible(false);
+                explosionSprite.initToggle();
                 explosionSprite.setVisible(true);
             }
             if (newValue == GameUnit.BasicState.DEAD) {

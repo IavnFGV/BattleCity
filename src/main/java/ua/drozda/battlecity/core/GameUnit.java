@@ -18,12 +18,12 @@ import java.util.function.Function;
  */
 public abstract class GameUnit extends Observable {
     public static Long ONE_SECOND = 1000_000_000l;
-    private static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
+    static Map<BasicState, Long> timeInState = new EnumMap<>(BasicState.class);
 
     static {
         timeInState.put(BasicState.CREATING, 2 * ONE_SECOND);
         timeInState.put(BasicState.ACTIVE, 0L);
-        timeInState.put(BasicState.EXPLODING, ONE_SECOND / 2);
+        timeInState.put(BasicState.EXPLODING, ONE_SECOND / 6);
         timeInState.put(BasicState.DEAD, 0L);
     }
 
@@ -43,11 +43,9 @@ public abstract class GameUnit extends Observable {
     private IntegerProperty lifesCount;
     private DoubleProperty x;
     private DoubleProperty y;
-
     public GameUnit(double x, double y, double width, double height, Integer lifes, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean> unRegisterAction) {
         this(x, y, width, height, lifes, BasicState.CREATING, registerAction, unRegisterAction, true);
     }
-
     public GameUnit(double x, double y, double width, double height, Integer lifes, BasicState
             currentBasicState, Function<GameUnit, Boolean> registerAction, Function<GameUnit, Boolean>
                             unRegisterAction, Boolean addListeners) {
@@ -70,6 +68,14 @@ public abstract class GameUnit extends Observable {
         }
         setY(y);
         registrateAction.apply(this);
+    }
+
+    public static Map<BasicState, Long> getTimeInState() {
+        return timeInState;
+    }
+
+    public static void setTimeInState(Map<BasicState, Long> timeInState) {
+        GameUnit.timeInState = timeInState;
     }
 
     public void setPause(Boolean pause) {
