@@ -21,10 +21,10 @@ public class BulletUnit extends ActiveUnit {
 
     @Override
     protected Boolean checkBounds(double newX, double newY) {
-        if (newX < 0 ||
-                newX > 24 * FxWorld.tileSize + 32 - 8 ||
-                newY < 0 ||
-                newY > 24 * FxWorld.tileSize + 32 - 8
+        if (newX < 0 - 8 ||
+                newX > 24 * FxWorld.tileSize + 32 ||
+                newY < 0 - 8 ||
+                newY > 24 * FxWorld.tileSize + 32
                 ) {
             this.decLifes(3);
             return false;
