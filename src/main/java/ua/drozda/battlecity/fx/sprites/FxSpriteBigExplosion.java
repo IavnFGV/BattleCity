@@ -51,9 +51,6 @@ public class FxSpriteBigExplosion extends FxSprite<TankUnit> {
     @Override
     protected void updateSprite() {
         setViewPort(explosionTiles[this.curToggle]);
-        if (getGameUnit().getTankType() == TankUnit.TankType.FIRST_PLAYER) {
-            System.out.println(getGameUnit().getBasicState() + " curToggle=" + curToggle + "toggletime = " + toggleTime);
-        }
     }
 
     @Override

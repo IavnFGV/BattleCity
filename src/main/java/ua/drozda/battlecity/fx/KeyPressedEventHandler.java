@@ -16,6 +16,7 @@ public class KeyPressedEventHandler implements EventHandler<KeyEvent> {
 
     @Override
     public void handle(KeyEvent event) {
+
         if (event.getEventType() == KeyEvent.KEY_PRESSED) {
             synchronized (pressedKeys) {
                 pressedKeys.add(event.getCode());
@@ -40,6 +41,15 @@ public class KeyPressedEventHandler implements EventHandler<KeyEvent> {
         }
     }
 
+    public boolean wasKeyPressed(KeyCode keyCode) { // remove from set after answer
+        synchronized (pressedKeys) {
+            if (pressedKeys.contains(keyCode)) {
+                pressedKeys.remove(keyCode);
+                return true;
+            }
+            return false;
+        }
+    }
 
     private static class IntersectionHelper {
         static boolean intersect(Set<KeyCode> s1, Set<KeyCode> s2) {

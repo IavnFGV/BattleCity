@@ -43,8 +43,8 @@ public class MainFXApplication extends Application {
 
     private Set<KeyCode> firstPlayerMovements = EnumSet.of(KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D);
     private Set<KeyCode> secondPlayerMovements = EnumSet.of(KeyCode.UP, KeyCode.LEFT, KeyCode.DOWN, KeyCode.RIGHT);
-    private Set<KeyCode> firstPlayerFire = EnumSet.of(KeyCode.SPACE);
-    private Set<KeyCode> secondPlayerFire = EnumSet.of(KeyCode.NUMPAD0);
+    private KeyCode firstPlayerFire = KeyCode.SPACE;
+    private KeyCode secondPlayerFire = KeyCode.NUMPAD0;
 
 
     public static void main(String[] args) throws Exception {
@@ -156,7 +156,7 @@ public class MainFXApplication extends Application {
         } else {
             firstPlayerMovements();
         }
-        if (keyPressedEventHandler.isAnyKeyDown(firstPlayerFire)) {
+        if (keyPressedEventHandler.wasKeyPressed(firstPlayerFire)) {
             firstPlayerTank.fire();
         }
         if (secondPlayerTank == null) {
@@ -167,7 +167,7 @@ public class MainFXApplication extends Application {
         } else {
             secondPlayerMovements();
         }
-        if (keyPressedEventHandler.isAnyKeyDown(secondPlayerFire)) {
+        if (keyPressedEventHandler.wasKeyPressed(secondPlayerFire)) {
             secondPlayerTank.fire();
         }
 

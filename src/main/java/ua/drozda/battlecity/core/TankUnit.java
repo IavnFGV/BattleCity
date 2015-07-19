@@ -25,7 +25,7 @@ public class TankUnit extends ActiveUnit {
     protected Boolean shield = false;
     protected Long leftTimeInShieldState = 0L;//
 
-    protected FireStrategy[] fireStrategy;
+    protected FireStrategy[] fireStrategies;
     private BooleanProperty shildProperty;
 
     public TankUnit(double x, double y, double width, double height, Integer lives, Long currentTime,
@@ -37,15 +37,36 @@ public class TankUnit extends ActiveUnit {
         if (playerTanks.contains(tankType)) {
             setBonusStrategy(this.new PlayerBonusStrategy());
             setHeartBeatStrategy(new TankHeartBeatStrategy());
-            fireStrategy = new FireStrategy[4];
-            fireStrategy[0] = new SlowFireStrategy();//TODO  ADD CLASSES
+            fireStrategies = new FireStrategy[4];
+            for (int i = 0; i < 4; i++) {
+                fireStrategies[i] = createFireStrategy(i);
+            }
         } else {
             setBonusStrategy(this.new EnemyBonusStrategy());
-            fireStrategy = new FireStrategy[2];
-            fireStrategy[0] = new SlowFireStrategy();
-            fireStrategy[1] = new SlowFireStrategy(); //TODO ADD CLASSES
+            fireStrategies = new FireStrategy[2];
+            fireStrategies[0] = createFireStrategy(0);
+            fireStrategies[1] = createFireStrategy(1);
         }
+        setStarCount(2);
+    }
 
+    public FireStrategy createFireStrategy(int index) { // i know its not static
+        switch (index) {
+            case 0: {
+                return new SlowFireStrategy();
+            }
+            case 1: {
+                return new FastFireStrategy();
+            }
+            case 2: {
+                return new FastDoubleFireStrategy();
+            }
+            case 3: {
+                return new FastDoubleArmorFireStrategy();
+            }
+            default:
+                throw new IllegalArgumentException("Unknown FireStrategy fo index = " + index);
+        }
     }
 
     public static Long getTimeInShieldOnRespawn() {
@@ -71,18 +92,18 @@ public class TankUnit extends ActiveUnit {
 
     public void fire() {
         if (!isPause()) {
-            getFireStrategy().perform();
+            getFireStrategies().perform();
         }
     }
 
-    public FireStrategy getFireStrategy() {
+    public FireStrategy getFireStrategies() {
         if (playerTanks.contains(getTankType()))
-            return fireStrategy[getStarCount()];
+            return fireStrategies[getStarCount()];
         if ((getTankType() == TankType.POWER_ENEMY)
                 || (getTankType() == TankType.POWER_ENEMY_X)) {
-            return fireStrategy[1];
+            return fireStrategies[1];
         }
-        return fireStrategy[0];
+        return fireStrategies[0];
     }
 
     public TankType getTankType() {
@@ -272,6 +293,7 @@ public class TankUnit extends ActiveUnit {
     }
 
     protected abstract class FireStrategy {
+
         private int activeBullets;
 
         public int getActiveBullets() {
@@ -354,4 +376,29 @@ public class TankUnit extends ActiveUnit {
             return 4;
         }
     }
+
+    protected class FastFireStrategy extends SlowFireStrategy {
+        @Override
+        protected long getBulletSpeed() {
+            return 8L;
+        }
+    }
+
+    protected class FastDoubleFireStrategy extends FastFireStrategy {
+        @Override
+        protected boolean canFire() {
+            System.out.println("getActiveBullets()= " + getActiveBullets());
+            return getActiveBullets() <= 1;
+        }
+    }
+
+    protected class FastDoubleArmorFireStrategy extends FastDoubleFireStrategy {
+
+        @Override
+        protected int getBulletLifes() {
+            return 2;
+        }
+    }
+
+
 }
