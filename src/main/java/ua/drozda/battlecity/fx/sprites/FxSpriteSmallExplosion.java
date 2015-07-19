@@ -22,6 +22,17 @@ public class FxSpriteSmallExplosion extends FxSprite<BulletUnit> {
 
     public FxSpriteSmallExplosion(BulletUnit gameUnit) {
         super(gameUnit);
+        xProperty().unbind();
+        yProperty().unbind();
+        xProperty().setValue(gameUnit.getX() - 12);
+        yProperty().setValue(gameUnit.getY() - 12);
+        gameUnit.xProperty().addListener((observable, oldValue, newValue) -> {
+            this.xProperty().setValue(newValue.doubleValue() - 12);
+        });
+        gameUnit.yProperty().addListener((observable, oldValue, newValue) -> {
+            this.yProperty().setValue(newValue.doubleValue() - 12);
+        });
+
         setViewPort(explosionTiles[this.curToggle]);
     }
 

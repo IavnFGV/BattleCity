@@ -56,7 +56,7 @@ public abstract class GameUnit extends Observable {
         this.setRegistrateAction(registerAction);
         this.setUnRegistrateAction(unRegisterAction);
         this.setBounds(new BoundingBox(x, y, width, height));
-        setX(x);
+        xProperty().setValue(x);// setX();
         if (addListeners) {
             xProperty().addListener((observable, oldValue, newValue) -> {
                 this.setBounds(new BoundingBox(newValue.doubleValue(), this.getY(), this.width, this.height));
@@ -66,7 +66,7 @@ public abstract class GameUnit extends Observable {
             });
 
         }
-        setY(y);
+        yProperty().setValue(y);//setY(y);
         registrateAction.apply(this);
     }
 
@@ -103,20 +103,6 @@ public abstract class GameUnit extends Observable {
 
     public void setHeight(Double height) {
         this.height = height;
-    }
-
-    public final DoubleProperty yProperty() {
-        if (y == null) {
-            y = new SimpleDoubleProperty();
-        }
-        return y;
-    }
-
-    public final DoubleProperty xProperty() {
-        if (x == null) {
-            x = new SimpleDoubleProperty();
-        }
-        return x;
     }
 
     @Override
@@ -198,14 +184,28 @@ public abstract class GameUnit extends Observable {
         }
     }
 
+    protected Boolean checkBounds(double newX, double newY) {
+        return true;
+    }
+
+    public final DoubleProperty yProperty() {
+        if (y == null) {
+            y = new SimpleDoubleProperty();
+        }
+        return y;
+    }
+
     public final void setX(double value) {
         if (checkBounds(value, getY())) {
             xProperty().set(value);
         }
     }
 
-    protected Boolean checkBounds(double newX, double newY) {
-        return true;
+    public final DoubleProperty xProperty() {
+        if (x == null) {
+            x = new SimpleDoubleProperty();
+        }
+        return x;
     }
 
     public void decLifes(Integer lifes) {
