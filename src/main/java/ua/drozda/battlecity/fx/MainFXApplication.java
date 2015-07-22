@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.beans.binding.IntegerBinding;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -123,8 +124,11 @@ public class MainFXApplication extends Application {
                                             .collect(Collectors.toList());
                                     System.out.print(addedBullets);
                                     for (FxBulletUnit fxBulletUnit : addedBullets) {
-                                        playGround.getChildren().addAll(fxBulletUnit.getSprites().stream().map(s -> s.getImageView())
-                                                .collect(Collectors.toList()));
+                                        List<Node> fxBulletList = fxBulletUnit.getSprites()
+                                                .stream().map(s -> s.getImageView())
+                                                .collect(Collectors.toList());
+                                        playGround.getChildren().addAll(fxBulletList);
+                                        fxBulletList.forEach(node -> node.toBack());
                                     }
                                 }
                             }

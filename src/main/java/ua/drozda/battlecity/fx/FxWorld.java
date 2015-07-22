@@ -4,14 +4,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
+import sun.misc.Launcher;
 import ua.drozda.battlecity.core.BulletUnit;
 import ua.drozda.battlecity.core.GameUnit;
 import ua.drozda.battlecity.core.World;
 import ua.drozda.battlecity.core.interfaces.Togglable;
 
+import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 /**
@@ -48,12 +53,45 @@ public class FxWorld implements Togglable {
 
     //     private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/sprites.png");
 //    private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics_debug.png");
-
+    public static Map<String, Image> imageMap = new HashMap<>();
     private static InputStream spritesStream = FxWorld.class.getResourceAsStream("../images/graphics.png");
     public static volatile Image sprites = new Image(spritesStream);
     ObservableList<FxGameUnit> fxGameUnitsList = FXCollections.observableArrayList(new ArrayList<>());
     // private FxTank firstPlayerTank;
     private World world;
+
+    {
+
+        final String path = "ua/drozda/battlecity/images";
+        final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+        try {
+            if (jarFile.isFile()) {  // Run with JAR file
+                final JarFile jar = new JarFile(jarFile);
+                final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
+                while (entries.hasMoreElements()) {
+                    final String name = entries.nextElement().getName();
+                    if (name.startsWith(path + "/")) { //filter according to the path
+                        System.out.println(name);
+                    }
+                }
+                jar.close();
+            } else { // Run with IDE
+                final URL url = Launcher.class.getResource("/" + path);
+                if (url != null) {
+                    try {
+                        final File apps = new File(url.toURI());
+                        for (File app : apps.listFiles()) {
+                            System.out.println(app);
+                        }
+                    } catch (URISyntaxException ex) {
+                        // never happens
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
 
     public FxWorld() {
     }

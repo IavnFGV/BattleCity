@@ -263,7 +263,7 @@ public class World implements LoadableCells {
                 1,
                 0l, GameUnit
                 .BasicState.CREATING,
-                ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
+                ActiveUnit.Direction.UP, 2l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
                 .FIRST_PLAYER, collisionManager);
         setFirstPlayer(tank);
         if (getWorldType() == WorldType.DOUBLE_PLAYER) {
@@ -271,7 +271,7 @@ public class World implements LoadableCells {
                     1,
                     0l, GameUnit
                     .BasicState.CREATING,
-                    ActiveUnit.Direction.UP, 1l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
+                    ActiveUnit.Direction.UP, 2l, this::registrateUnit, this::unRegistrateUnit, TankUnit.TankType
                     .SECOND_PLAYER, collisionManager);
             setSecondPlayer(tank);
         }
