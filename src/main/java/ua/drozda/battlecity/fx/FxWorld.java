@@ -71,7 +71,7 @@ public class FxWorld implements Togglable {
                 while (entries.hasMoreElements()) {
                     final String name = entries.nextElement().getName();
                     if (name.startsWith(path + "/")) { //filter according to the path
-                        System.out.println(name);
+                        System.out.println(name);//TODO  REMAKE OR CORRECT
                     }
                 }
                 jar.close();
@@ -81,7 +81,8 @@ public class FxWorld implements Togglable {
                     try {
                         final File apps = new File(url.toURI());
                         for (File app : apps.listFiles()) {
-                            System.out.println(app);
+                            imageMap.put(app.getName(), new Image(app.toURI().toURL().toExternalForm()));
+                            System.out.println(app.getName());
                         }
                     } catch (URISyntaxException ex) {
                         // never happens

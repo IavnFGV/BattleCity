@@ -5,6 +5,7 @@ import javafx.animation.Transition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import ua.drozda.battlecity.core.GameUnit;
@@ -15,12 +16,18 @@ import ua.drozda.battlecity.core.GameUnit;
  */
 public abstract class FxNewSprite<T extends GameUnit> extends ImageView {
 
+    public static Image sprite = new Image(
+            FxNewSprite.class
+                    .getResource("../images/final_sprites.png")
+                    .toExternalForm());
+
     private final SpriteAnimation<T> animation;
     private final T gameUnit;
 
     BooleanBinding playBinding;
 
     public FxNewSprite(T gameUnit) {
+        super(sprite);
         this.gameUnit = gameUnit;
         this.animation = createAnimation();
         playBinding = createPlayBinding();
