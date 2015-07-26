@@ -31,7 +31,7 @@ public abstract class FxNewSprite<T extends GameUnit> extends ImageView {
         this.gameUnit = gameUnit;
         this.animation = createAnimation();
         playBinding = createPlayBinding();
-        playBinding.addListener((observable1, oldValue, newValue) -> {
+        playBinding.addListener((observable, oldValue, newValue) -> {
                     if (animation.isEmbedded()) return;
                     if ((oldValue == false) && (newValue == true)) {
                         animation.play();
@@ -55,15 +55,13 @@ public abstract class FxNewSprite<T extends GameUnit> extends ImageView {
     protected abstract class SpriteAnimation<T extends GameUnit> extends Transition {
 
         private final int count;
-        private final int rows;
         private int lastIndex;
 
         public SpriteAnimation(
                 Duration duration,
-                int count, int rows,
+                int count,
                 int cycleCount) {
             this.count = count;
-            this.rows = rows;
             setCycleDuration(duration);
             setInterpolator(Interpolator.LINEAR);
             setCycleCount(cycleCount);

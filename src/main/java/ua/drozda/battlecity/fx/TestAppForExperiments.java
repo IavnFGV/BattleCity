@@ -6,6 +6,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import ua.drozda.battlecity.core.GameUnit;
+import ua.drozda.battlecity.core.TileUnit;
+import ua.drozda.battlecity.fx.sprites.FxNewSpriteWater;
 
 /**
  * Created by GFH on 12.07.2015.
@@ -16,6 +19,9 @@ public class TestAppForExperiments extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        TileUnit tileUnit = new TileUnit(0, 0, 32, 32, 1, 0l, TileUnit.TileType.WATER, this::stub, this::stub);
+        FxNewSpriteWater water = new FxNewSpriteWater(tileUnit);
         Label label = new Label();
         Group root = new Group();
         group1.getChildren().add(label);
@@ -28,5 +34,9 @@ public class TestAppForExperiments extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public Boolean stub(GameUnit gameUnit) {
+        return true;
     }
 }

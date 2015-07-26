@@ -16,19 +16,19 @@ public class FxNewSpriteWater extends FxNewSprite<TileUnit> {
     }
 
     @Override
+    protected SpriteAnimation<TileUnit> createAnimation() {
+        return new WaterSpriteAnimation(Duration.seconds(1), 3, Animation.INDEFINITE);
+
+    }
+
+    @Override
     protected Rectangle2D nextSprite(int index) {
         return null;
     }
 
-    @Override
-    protected SpriteAnimation<TileUnit> createAnimation() {
-        return new WaterSpriteAnimation(Duration.seconds(1), 3, 1, Animation.INDEFINITE);
-
-    }
-
     protected class WaterSpriteAnimation extends SpriteAnimation<TileUnit> {
-        public WaterSpriteAnimation(Duration duration, int count, int rows, int cycleCount) {
-            super(duration, count, rows, cycleCount);
+        public WaterSpriteAnimation(Duration duration, int count, int cycleCount) {
+            super(duration, count, cycleCount);
         }
     }
 

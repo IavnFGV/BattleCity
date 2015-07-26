@@ -32,8 +32,9 @@ public abstract class FxGameUnit implements Togglable {
         if (gameUnit instanceof BulletUnit) {
             return new FxBulletUnit((BulletUnit) gameUnit);
         }
-        throw new Error("Unknown gameUnit subClass = " + gameUnit.getClass().getName());
-
+        return null;
+        //  throw new Error("Unknown gameUnit subClass = " + gameUnit.getClass().getName());
+        // here can be EnemyManager for example
     }
 
     public GameUnit getGameUnit() {

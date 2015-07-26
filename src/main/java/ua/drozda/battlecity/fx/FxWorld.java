@@ -120,7 +120,10 @@ public class FxWorld implements Togglable {
         this.world = world;
 
         getWorld().getUnitList().forEach(u -> {
-            fxGameUnitsList.add(FxGameUnit.createFxGameUnit(u));
+            FxGameUnit fxGameUnit = FxGameUnit.createFxGameUnit(u);
+            if (fxGameUnit != null) {
+                fxGameUnitsList.add(fxGameUnit);
+            }
         });
         getWorld().getObservableUnitList().
                 addListener(new ListChangeListener<GameUnit>() {
